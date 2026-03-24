@@ -1,6 +1,6 @@
 # Combobulator Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox ( `- [ ]` ) syntax for tracking.
 
 **Goal:** Build a standalone Next.js app for visually editing rek-room's CSS custom properties with live light/dark split preview and CSS export.
 
@@ -79,9 +79,9 @@ combobulator/
 ## Task 1: Project Scaffolding
 
 **Files:**
-- Create: `package.json`, `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`, `app/layout.tsx`, `app/page.tsx`, `app/globals.css`, `components.json`
+* Create: `package.json`,  `tsconfig.json`,  `next.config.ts`,  `tailwind.config.ts`,  `postcss.config.mjs`,  `app/layout.tsx`,  `app/page.tsx`,  `app/globals.css`,  `components.json`
 
-- [ ] **Step 1: Initialize Next.js project**
+* [ ] **Step 1: Initialize Next.js project**
 
 ```bash
 cd ~/ActiveTheory/personal-playground
@@ -90,14 +90,14 @@ npx create-next-app@latest combobulator --typescript --tailwind --eslint --app -
 
 Accept defaults. This creates the base Next.js + Tailwind + TypeScript project.
 
-- [ ] **Step 2: Install dependencies**
+* [ ] **Step 2: Install dependencies**
 
 ```bash
 cd ~/ActiveTheory/personal-playground/combobulator
 npm install rek-room react-colorful cmdk
 ```
 
-- [ ] **Step 3: Initialize Shadcn/ui**
+* [ ] **Step 3: Initialize Shadcn/ui**
 
 ```bash
 npx shadcn@latest init
@@ -105,13 +105,13 @@ npx shadcn@latest init
 
 Select defaults: New York style, Zinc base color, CSS variables.
 
-- [ ] **Step 4: Install required Shadcn components**
+* [ ] **Step 4: Install required Shadcn components**
 
 ```bash
 npx shadcn@latest add accordion slider select popover tooltip alert-dialog command switch tabs toggle-group input
 ```
 
-- [ ] **Step 5: Verify dev server starts**
+* [ ] **Step 5: Verify dev server starts**
 
 ```bash
 npm run dev
@@ -119,7 +119,7 @@ npm run dev
 
 Expected: App loads at `http://localhost:3000` with Next.js default page.
 
-- [ ] **Step 6: Commit**
+* [ ] **Step 6: Commit**
 
 ```bash
 git init
@@ -132,11 +132,11 @@ git commit -m "feat: scaffold Next.js project with Shadcn/ui and dependencies"
 ## Task 2: Token Type System
 
 **Files:**
-- Create: `lib/tokens/types.ts`
+* Create: `lib/tokens/types.ts`
 
-- [ ] **Step 1: Create the token type definitions**
+* [ ] **Step 1: Create the token type definitions**
 
-Create `lib/tokens/types.ts`:
+Create `lib/tokens/types.ts` :
 
 ```typescript
 export type TokenType =
@@ -192,7 +192,7 @@ export const CATEGORY_VIGNETTE_MAP: Record<TokenCategory, string> = {
 };
 ```
 
-- [ ] **Step 2: Verify TypeScript compiles**
+* [ ] **Step 2: Verify TypeScript compiles**
 
 ```bash
 npx tsc --noEmit
@@ -200,7 +200,7 @@ npx tsc --noEmit
 
 Expected: No errors.
 
-- [ ] **Step 3: Commit**
+* [ ] **Step 3: Commit**
 
 ```bash
 git add lib/tokens/types.ts
@@ -212,11 +212,11 @@ git commit -m "feat: add token type definitions"
 ## Task 3: Registry Generator Script
 
 **Files:**
-- Create: `scripts/generate-registry.ts`, `lib/tokens/metadata.ts`, `lib/tokens/registry.ts`, `lib/tokens/defaults.ts`
+* Create: `scripts/generate-registry.ts`,  `lib/tokens/metadata.ts`,  `lib/tokens/registry.ts`,  `lib/tokens/defaults.ts`
 
-- [ ] **Step 1: Create the metadata config file**
+* [ ] **Step 1: Create the metadata config file**
 
-Create `lib/tokens/metadata.ts`. This is the hand-maintained mapping that enriches auto-extracted tokens with UI metadata. Include all tokens from the spec, organized by category. Each entry maps a CSS custom property key to its label, type, category, and optional slider ranges, derivedFrom, lightDark, and gradient flags.
+Create `lib/tokens/metadata.ts` . This is the hand-maintained mapping that enriches auto-extracted tokens with UI metadata. Include all tokens from the spec, organized by category. Each entry maps a CSS custom property key to its label, type, category, and optional slider ranges, derivedFrom, lightDark, and gradient flags.
 
 Key entries to include:
 
@@ -334,9 +334,9 @@ export const TOKEN_METADATA: Record<string, Omit<TokenDefinition, 'key' | 'defau
 
 Note: The `// ...` comments indicate where the implementer should fill in the remaining entries following the established pattern. Every token from the spec's "Token Categories & Their Contents" section must have an entry.
 
-- [ ] **Step 2: Create the registry generator script**
+* [ ] **Step 2: Create the registry generator script**
 
-Create `scripts/generate-registry.ts`:
+Create `scripts/generate-registry.ts` :
 
 ```typescript
 /**
@@ -435,7 +435,7 @@ ${defaults.join(',\n')}
 main();
 ```
 
-- [ ] **Step 3: Add generate script to package.json**
+* [ ] **Step 3: Add generate script to package.json**
 
 Add to `package.json` scripts:
 
@@ -449,15 +449,15 @@ Install tsx:
 npm install -D tsx
 ```
 
-- [ ] **Step 4: Run the generator and verify output**
+* [ ] **Step 4: Run the generator and verify output**
 
 ```bash
 npm run generate:registry
 ```
 
-Expected: Script outputs token count and creates `lib/tokens/registry.ts` and `lib/tokens/defaults.ts`. Check for any warnings about missing tokens.
+Expected: Script outputs token count and creates `lib/tokens/registry.ts` and `lib/tokens/defaults.ts` . Check for any warnings about missing tokens.
 
-- [ ] **Step 5: Add build-time CSS copy script**
+* [ ] **Step 5: Add build-time CSS copy script**
 
 Add to `package.json` scripts:
 
@@ -471,7 +471,7 @@ Also run it now for development:
 cp node_modules/rek-room/dist/style.css public/rek-room.css
 ```
 
-- [ ] **Step 6: Commit**
+* [ ] **Step 6: Commit**
 
 ```bash
 git add scripts/ lib/tokens/ public/rek-room.css package.json
@@ -483,11 +483,11 @@ git commit -m "feat: add token registry generator and metadata"
 ## Task 4: State Management (Context + Undo/Redo + Persistence)
 
 **Files:**
-- Create: `lib/state/token-context.tsx`, `lib/state/history.ts`, `lib/state/persistence.ts`
+* Create: `lib/state/token-context.tsx`,  `lib/state/history.ts`,  `lib/state/persistence.ts`
 
-- [ ] **Step 1: Create persistence helpers**
+* [ ] **Step 1: Create persistence helpers**
 
-Create `lib/state/persistence.ts`:
+Create `lib/state/persistence.ts` :
 
 ```typescript
 import type { OverridesMap } from '@/lib/tokens/types';
@@ -519,9 +519,9 @@ export function clearOverrides(): void {
 }
 ```
 
-- [ ] **Step 2: Create undo/redo history logic**
+* [ ] **Step 2: Create undo/redo history logic**
 
-Create `lib/state/history.ts`:
+Create `lib/state/history.ts` :
 
 ```typescript
 import type { OverridesMap } from '@/lib/tokens/types';
@@ -566,9 +566,9 @@ export function canRedo(history: HistoryState): boolean {
 }
 ```
 
-- [ ] **Step 3: Create the token context**
+* [ ] **Step 3: Create the token context**
 
-Create `lib/state/token-context.tsx`:
+Create `lib/state/token-context.tsx` :
 
 ```typescript
 'use client';
@@ -711,7 +711,7 @@ export function useTokens() {
 }
 ```
 
-- [ ] **Step 4: Verify TypeScript compiles**
+* [ ] **Step 4: Verify TypeScript compiles**
 
 ```bash
 npx tsc --noEmit
@@ -719,7 +719,7 @@ npx tsc --noEmit
 
 Expected: No errors.
 
-- [ ] **Step 5: Commit**
+* [ ] **Step 5: Commit**
 
 ```bash
 git add lib/state/
@@ -731,11 +731,11 @@ git commit -m "feat: add token state context with undo/redo and localStorage per
 ## Task 5: CSS Generator & PostMessage Protocol
 
 **Files:**
-- Create: `lib/preview/css-generator.ts`, `lib/preview/message-protocol.ts`
+* Create: `lib/preview/css-generator.ts`,  `lib/preview/message-protocol.ts`
 
-- [ ] **Step 1: Create the CSS generator**
+* [ ] **Step 1: Create the CSS generator**
 
-Create `lib/preview/css-generator.ts`:
+Create `lib/preview/css-generator.ts` :
 
 ```typescript
 import type { OverridesMap } from '@/lib/tokens/types';
@@ -806,9 +806,9 @@ export function generateOverrideCSS(overrides: OverridesMap): string {
 }
 ```
 
-- [ ] **Step 2: Create the postMessage protocol**
+* [ ] **Step 2: Create the postMessage protocol**
 
-Create `lib/preview/message-protocol.ts`:
+Create `lib/preview/message-protocol.ts` :
 
 ```typescript
 /**
@@ -839,7 +839,7 @@ export function isPreviewMessage(data: unknown): data is PreviewToEditorMessage 
 }
 ```
 
-- [ ] **Step 3: Commit**
+* [ ] **Step 3: Commit**
 
 ```bash
 git add lib/preview/
@@ -851,11 +851,11 @@ git commit -m "feat: add CSS generator and iframe postMessage protocol"
 ## Task 6: WCAG Contrast Calculation
 
 **Files:**
-- Create: `lib/contrast.ts`
+* Create: `lib/contrast.ts`
 
-- [ ] **Step 1: Create contrast utilities**
+* [ ] **Step 1: Create contrast utilities**
 
-Create `lib/contrast.ts`:
+Create `lib/contrast.ts` :
 
 ```typescript
 /**
@@ -907,7 +907,7 @@ export function getContrastDotColor(level: WcagLevel): string {
 }
 ```
 
-- [ ] **Step 2: Commit**
+* [ ] **Step 2: Commit**
 
 ```bash
 git add lib/contrast.ts
@@ -919,11 +919,11 @@ git commit -m "feat: add WCAG contrast ratio calculation"
 ## Task 7: Google Fonts Helper
 
 **Files:**
-- Create: `lib/google-fonts.ts`
+* Create: `lib/google-fonts.ts`
 
-- [ ] **Step 1: Create Google Fonts utility**
+* [ ] **Step 1: Create Google Fonts utility**
 
-Create `lib/google-fonts.ts`:
+Create `lib/google-fonts.ts` :
 
 ```typescript
 /**
@@ -979,7 +979,7 @@ export function googleFontImport(fontName: string): string {
 }
 ```
 
-- [ ] **Step 2: Commit**
+* [ ] **Step 2: Commit**
 
 ```bash
 git add lib/google-fonts.ts
@@ -991,11 +991,11 @@ git commit -m "feat: add Google Fonts helper with curated font list"
 ## Task 8: Export CSS
 
 **Files:**
-- Create: `lib/export/export-css.ts`
+* Create: `lib/export/export-css.ts`
 
-- [ ] **Step 1: Create the export function**
+* [ ] **Step 1: Create the export function**
 
-Create `lib/export/export-css.ts`:
+Create `lib/export/export-css.ts` :
 
 ```typescript
 import type { OverridesMap } from '@/lib/tokens/types';
@@ -1049,7 +1049,7 @@ export function downloadCSS(overrides: OverridesMap, filename = 'rek-room-overri
 }
 ```
 
-- [ ] **Step 2: Commit**
+* [ ] **Step 2: Commit**
 
 ```bash
 git add lib/export/
@@ -1061,35 +1061,35 @@ git commit -m "feat: add CSS export with Google Fonts @import support"
 ## Task 9: Preview Content HTML
 
 **Files:**
-- Create: `public/preview.html`
+* Create: `public/preview.html`
 
-- [ ] **Step 1: Create the preview HTML**
+* [ ] **Step 1: Create the preview HTML**
 
-Create `public/preview.html`. This is the static HTML loaded inside the preview iframes. It includes:
+Create `public/preview.html` . This is the static HTML loaded inside the preview iframes. It includes:
 
-- A `<link>` to `/rek-room.css`
-- A `<style id="overrides">` element (updated via postMessage)
-- All vignette sections with `id` attributes matching the category-to-vignette map
-- A kitchen-sink section (hidden by default, shown when `set-preview-mode` message is received)
-- A `<script>` that listens for postMessage from the editor and handles:
-  - `apply-overrides`: update `#overrides` style element textContent
-  - `set-preview-mode`: toggle vignettes/kitchen-sink visibility
-  - `scroll-to-vignette`: smooth scroll to the target vignette section
-  - `load-font`: inject a `<link>` tag for a Google Font URL
-  - Emit `scroll` events back to the parent (for synchronized scrolling)
-  - Emit `ready` when the page is loaded
+* A `<link>` to `/rek-room.css`
+* A `<style id="overrides">` element (updated via postMessage)
+* All vignette sections with `id` attributes matching the category-to-vignette map
+* A kitchen-sink section (hidden by default, shown when `set-preview-mode` message is received)
+* A `<script>` that listens for postMessage from the editor and handles:
+  + `apply-overrides`: update `#overrides` style element textContent
+  + `set-preview-mode`: toggle vignettes/kitchen-sink visibility
+  + `scroll-to-vignette`: smooth scroll to the target vignette section
+  + `load-font`: inject a `<link>` tag for a Google Font URL
+  + Emit `scroll` events back to the parent (for synchronized scrolling)
+  + Emit `ready` when the page is loaded
 
 The HTML should include all vignettes from the spec: Typography (h1–h6, p, blockquote, code, links), Buttons (primary, secondary, destructive in default/hover/disabled states), Forms (input, textarea, select, toggle, validation states), Tables, Lists, Media (img, figure, figcaption), Details/Summary, Dialog, Progress/Meter, Popover, Scrollbars.
 
 Each vignette section should use real HTML elements (not mock divs) so rek-room styles them natively.
 
-- [ ] **Step 2: Verify preview.html loads with rek-room styles**
+* [ ] **Step 2: Verify preview.html loads with rek-room styles**
 
 Open `http://localhost:3000/preview.html` directly in the browser.
 
 Expected: All HTML elements are styled by rek-room. The page should look like a well-formatted component gallery.
 
-- [ ] **Step 3: Commit**
+* [ ] **Step 3: Commit**
 
 ```bash
 git add public/preview.html
@@ -1101,35 +1101,35 @@ git commit -m "feat: add preview HTML with all vignettes and postMessage handler
 ## Task 10: Preview Components
 
 **Files:**
-- Create: `components/preview/preview-iframe.tsx`, `components/preview/preview-area.tsx`
+* Create: `components/preview/preview-iframe.tsx`,  `components/preview/preview-area.tsx`
 
-- [ ] **Step 1: Create the iframe wrapper component**
+* [ ] **Step 1: Create the iframe wrapper component**
 
-Create `components/preview/preview-iframe.tsx`:
-
-This component:
-- Renders an `<iframe>` pointing to `/preview.html`
-- On mount, waits for `ready` message from iframe, then sends initial overrides
-- Listens for `scroll` messages and forwards to the sync handler
-- Exposes a ref for the parent to send messages to
-- Accepts a `colorScheme` prop (`'light'` | `'dark'`) and appends it as a query param so the iframe can set `color-scheme` accordingly
-- Uses `requestAnimationFrame` throttling when sending override updates
-
-- [ ] **Step 2: Create the preview area component**
-
-Create `components/preview/preview-area.tsx`:
+Create `components/preview/preview-iframe.tsx` :
 
 This component:
-- Renders the top bar with Shadcn Tabs (Vignettes | Kitchen Sink) and ToggleGroup (Light | Dark | Both)
-- Contains one or two `PreviewIframe` components depending on `colorSchemeMode`
-- Handles synchronized scrolling: when one iframe emits a scroll event, forwards it to the other
-- When `expandedCategory` changes in context, sends `scroll-to-vignette` message using the `CATEGORY_VIGNETTE_MAP`
+* Renders an `<iframe>` pointing to `/preview.html`
+* On mount, waits for `ready` message from iframe, then sends initial overrides
+* Listens for `scroll` messages and forwards to the sync handler
+* Exposes a ref for the parent to send messages to
+* Accepts a `colorScheme` prop (`'light'` | `'dark'`) and appends it as a query param so the iframe can set `color-scheme` accordingly
+* Uses `requestAnimationFrame` throttling when sending override updates
 
-- [ ] **Step 3: Verify iframes render with rek-room styles**
+* [ ] **Step 2: Create the preview area component**
+
+Create `components/preview/preview-area.tsx` :
+
+This component:
+* Renders the top bar with Shadcn Tabs (Vignettes | Kitchen Sink) and ToggleGroup (Light | Dark | Both)
+* Contains one or two `PreviewIframe` components depending on `colorSchemeMode`
+* Handles synchronized scrolling: when one iframe emits a scroll event, forwards it to the other
+* When `expandedCategory` changes in context, sends `scroll-to-vignette` message using the `CATEGORY_VIGNETTE_MAP`
+
+* [ ] **Step 3: Verify iframes render with rek-room styles**
 
 Start dev server, navigate to the app. Both iframes should load and display the preview HTML with rek-room styling. Light iframe should have light background, dark iframe dark background.
 
-- [ ] **Step 4: Commit**
+* [ ] **Step 4: Commit**
 
 ```bash
 git add components/preview/
@@ -1141,49 +1141,49 @@ git commit -m "feat: add preview iframe components with scroll sync"
 ## Task 11: Basic Control Components
 
 **Files:**
-- Create: `components/controls/color-control.tsx`, `components/controls/dimension-control.tsx`, `components/controls/ratio-control.tsx`, `components/controls/weight-control.tsx`, `components/controls/border-style-control.tsx`, `components/change-indicator.tsx`
+* Create: `components/controls/color-control.tsx`,  `components/controls/dimension-control.tsx`,  `components/controls/ratio-control.tsx`,  `components/controls/weight-control.tsx`,  `components/controls/border-style-control.tsx`,  `components/change-indicator.tsx`
 
-- [ ] **Step 1: Create the change indicator component**
+* [ ] **Step 1: Create the change indicator component**
 
-Create `components/change-indicator.tsx`:
+Create `components/change-indicator.tsx` :
 
-Shows a small purple dot when the token has been modified, plus a reset button (↺) that dispatches `RESET_TOKEN`. Uses Shadcn Tooltip on the reset button.
+Shows a small purple dot when the token has been modified, plus a reset button (↺) that dispatches `RESET_TOKEN` . Uses Shadcn Tooltip on the reset button.
 
-- [ ] **Step 2: Create the color control**
+* [ ] **Step 2: Create the color control**
 
-Create `components/controls/color-control.tsx`:
+Create `components/controls/color-control.tsx` :
 
-Shadcn Popover with `react-colorful` HexColorPicker inside, plus a text input for hex value. The trigger is a color swatch div. On change, dispatches `SET_TOKEN`.
+Shadcn Popover with `react-colorful` HexColorPicker inside, plus a text input for hex value. The trigger is a color swatch div. On change, dispatches `SET_TOKEN` .
 
-- [ ] **Step 3: Create the dimension control**
+* [ ] **Step 3: Create the dimension control**
 
-Create `components/controls/dimension-control.tsx`:
+Create `components/controls/dimension-control.tsx` :
 
-Shadcn Slider + Shadcn Input (number). Reads `min`, `max`, `step`, `unit` from the token definition. On change, dispatches `SET_TOKEN` with the value + unit.
+Shadcn Slider + Shadcn Input (number). Reads `min` , `max` , `step` , `unit` from the token definition. On change, dispatches `SET_TOKEN` with the value + unit.
 
-- [ ] **Step 4: Create the ratio control**
+* [ ] **Step 4: Create the ratio control**
 
-Create `components/controls/ratio-control.tsx`:
+Create `components/controls/ratio-control.tsx` :
 
-Same as dimension but specific to `--type-ratio`. No unit. Slider range 1.1–1.618, step 0.001.
+Same as dimension but specific to `--type-ratio` . No unit. Slider range 1.1–1.618, step 0.001.
 
-- [ ] **Step 5: Create the weight control**
+* [ ] **Step 5: Create the weight control**
 
-Create `components/controls/weight-control.tsx`:
+Create `components/controls/weight-control.tsx` :
 
 Shadcn Select with options: Thin (100), Extra Light (200), Light (300), Regular (400), Medium (500), Semi-Bold (600), Bold (700), Extra-Bold (800), Black (900).
 
-- [ ] **Step 6: Create the border-style control**
+* [ ] **Step 6: Create the border-style control**
 
-Create `components/controls/border-style-control.tsx`:
+Create `components/controls/border-style-control.tsx` :
 
 Shadcn Select with options: solid, dashed, dotted, double, groove, ridge, inset, outset, none. Each option renders a small inline `<span>` with that border-style applied as a visual preview.
 
-- [ ] **Step 7: Verify controls render and dispatch correctly**
+* [ ] **Step 7: Verify controls render and dispatch correctly**
 
 Temporarily render one of each control type on the main page. Verify they update context state.
 
-- [ ] **Step 8: Commit**
+* [ ] **Step 8: Commit**
 
 ```bash
 git add components/controls/ components/change-indicator.tsx
@@ -1195,56 +1195,56 @@ git commit -m "feat: add basic token control components"
 ## Task 12: Advanced Control Components
 
 **Files:**
-- Create: `components/controls/color-pair-control.tsx`, `components/controls/font-control.tsx`, `components/controls/duration-control.tsx`, `components/controls/easing-control.tsx`, `components/controls/shadow-control.tsx`, `components/controls/gradient-builder.tsx`, `components/contrast-dot.tsx`
+* Create: `components/controls/color-pair-control.tsx`,  `components/controls/font-control.tsx`,  `components/controls/duration-control.tsx`,  `components/controls/easing-control.tsx`,  `components/controls/shadow-control.tsx`,  `components/controls/gradient-builder.tsx`,  `components/contrast-dot.tsx`
 
-- [ ] **Step 1: Create the color pair control (L/D)**
+* [ ] **Step 1: Create the color pair control (L/D)**
 
-Create `components/controls/color-pair-control.tsx`:
+Create `components/controls/color-pair-control.tsx` :
 
-Renders two color swatches labeled "L" and "D", each opening its own react-colorful popover. Dispatches two keys: `{key}--light` and `{key}--dark` (the CSS generator knows how to wrap these in `light-dark()`). When `colorSchemeMode` is single, shows only one swatch.
+Renders two color swatches labeled "L" and "D", each opening its own react-colorful popover. Dispatches two keys: `{key}--light` and `{key}--dark` (the CSS generator knows how to wrap these in `light-dark()` ). When `colorSchemeMode` is single, shows only one swatch.
 
-- [ ] **Step 2: Create the contrast dot component**
+* [ ] **Step 2: Create the contrast dot component**
 
-Create `components/contrast-dot.tsx`:
+Create `components/contrast-dot.tsx` :
 
 Accepts `textColor` and `surfaceColor` hex strings. Computes contrast ratio, renders a small colored dot (green/yellow/red). Shadcn Tooltip shows "12.6:1 — AAA" on hover.
 
-- [ ] **Step 3: Create the font control**
+* [ ] **Step 3: Create the font control**
 
-Create `components/controls/font-control.tsx`:
+Create `components/controls/font-control.tsx` :
 
 Shadcn Combobox (Popover + Command via cmdk). Lists curated Google Fonts grouped by category (Sans-Serif, Serif, Monospace). A "System Stack" option at the top. A "Custom..." option at the bottom that switches to a text input. On select, dispatches `SET_TOKEN` and sends a `load-font` message to iframes.
 
-- [ ] **Step 4: Create the duration control**
+* [ ] **Step 4: Create the duration control**
 
-Create `components/controls/duration-control.tsx`:
+Create `components/controls/duration-control.tsx` :
 
 Shadcn Slider + number input for seconds. Also renders a small animation preview: a 12px dot that moves across a 60px track using the current duration and the current `--animation-timing` easing. The animation replays on value change.
 
-- [ ] **Step 5: Create the easing control**
+* [ ] **Step 5: Create the easing control**
 
-Create `components/controls/easing-control.tsx`:
+Create `components/controls/easing-control.tsx` :
 
 Shadcn Select listing all rek-room easing names. Next to the select, render a small SVG (40x30) showing the bezier curve of the selected easing. The curve is drawn from the cubic-bezier values.
 
-- [ ] **Step 6: Create the shadow control**
+* [ ] **Step 6: Create the shadow control**
 
-Create `components/controls/shadow-control.tsx`:
+Create `components/controls/shadow-control.tsx` :
 
 A small square (24x24) with the current shadow applied as a preview. Click opens a Shadcn Popover with sliders for x-offset (-20..20), y-offset (-20..20), blur (0..50), spread (-10..30), and a color picker for shadow color. Changes are composed into a `box-shadow` value string.
 
-- [ ] **Step 7: Create the gradient builder**
+* [ ] **Step 7: Create the gradient builder**
 
-Create `components/controls/gradient-builder.tsx`:
+Create `components/controls/gradient-builder.tsx` :
 
 Activated by the Figma-style gradient toggle icon (Shadcn Tooltip: "Switch to gradient"). Renders:
-- Direction control: a dial or select for angle (0–360deg) or keywords (to top, to right, etc.)
-- Color stops: an array of color + position (%) pairs with add/remove buttons
-- Live preview strip showing the gradient
+* Direction control: a dial or select for angle (0–360deg) or keywords (to top, to right, etc.)
+* Color stops: an array of color + position (%) pairs with add/remove buttons
+* Live preview strip showing the gradient
 
 Outputs a `linear-gradient()` CSS string.
 
-- [ ] **Step 8: Commit**
+* [ ] **Step 8: Commit**
 
 ```bash
 git add components/controls/ components/contrast-dot.tsx
@@ -1256,25 +1256,25 @@ git commit -m "feat: add advanced controls (color pairs, fonts, easing, shadows,
 ## Task 13: Control Panel Assembly
 
 **Files:**
-- Create: `components/panel/control-panel.tsx`, `components/panel/token-group.tsx`, `components/panel/derived-tokens.tsx`, `components/panel/type-scale-toggle.tsx`
+* Create: `components/panel/control-panel.tsx`,  `components/panel/token-group.tsx`,  `components/panel/derived-tokens.tsx`,  `components/panel/type-scale-toggle.tsx`
 
-- [ ] **Step 1: Create the derived tokens component**
+* [ ] **Step 1: Create the derived tokens component**
 
-Create `components/panel/derived-tokens.tsx`:
+Create `components/panel/derived-tokens.tsx` :
 
 Renders a subtle sub-section showing tokens that derive from a source token. Each row shows the token name, a small color swatch of the current computed value, and an "override" link. Clicking "override" dispatches `SET_TOKEN` for that derived key with its current computed value, promoting it to an independent control.
 
-- [ ] **Step 2: Create the type scale toggle**
+* [ ] **Step 2: Create the type scale toggle**
 
-Create `components/panel/type-scale-toggle.tsx`:
+Create `components/panel/type-scale-toggle.tsx` :
 
 A Shadcn Switch labeled "Individual heading sizes". When toggled on, sets `typeScaleUnlocked: true` in context. When toggled off, shows a Shadcn AlertDialog confirming that individual values will be recalculated from the ratio, then recomputes and dispatches.
 
-- [ ] **Step 3: Create the token group component**
+* [ ] **Step 3: Create the token group component**
 
-Create `components/panel/token-group.tsx`:
+Create `components/panel/token-group.tsx` :
 
-Renders a Shadcn AccordionItem for a single token category. Maps each token in the category to the appropriate control component based on `token.type`. For source tokens with derived tokens, renders `DerivedTokens` below the control. For the Typography group, includes the `TypeScaleToggle` and conditionally shows individual heading size controls.
+Renders a Shadcn AccordionItem for a single token category. Maps each token in the category to the appropriate control component based on `token.type` . For source tokens with derived tokens, renders `DerivedTokens` below the control. For the Typography group, includes the `TypeScaleToggle` and conditionally shows individual heading size controls.
 
 The control routing logic:
 
@@ -1294,17 +1294,17 @@ function controlForToken(token: TokenDefinition) {
 }
 ```
 
-- [ ] **Step 4: Create the control panel**
+* [ ] **Step 4: Create the control panel**
 
-Create `components/panel/control-panel.tsx`:
+Create `components/panel/control-panel.tsx` :
 
 The right panel shell:
-- Header: logo text ("rek-room"), Reset button (triggers AlertDialog), Export button (calls `downloadCSS`)
-- Shadcn Accordion with one item per category, controlled by `expandedCategory` in context
-- Colors expanded by default
-- When a category is expanded, dispatches `SET_EXPANDED_CATEGORY` which triggers the preview auto-scroll
+* Header: logo text ("rek-room"), Reset button (triggers AlertDialog), Export button (calls `downloadCSS`)
+* Shadcn Accordion with one item per category, controlled by `expandedCategory` in context
+* Colors expanded by default
+* When a category is expanded, dispatches `SET_EXPANDED_CATEGORY` which triggers the preview auto-scroll
 
-- [ ] **Step 5: Commit**
+* [ ] **Step 5: Commit**
 
 ```bash
 git add components/panel/
@@ -1316,23 +1316,23 @@ git commit -m "feat: add control panel with accordion groups and token routing"
 ## Task 14: Main Page Assembly
 
 **Files:**
-- Modify: `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
+* Modify: `app/page.tsx`,  `app/layout.tsx`,  `app/globals.css`
 
-- [ ] **Step 1: Update the root layout**
+* [ ] **Step 1: Update the root layout**
 
-Modify `app/layout.tsx`:
-- Wrap children in `TokenProvider`
-- Set metadata (title: "Combobulator — rek-room Editor")
+Modify `app/layout.tsx` :
+* Wrap children in `TokenProvider`
+* Set metadata (title: "Combobulator — rek-room Editor")
 
-- [ ] **Step 2: Update globals.css**
+* [ ] **Step 2: Update globals.css**
 
-Modify `app/globals.css`:
-- Keep Tailwind directives
-- Add editor-specific styles: full-height layout (`html, body { height: 100% }`), no scroll on body
+Modify `app/globals.css` :
+* Keep Tailwind directives
+* Add editor-specific styles: full-height layout (`html, body { height: 100% }`), no scroll on body
 
-- [ ] **Step 3: Build the main page**
+* [ ] **Step 3: Build the main page**
 
-Modify `app/page.tsx`:
+Modify `app/page.tsx` :
 
 ```tsx
 import { PreviewArea } from '@/components/preview/preview-area';
@@ -1348,21 +1348,21 @@ export default function EditorPage() {
 }
 ```
 
-- [ ] **Step 4: Verify the full editor loads**
+* [ ] **Step 4: Verify the full editor loads**
 
 ```bash
 npm run dev
 ```
 
-Navigate to `http://localhost:3000`. Expected:
-- Left side: preview area with top bar and two iframes (light/dark)
-- Right side: control panel with accordion groups
-- Changing a color token updates both iframes in real-time
-- Undo/redo with Cmd+Z / Cmd+Shift+Z works
-- Collapsing/expanding accordion groups works
-- Mode toggle switches between single and split iframe view
+Navigate to `http://localhost:3000` . Expected:
+* Left side: preview area with top bar and two iframes (light/dark)
+* Right side: control panel with accordion groups
+* Changing a color token updates both iframes in real-time
+* Undo/redo with Cmd+Z / Cmd+Shift+Z works
+* Collapsing/expanding accordion groups works
+* Mode toggle switches between single and split iframe view
 
-- [ ] **Step 5: Commit**
+* [ ] **Step 5: Commit**
 
 ```bash
 git add app/
@@ -1374,28 +1374,28 @@ git commit -m "feat: assemble main editor page with preview and control panel"
 ## Task 15: Responsive Behavior
 
 **Files:**
-- Modify: `app/page.tsx`, `components/preview/preview-area.tsx`, `components/panel/control-panel.tsx`
+* Modify: `app/page.tsx`,  `components/preview/preview-area.tsx`,  `components/panel/control-panel.tsx`
 
-- [ ] **Step 1: Add responsive layout**
+* [ ] **Step 1: Add responsive layout**
 
 Modify the main page layout to stack vertically on small screens:
-- `flex-col` on mobile, `flex-row` on `lg:` breakpoint
-- Panel gets a max-height and becomes scrollable when stacked
-- Preview area uses full width when stacked
+* `flex-col` on mobile,  `flex-row` on `lg:` breakpoint
+* Panel gets a max-height and becomes scrollable when stacked
+* Preview area uses full width when stacked
 
-- [ ] **Step 2: Add tabbed light/dark for small screens**
+* [ ] **Step 2: Add tabbed light/dark for small screens**
 
-In `preview-area.tsx`, when screen width is below `lg` and mode is "both", render Shadcn Tabs (Light | Dark) instead of side-by-side iframes. Show only one iframe at a time.
+In `preview-area.tsx` , when screen width is below `lg` and mode is "both", render Shadcn Tabs (Light | Dark) instead of side-by-side iframes. Show only one iframe at a time.
 
 Use a `useMediaQuery` hook or Tailwind's responsive classes to detect breakpoint.
 
-- [ ] **Step 3: Verify responsive behavior**
+* [ ] **Step 3: Verify responsive behavior**
 
 Resize browser window. Expected:
-- Below `lg`: panel stacks above preview, iframes switch to tabbed
-- Above `lg`: side-by-side layout restored
+* Below `lg`: panel stacks above preview, iframes switch to tabbed
+* Above `lg`: side-by-side layout restored
 
-- [ ] **Step 4: Commit**
+* [ ] **Step 4: Commit**
 
 ```bash
 git add app/ components/
@@ -1407,20 +1407,20 @@ git commit -m "feat: add responsive layout with tabbed preview on small screens"
 ## Task 16: Integration Testing & Polish
 
 **Files:**
-- Various existing files
+* Various existing files
 
-- [ ] **Step 1: Test the full token editing flow**
+* [ ] **Step 1: Test the full token editing flow**
 
 Manual testing checklist:
-1. Change `--color-primary` → verify buttons update in both iframes
-2. Change `--type-ratio` slider → verify all heading sizes update
-3. Toggle type scale to individual → change H1 size → verify only H1 changes
-4. Toggle type scale back → accept AlertDialog → verify sizes recompute
-5. Switch to "Light" mode → verify single iframe, single color inputs
-6. Switch to "Dark" mode → same
-7. Switch back to "Both" → verify split view returns
-8. Reset a single token → verify it reverts and purple dot disappears
-9. Reset All → accept AlertDialog → verify all tokens revert
+01. Change `--color-primary` → verify buttons update in both iframes
+02. Change `--type-ratio` slider → verify all heading sizes update
+03. Toggle type scale to individual → change H1 size → verify only H1 changes
+04. Toggle type scale back → accept AlertDialog → verify sizes recompute
+05. Switch to "Light" mode → verify single iframe, single color inputs
+06. Switch to "Dark" mode → same
+07. Switch back to "Both" → verify split view returns
+08. Reset a single token → verify it reverts and purple dot disappears
+09. Reset All → accept AlertDialog → verify all tokens revert
 10. Undo (Cmd+Z) → verify previous state restores
 11. Redo (Cmd+Shift+Z) → verify redo works
 12. Reload page → verify overrides persist from localStorage
@@ -1429,11 +1429,11 @@ Manual testing checklist:
 15. Scroll one iframe → verify other iframe scrolls in sync
 16. Select a Google Font → verify it loads in preview
 
-- [ ] **Step 2: Fix any issues found during testing**
+* [ ] **Step 2: Fix any issues found during testing**
 
 Address bugs, visual issues, or interaction problems discovered.
 
-- [ ] **Step 3: Commit**
+* [ ] **Step 3: Commit**
 
 ```bash
 git add .
@@ -1444,7 +1444,7 @@ git commit -m "fix: polish and integration fixes"
 
 ## Task 17: Build & Deploy Verification
 
-- [ ] **Step 1: Run production build**
+* [ ] **Step 1: Run production build**
 
 ```bash
 npm run build
@@ -1452,15 +1452,15 @@ npm run build
 
 Expected: Build succeeds with no errors. The `prebuild` script runs the registry generator and copies rek-room CSS.
 
-- [ ] **Step 2: Test production build locally**
+* [ ] **Step 2: Test production build locally**
 
 ```bash
 npm start
 ```
 
-Navigate to `http://localhost:3000`. Verify the editor works identically to dev mode.
+Navigate to `http://localhost:3000` . Verify the editor works identically to dev mode.
 
-- [ ] **Step 3: Commit any build fixes**
+* [ ] **Step 3: Commit any build fixes**
 
 ```bash
 git add .
@@ -1474,23 +1474,28 @@ git commit -m "fix: production build fixes"
 Changes made after the initial 17-task implementation was complete:
 
 ### Dark iframe fix
-- Added `data-theme="dark"` to the dark iframe's `<html>` element
-- Switched preview CSS source from compiled `dist/steez.css` to Vite dev server (`http://localhost:5173/app/css/style.css`) to preserve `light-dark()` function calls
+
+* Added `data-theme="dark"` to the dark iframe's `<html>` element
+* Switched preview CSS source from compiled `dist/steez.css` to Vite dev server (`http://localhost:5173/app/css/style.css`) to preserve `light-dark()` function calls
 
 ### Shadcn theme & font
-- Applied Graphite theme preset (neutral grey palette, 0.35rem radius)
-- Set Geist font via `next/font/google`, declared directly in `@theme inline` block
+
+* Applied Graphite theme preset (neutral grey palette, 0.35rem radius)
+* Set Geist font via `next/font/google`, declared directly in `@theme inline` block
 
 ### Editor dark mode
-- Added `next-themes` with `ThemeProvider` in layout
-- Theme toggle button in panel header (after Export), cycles light ↔ dark
-- Defaults to system preference on first load
-- Tooltip: "Toggle UI theme"
+
+* Added `next-themes` with `ThemeProvider` in layout
+* Theme toggle button in panel header (after Export), cycles light ↔ dark
+* Defaults to system preference on first load
+* Tooltip: "Toggle UI theme"
 
 ### Resizable control panel
-- Drag handle on left edge of panel (pointer events with capture)
-- Default 320px, clamped 280–600px
+
+* Drag handle on left edge of panel (pointer events with capture)
+* Default 400px, clamped 280–600px
 
 ### Top bar visual unification
-- Changed top bar background from `bg-muted/50` to `bg-background` (matches panel)
-- Replaced `ToggleGroup` for Light/Dark/Both with `Tabs`/`TabsList`/`TabsTrigger` to match Vignettes/Kitchen Sink style
+
+* Changed top bar background from `bg-muted/50` to `bg-background` (matches panel)
+* Replaced `ToggleGroup` for Light/Dark/Both with `Tabs`/`TabsList`/`TabsTrigger` to match Vignettes/Kitchen Sink style

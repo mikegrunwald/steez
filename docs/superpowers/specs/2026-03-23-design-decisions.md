@@ -297,7 +297,7 @@ A record of every design decision made during brainstorming, the alternatives co
 
 **Decision:** Panel width is user-resizable via a drag handle on the left edge.
 
-**Implementation:** Pointer events with `setPointerCapture` for smooth dragging. Default 320px, clamped to 280–600px range. The handle is a 6px-wide strip with `cursor: col-resize` and subtle hover/active highlights.
+**Implementation:** Pointer events with `setPointerCapture` for smooth dragging. Default 400px, clamped to 280–600px range. The handle is a 6px-wide strip with `cursor: col-resize` and subtle hover/active highlights.
 
 **Why:** Fixed width was too constrained for some token categories (especially colors with paired L/D swatches and contrast dots). Users can widen the panel when needed.
 

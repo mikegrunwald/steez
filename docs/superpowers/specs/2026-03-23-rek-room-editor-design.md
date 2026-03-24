@@ -21,7 +21,7 @@ Both developers customizing tokens for their projects and designers exploring th
 
 ### Layout
 
-Side-by-side layout: full-width preview area on the left, resizable control panel on the right (default 320px, drag handle on left edge, 280–600px range).
+Side-by-side layout: full-width preview area on the left, resizable control panel on the right (default 400px, drag handle on left edge, 280–600px range).
 
 **Top bar** (within the preview area, same `bg-background` as the panel):
 - Preview mode tabs: Vignettes | Kitchen Sink (TabsList style)
