@@ -10,7 +10,9 @@ interface DimensionControlProps {
   token: TokenDefinition;
 }
 
-function parseNumeric(value: string, unit?: string): number {
+function parseNumeric(value: string, unit?: string): number | null {
+  // CSS expressions (calc, var, clamp, pow, color-mix, etc.) can't be parsed as numbers
+  if (/[a-z-]\(/.test(value)) return null;
   if (unit) return parseFloat(value.replace(unit, '')) || 0;
   return parseFloat(value) || 0;
 }
@@ -21,6 +23,8 @@ export function DimensionControl({ token }: DimensionControlProps) {
   const { min = 0, max = 100, step = 1, unit = '' } = token;
 
   const numeric = parseNumeric(currentValue, unit);
+  const isExpression = numeric === null;
+  const displayValue = numeric ?? Math.round((min + max) / 2);
 
   const handleChange = (num: number) => {
     const composed = unit ? `${num}${unit}` : String(num);
@@ -30,7 +34,7 @@ export function DimensionControl({ token }: DimensionControlProps) {
   return (
     <div className="flex items-center gap-3">
       <Slider
-        value={[numeric]}
+        value={[displayValue]}
         min={min}
         max={max}
         step={step}
@@ -39,7 +43,8 @@ export function DimensionControl({ token }: DimensionControlProps) {
       />
       <Input
         type="number"
-        value={numeric}
+        value={isExpression ? '' : displayValue}
+        placeholder={isExpression ? 'auto' : undefined}
         min={min}
         max={max}
         step={step}
