@@ -56,7 +56,7 @@ export function ControlPanel() {
   };
 
   return (
-    <aside className="flex flex-col w-80 shrink-0 h-screen border-l border-border bg-background overflow-hidden">
+    <aside className="flex flex-col w-full lg:w-80 shrink-0 lg:h-screen max-h-[50vh] lg:max-h-none border-t lg:border-t-0 lg:border-l border-border bg-background overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
         <span className="text-sm font-semibold tracking-tight flex-1">rek-room</span>

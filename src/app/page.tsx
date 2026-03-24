@@ -3,7 +3,7 @@ import { ControlPanel } from '@/components/panel/control-panel';
 
 export default function EditorPage() {
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col lg:flex-row h-screen">
       <PreviewArea />
       <ControlPanel />
     </div>
