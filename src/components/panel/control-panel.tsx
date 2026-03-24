@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { RotateCcw, Download } from 'lucide-react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { RotateCcw, Download, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import {
   Accordion,
   AccordionItem,
@@ -19,6 +20,7 @@ import {
   AlertDialogCancel,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { useTokens } from '@/lib/state/token-context';
 import { TOKEN_REGISTRY } from '@/lib/tokens/registry';
 import { downloadCSS } from '@/lib/export/export-css';
@@ -35,9 +37,38 @@ const CATEGORIES: { key: TokenCategory; label: string }[] = [
   { key: 'controls', label: 'Controls' },
 ];
 
+const MIN_WIDTH = 280;
+const MAX_WIDTH = 600;
+const DEFAULT_WIDTH = 320;
+
 export function ControlPanel() {
   const { overrides, expandedCategory, changedCount, dispatch } = useTokens();
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(DEFAULT_WIDTH);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    isDragging.current = true;
+    startX.current = e.clientX;
+    startWidth.current = width;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  }, [width]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const delta = startX.current - e.clientX;
+    setWidth(Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth.current + delta)));
+  }, []);
+
+  const onPointerUp = useCallback(() => {
+    isDragging.current = false;
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  }, []);
 
   const accordionValue = expandedCategory ? [expandedCategory] : [];
 
@@ -55,8 +86,30 @@ export function ControlPanel() {
     downloadCSS(overrides);
   };
 
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const cycleTheme = () => {
+    const current = resolvedTheme ?? 'light';
+    setTheme(current === 'light' ? 'dark' : 'light');
+  };
+
+  const ThemeIcon = !mounted ? Sun : resolvedTheme === 'dark' ? Moon : Sun;
+
   return (
-    <aside className="flex flex-col w-full lg:w-80 shrink-0 lg:h-screen max-h-[50vh] lg:max-h-none border-t lg:border-t-0 lg:border-l border-border bg-background overflow-hidden">
+    <aside
+      className="flex flex-col shrink-0 lg:h-screen max-h-[50vh] lg:max-h-none border-t lg:border-t-0 bg-background overflow-hidden relative"
+      style={{ width: `${width}px` }}
+    >
+      {/* Resize handle */}
+      <div
+        className="hidden lg:flex absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize items-center justify-center z-10 hover:bg-primary/10 active:bg-primary/20 transition-colors"
+        style={{ borderRight: '1px solid var(--border)' }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+      />
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
         <span className="text-sm font-semibold tracking-tight flex-1">rek-room</span>
@@ -82,6 +135,18 @@ export function ControlPanel() {
           <Download />
           Export
         </Button>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger
+              className="group/button inline-flex shrink-0 items-center justify-center rounded-md text-sm disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground size-7 cursor-pointer"
+              aria-label="Toggle UI theme"
+              onClick={cycleTheme}
+            >
+              <ThemeIcon className="size-3.5" />
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Toggle UI theme</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Accordion */}

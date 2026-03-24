@@ -11,7 +11,9 @@ Both developers customizing tokens for their projects and designers exploring th
 - **Framework:** Next.js (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **Components:** Shadcn/ui (built on Radix UI primitives)
+- **Components:** Shadcn/ui (built on Base UI primitives)
+- **Theme:** Graphite (shadcn/tweakcn preset — neutral grey palette, tight 0.35rem radius)
+- **Dark mode:** next-themes — follows system preference on first load, toggleable via header button
 - **Color picker:** `react-colorful` (lightweight, accessible, zero-dep)
 - **No backend required** — all state is client-side
 
@@ -19,20 +21,20 @@ Both developers customizing tokens for their projects and designers exploring th
 
 ### Layout
 
-Side-by-side layout: full-width preview area on the left, fixed 280px control panel on the right.
+Side-by-side layout: full-width preview area on the left, resizable control panel on the right (default 320px, drag handle on left edge, 280–600px range).
 
-**Top bar** (within the preview area):
-- Preview mode tabs: Vignettes | Kitchen Sink
-- Mode selector: Light | Dark | Both
+**Top bar** (within the preview area, same `bg-background` as the panel):
+- Preview mode tabs: Vignettes | Kitchen Sink (TabsList style)
+- Mode selector: Light | Dark | Both (matching TabsList style)
 
 **Right panel:**
-- Header with logo, Reset button, Export button
+- Header with logo, Reset button, Export button, theme toggle (Sun/Moon icon with tooltip "Toggle UI theme")
 - Accordion groups for each token category (7 groups)
 - Colors expanded by default, all others collapsed
 
 ### Preview Area
 
-Two iframes side by side — one forcing `color-scheme: light`, the other `color-scheme: dark`. Both load rek-room's compiled CSS as a static asset bundled at build time (version locked to `package.json`).
+Two iframes side by side — one forcing `color-scheme: light`, the other forcing `color-scheme: dark` (via `data-theme="dark"` on `<html>`). Both load rek-room's source CSS from the Vite dev server (`http://localhost:5173/app/css/style.css`) to preserve `light-dark()` function calls that the compiled dist resolves away.
 
 User token overrides are injected via `postMessage`. Iframes provide full CSS isolation between the editor's Tailwind styles and rek-room's styles.
 

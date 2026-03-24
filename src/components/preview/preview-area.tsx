@@ -3,7 +3,6 @@
 import { useRef, useCallback, useState, useEffect } from 'react';
 import { useTokens } from '@/lib/state/token-context';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PreviewIframe, type PreviewIframeHandle } from './preview-iframe';
 import type { ColorSchemeMode, PreviewMode } from '@/lib/tokens/types';
 
@@ -49,7 +48,7 @@ export function PreviewArea() {
   return (
     <div className="flex flex-col flex-1 min-w-0 min-h-0">
       {/* Top bar */}
-      <div className="flex items-center justify-between border-b px-4 py-2 bg-muted/50">
+      <div className="flex items-center justify-between border-b px-4 py-2 bg-background">
         <Tabs
           value={previewMode}
           onValueChange={(v) => dispatch({ type: 'SET_PREVIEW_MODE', mode: v as PreviewMode })}
@@ -60,17 +59,16 @@ export function PreviewArea() {
           </TabsList>
         </Tabs>
 
-        <ToggleGroup
-          value={[colorSchemeMode]}
-          onValueChange={(values) => {
-            const v = values[0];
-            if (v) dispatch({ type: 'SET_COLOR_SCHEME_MODE', mode: v as ColorSchemeMode });
-          }}
+        <Tabs
+          value={colorSchemeMode}
+          onValueChange={(v) => dispatch({ type: 'SET_COLOR_SCHEME_MODE', mode: v as ColorSchemeMode })}
         >
-          <ToggleGroupItem value="light" aria-label="Light mode">Light</ToggleGroupItem>
-          <ToggleGroupItem value="dark" aria-label="Dark mode">Dark</ToggleGroupItem>
-          <ToggleGroupItem value="both" aria-label="Both modes">Both</ToggleGroupItem>
-        </ToggleGroup>
+          <TabsList>
+            <TabsTrigger value="light">Light</TabsTrigger>
+            <TabsTrigger value="dark">Dark</TabsTrigger>
+            <TabsTrigger value="both">Both</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* Mobile tab switcher — only when "both" on small screens */}

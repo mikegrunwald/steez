@@ -269,6 +269,48 @@ A record of every design decision made during brainstorming, the alternatives co
 
 ---
 
+## 27. Dark Iframe: data-theme + Source CSS
+
+**Decision:** Set `data-theme="dark"` on the dark iframe's `<html>` and load CSS from rek-room's Vite dev server instead of the compiled dist.
+
+**Problem:** The compiled `dist/steez.css` resolves `light-dark()` calls in custom property values to their light-mode values at build time. This means `--color-surface: light-dark(var(--color-white), var(--color-neutral-9))` becomes `--color-surface: #fff` — dark mode tokens are lost.
+
+**Fix:** Load the source CSS via Vite (`http://localhost:5173/app/css/style.css`) which preserves `light-dark()`. The dark iframe sets `data-theme="dark"` which triggers rek-room's `html[data-theme="dark"] { color-scheme: dark; }` rule, making `light-dark()` resolve to dark values.
+
+**Tradeoff:** Requires the rek-room Vite dev server to be running alongside combobulator. Acceptable for a dev tool.
+
+---
+
+## 28. Editor Dark Mode: next-themes + Graphite Theme
+
+**Decision:** Use `next-themes` for editor UI dark mode with the Graphite theme preset from shadcn/tweakcn.
+
+**Theme:** Graphite — neutral grey palette (`#f0f0f0` light / `#1a1a1a` dark), tight `0.35rem` border radius, muted charcoal tones.
+
+**Font:** Geist (via `next/font/google`) — kept instead of Graphite's suggested Montserrat/Inter. Declared directly in `@theme inline` as `"Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif` (not via `var()` reference, which creates circular resolution in Tailwind v4's theme block).
+
+**Toggle behavior:** Defaults to system preference. Button cycles between light (sun icon) and dark (moon icon) — no "system" state exposed in the toggle since users don't need a third state. Tooltip: "Toggle UI theme".
+
+---
+
+## 29. Resizable Control Panel
+
+**Decision:** Panel width is user-resizable via a drag handle on the left edge.
+
+**Implementation:** Pointer events with `setPointerCapture` for smooth dragging. Default 320px, clamped to 280–600px range. The handle is a 6px-wide strip with `cursor: col-resize` and subtle hover/active highlights.
+
+**Why:** Fixed width was too constrained for some token categories (especially colors with paired L/D swatches and contrast dots). Users can widen the panel when needed.
+
+---
+
+## 30. Unified Tab Styles in Top Bar
+
+**Decision:** Both the Vignettes/Kitchen Sink toggle and the Light/Dark/Both toggle use the same `TabsList`/`TabsTrigger` components.
+
+**Why:** Originally the mode selector used `ToggleGroup`/`ToggleGroupItem` which had a visually different style. Unifying to the same tab component makes the top bar look cohesive. The top bar background also matches the panel (`bg-background`) instead of the previous `bg-muted/50`.
+
+---
+
 ## Decisions Made by User (Non-Negotiable)
 
 These were stated as requirements, not open to alternatives:
@@ -279,3 +321,5 @@ These were stated as requirements, not open to alternatives:
 - Light/dark iframes must scroll in sync (not independently)
 - All token categories in v1 (not a subset)
 - Everything must be overridable
+- Geist font for the editor UI
+- Graphite theme for shadcn components

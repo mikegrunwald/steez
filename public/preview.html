@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview</title>
-  <link rel="stylesheet" href="/rek-room.css">
+  <link rel="stylesheet" href="http://localhost:5173/app/css/style.css">
   <style id="overrides"></style>
   <style>
     body {
@@ -598,6 +598,9 @@ function greet(name) {
     const params = new URLSearchParams(window.location.search);
     const scheme = params.get('scheme') || 'light';
     document.documentElement.style.colorScheme = scheme;
+    if (scheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
 
     // ── postMessage handler ──
     window.addEventListener('message', (event) => {

@@ -1466,3 +1466,31 @@ Navigate to `http://localhost:3000`. Verify the editor works identically to dev 
 git add .
 git commit -m "fix: production build fixes"
 ```
+
+---
+
+## Post-Implementation Polish (completed 2026-03-24)
+
+Changes made after the initial 17-task implementation was complete:
+
+### Dark iframe fix
+- Added `data-theme="dark"` to the dark iframe's `<html>` element
+- Switched preview CSS source from compiled `dist/steez.css` to Vite dev server (`http://localhost:5173/app/css/style.css`) to preserve `light-dark()` function calls
+
+### Shadcn theme & font
+- Applied Graphite theme preset (neutral grey palette, 0.35rem radius)
+- Set Geist font via `next/font/google`, declared directly in `@theme inline` block
+
+### Editor dark mode
+- Added `next-themes` with `ThemeProvider` in layout
+- Theme toggle button in panel header (after Export), cycles light ↔ dark
+- Defaults to system preference on first load
+- Tooltip: "Toggle UI theme"
+
+### Resizable control panel
+- Drag handle on left edge of panel (pointer events with capture)
+- Default 320px, clamped 280–600px
+
+### Top bar visual unification
+- Changed top bar background from `bg-muted/50` to `bg-background` (matches panel)
+- Replaced `ToggleGroup` for Light/Dark/Both with `Tabs`/`TabsList`/`TabsTrigger` to match Vignettes/Kitchen Sink style
