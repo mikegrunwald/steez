@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preview</title>
+  <link rel="stylesheet" href="/rek-room.css">
+  <style id="overrides"></style>
+  <style>
+    body {
+      padding: 2rem;
+      max-width: 60rem;
+      margin: 0 auto;
+    }
+
+    .vignette {
+      margin-block-end: 3rem;
+      padding-block-end: 3rem;
+      border-block-end: 1px solid var(--border-color, currentColor);
+    }
+
+    .vignette:last-child {
+      border-block-end: none;
+    }
+
+    .vignette-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      margin-block-end: 1.5rem;
+      padding-block-end: 0.5rem;
+      border-block-end: 1px solid var(--border-color, currentColor);
+      opacity: 0.6;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-block-end: 1rem;
+    }
+
+    .form-group {
+      margin-block-end: 1.25rem;
+    }
+
+    .media-placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, var(--color-action, #3b82f6) 0%, var(--color-secondary, #8b5cf6) 100%);
+      border-radius: var(--border-radius, 0.375rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .scroll-container {
+      height: 10rem;
+      overflow-y: scroll;
+      border: 1px solid var(--border-color, currentColor);
+      border-radius: var(--border-radius, 0.375rem);
+      padding: 1rem;
+    }
+
+    .dialog-preview {
+      position: relative;
+      background-color: var(--color-surface, white);
+      border: 1px solid var(--border-color, currentColor);
+      border-radius: var(--border-radius, 0.5rem);
+      box-shadow: var(--elevation-4, 0 8px 30px rgba(0,0,0,0.12));
+      max-width: 32rem;
+      padding: 1.5rem;
+      margin: 0 auto;
+    }
+
+    .progress-group {
+      margin-block-end: 1.25rem;
+    }
+
+    .progress-label {
+      font-size: 0.875rem;
+      margin-block-end: 0.4rem;
+      color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Vignettes container ── -->
+  <div id="vignettes">
+
+    <!-- Typography -->
+    <section id="typography" class="vignette">
+      <p class="vignette-label">Typography</p>
+
+      <h1>Heading Level 1</h1>
+      <h2>Heading Level 2</h2>
+      <h3>Heading Level 3</h3>
+      <h4>Heading Level 4</h4>
+      <h5>Heading Level 5</h5>
+      <h6>Heading Level 6</h6>
+
+      <hr>
+
+      <p>Body text looks like this. Good typography creates a clear hierarchy and helps readers navigate content effortlessly. Line length, spacing, and contrast all contribute to readability.</p>
+
+      <blockquote>
+        Good design is as little design as possible. Less, but better — because it concentrates on the essential aspects, and the products are not burdened with non-essentials.
+        <footer>— Dieter Rams</footer>
+      </blockquote>
+
+      <p>Inline elements: <code>const greeting = "hello"</code>, <a href="#">a styled link</a>, <small>small text for fine print</small>, <mark>highlighted text</mark>, <abbr title="Cascading Style Sheets">CSS</abbr>, <em>emphasized text</em>, and <strong>strong text</strong>.</p>
+
+      <pre><code>// Preformatted code block
+function greet(name) {
+  return `Hello, ${name}!`;
+}</code></pre>
+    </section>
+
+    <!-- Buttons -->
+    <section id="buttons" class="vignette">
+      <p class="vignette-label">Buttons</p>
+
+      <p class="vignette-label" style="margin-block-end:0.5rem; opacity:1; border:none; font-size:0.75rem">Solid Variants</p>
+      <div class="button-row">
+        <button>Primary</button>
+        <button class="secondary">Secondary</button>
+        <button class="success">Success</button>
+        <button class="error">Destructive</button>
+        <button class="warning">Warning</button>
+        <button class="light">Light</button>
+        <button class="dark">Dark</button>
+      </div>
+
+      <p class="vignette-label" style="margin-block-end:0.5rem; opacity:1; border:none; font-size:0.75rem">Outline Variants</p>
+      <div class="button-row">
+        <button class="outline">Primary</button>
+        <button class="outline secondary">Secondary</button>
+        <button class="outline success">Success</button>
+        <button class="outline error">Destructive</button>
+        <button class="outline warning">Warning</button>
+        <button class="outline dark">Dark</button>
+      </div>
+
+      <p class="vignette-label" style="margin-block-end:0.5rem; opacity:1; border:none; font-size:0.75rem">Sizes</p>
+      <div class="button-row">
+        <button class="sm">Small</button>
+        <button>Medium (default)</button>
+        <button class="lg">Large</button>
+      </div>
+
+      <p class="vignette-label" style="margin-block-end:0.5rem; opacity:1; border:none; font-size:0.75rem">States</p>
+      <div class="button-row">
+        <button>Default</button>
+        <button disabled>Disabled</button>
+        <button class="link">Link style</button>
+        <button class="text">Text style</button>
+      </div>
+    </section>
+
+    <!-- Forms -->
+    <section id="forms" class="vignette">
+      <p class="vignette-label">Forms</p>
+
+      <form>
+        <fieldset>
+          <legend>Contact Information</legend>
+
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" placeholder="Your message here…" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="">Choose a topic…</option>
+              <option value="general">General inquiry</option>
+              <option value="support">Support request</option>
+              <option value="feedback">Feedback</option>
+            </select>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Preferences</legend>
+
+          <div class="form-group">
+            <label><input type="checkbox" name="newsletter" checked> Subscribe to newsletter</label>
+            <label><input type="checkbox" name="updates"> Receive product updates</label>
+            <label><input type="checkbox" name="terms" required> Accept terms and conditions</label>
+          </div>
+
+          <div class="form-group">
+            <label><input type="radio" name="contact-method" value="email" checked> Contact via email</label>
+            <label><input type="radio" name="contact-method" value="phone"> Contact via phone</label>
+          </div>
+
+          <div class="form-group">
+            <p style="font-weight: var(--font-weight-semi-bold); margin-block-end: 0.5rem">Notifications</p>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-block-end: 0.5rem">
+              <div class="toggle">
+                <input type="checkbox" id="toggle-email" checked>
+                <label for="toggle-email">Email</label>
+              </div>
+              <span style="font-size: 0.875rem">Email notifications</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem">
+              <div class="toggle">
+                <input type="checkbox" id="toggle-push">
+                <label for="toggle-push">Push</label>
+              </div>
+              <span style="font-size: 0.875rem">Push notifications</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="form-group">
+          <label for="range-input">Satisfaction (1–10)</label>
+          <input type="range" id="range-input" name="satisfaction" min="1" max="10" value="7">
+        </div>
+
+        <div class="form-group">
+          <label for="color-pick">Favorite color</label>
+          <input type="color" id="color-pick" name="color" value="#3b82f6">
+        </div>
+
+        <div class="button-row">
+          <input type="submit" value="Send Message">
+          <input type="reset" value="Reset">
+        </div>
+      </form>
+    </section>
+
+    <!-- Tables -->
+    <section id="tables" class="vignette">
+      <p class="vignette-label">Tables</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Alice Chen</td>
+            <td>Lead Designer</td>
+            <td>Product</td>
+            <td>Active</td>
+          </tr>
+          <tr>
+            <td>Marcus Webb</td>
+            <td>Senior Engineer</td>
+            <td>Platform</td>
+            <td>Active</td>
+          </tr>
+          <tr>
+            <td>Priya Nair</td>
+            <td>Product Manager</td>
+            <td>Growth</td>
+            <td>On Leave</td>
+          </tr>
+          <tr>
+            <td>Jordan Taylor</td>
+            <td>Data Analyst</td>
+            <td>Insights</td>
+            <td>Active</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">Total team members</td>
+            <td>4</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- Lists -->
+    <section id="lists" class="vignette">
+      <p class="vignette-label">Lists</p>
+
+      <h3>Unordered List</h3>
+      <ul>
+        <li>Design tokens for color, spacing, and typography</li>
+        <li>Accessible, semantic HTML elements
+          <ul>
+            <li>Keyboard navigation support</li>
+            <li>Screen reader friendly markup</li>
+          </ul>
+        </li>
+        <li>Smooth transitions and animations</li>
+        <li>Light and dark mode via <code>color-scheme</code></li>
+      </ul>
+
+      <h3>Ordered List</h3>
+      <ol>
+        <li>Define your design tokens in <code>core.css</code></li>
+        <li>Import the reset and base styles</li>
+        <li>Add component stylesheets as needed</li>
+        <li>Override tokens to match your brand</li>
+      </ol>
+
+      <h3>Description List</h3>
+      <dl>
+        <dt>Design Token</dt>
+        <dd>A named value that represents a design decision, such as a color, spacing unit, or font size.</dd>
+        <dt>CSS Custom Property</dt>
+        <dd>A variable declared with <code>--property-name</code> syntax that can be reused throughout a stylesheet.</dd>
+        <dt>Color Scheme</dt>
+        <dd>A preference indicating whether the user interface should use light or dark colors.</dd>
+      </dl>
+    </section>
+
+    <!-- Media -->
+    <section id="media" class="vignette">
+      <p class="vignette-label">Media</p>
+
+      <figure>
+        <div class="media-placeholder" aria-label="Placeholder image">
+          16 × 9 Image Placeholder
+        </div>
+        <figcaption>A descriptive caption for the image above, providing context for screen readers and sighted users alike.</figcaption>
+      </figure>
+    </section>
+
+    <!-- Details -->
+    <section id="details" class="vignette">
+      <p class="vignette-label">Details / Summary</p>
+
+      <details name="faq" open>
+        <summary>What is rek-room?</summary>
+        <p>rek-room is a classless CSS design system that styles native HTML elements using design tokens. It's built for readability, accessibility, and easy customization via CSS custom properties.</p>
+      </details>
+      <details name="faq">
+        <summary>How do I customize the theme?</summary>
+        <p>Override any of the CSS custom properties defined in <code>tokens/core.css</code>. You can change colors, spacing, typography, border radii, and more without touching the component stylesheets.</p>
+      </details>
+      <details name="faq">
+        <summary>Does it support dark mode?</summary>
+        <p>Yes. rek-room uses <code>color-scheme</code> and <code>light-dark()</code> functions throughout, so toggling dark mode is as simple as setting <code>color-scheme: dark</code> on the root element.</p>
+      </details>
+    </section>
+
+    <!-- Dialog -->
+    <section id="dialog" class="vignette">
+      <p class="vignette-label">Dialog</p>
+
+      <!-- Shown inline for preview — not as a modal -->
+      <div class="dialog-preview" role="dialog" aria-labelledby="dialog-title" aria-modal="false">
+        <h2 id="dialog-title">Confirm Action</h2>
+        <p>Are you sure you want to delete this item? This action cannot be undone and all associated data will be permanently removed.</p>
+        <div class="button-row">
+          <button class="error">Delete</button>
+          <button class="outline">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <section id="progress" class="vignette">
+      <p class="vignette-label">Progress &amp; Meter</p>
+
+      <div class="progress-group">
+        <p class="progress-label">Upload progress — 70%</p>
+        <progress value="70" max="100">70%</progress>
+      </div>
+
+      <div class="progress-group">
+        <p class="progress-label">Indeterminate progress (loading…)</p>
+        <progress>Loading…</progress>
+      </div>
+
+      <div class="progress-group">
+        <p class="progress-label">Disk usage — good range</p>
+        <meter value="0.4" min="0" max="1" low="0.7" high="0.85" optimum="0.4">40%</meter>
+      </div>
+
+      <div class="progress-group">
+        <p class="progress-label">CPU usage — suboptimal range</p>
+        <meter value="0.75" min="0" max="1" low="0.5" high="0.8" optimum="0.3">75%</meter>
+      </div>
+
+      <div class="progress-group">
+        <p class="progress-label">Memory pressure — critical</p>
+        <meter value="0.92" min="0" max="1" low="0.5" high="0.8" optimum="0.3">92%</meter>
+      </div>
+    </section>
+
+    <!-- Scrollbars -->
+    <section id="scrollbars" class="vignette">
+      <p class="vignette-label">Scrollbars</p>
+
+      <div class="scroll-container">
+        <p>This container demonstrates custom scrollbar styling. Scroll to see the themed scrollbar track and thumb.</p>
+        <p>rek-room styles scrollbars using <code>scrollbar-width</code> and <code>scrollbar-color</code> for standards-based support, with WebKit pseudo-elements for finer control.</p>
+        <p>The thumb uses the action color token, making it consistent with interactive elements throughout the design system.</p>
+        <p>Scroll further to see more content…</p>
+        <p>The track background adapts to light and dark mode automatically via <code>light-dark()</code>.</p>
+        <p>Custom scrollbar styling is supported in Firefox 64+, Chrome 121+, and Safari 18+.</p>
+        <p>End of scrollable content.</p>
+      </div>
+    </section>
+
+  </div><!-- /vignettes -->
+
+
+  <!-- ── Kitchen Sink ── -->
+  <div id="kitchen-sink" style="display: none">
+
+    <section id="ks-typography" class="vignette">
+      <p class="vignette-label">Typography</p>
+      <h1>Heading Level 1</h1>
+      <h2>Heading Level 2</h2>
+      <h3>Heading Level 3</h3>
+      <h4>Heading Level 4</h4>
+      <h5>Heading Level 5</h5>
+      <h6>Heading Level 6</h6>
+      <hr>
+      <p>Body text looks like this. Good typography creates a clear hierarchy and helps readers navigate content effortlessly. Line length, spacing, and contrast all contribute to readability.</p>
+      <blockquote>
+        Good design is as little design as possible. Less, but better — because it concentrates on the essential aspects.
+        <footer>— Dieter Rams</footer>
+      </blockquote>
+      <p>Inline elements: <code>const x = 42</code>, <a href="#">a styled link</a>, <small>small print</small>, <mark>highlighted</mark>, <abbr title="HyperText Markup Language">HTML</abbr>, <em>emphasis</em>, <strong>strong</strong>.</p>
+      <pre><code>function greet(name) {
+  return `Hello, ${name}!`;
+}</code></pre>
+    </section>
+
+    <section id="ks-buttons" class="vignette">
+      <p class="vignette-label">Buttons</p>
+      <div class="button-row">
+        <button>Primary</button>
+        <button class="secondary">Secondary</button>
+        <button class="success">Success</button>
+        <button class="error">Destructive</button>
+        <button class="warning">Warning</button>
+        <button class="light">Light</button>
+        <button class="dark">Dark</button>
+      </div>
+      <div class="button-row">
+        <button class="outline">Outline</button>
+        <button class="outline secondary">Outline Secondary</button>
+        <button class="outline error">Outline Destructive</button>
+        <button class="sm">Small</button>
+        <button>Medium</button>
+        <button class="lg">Large</button>
+        <button disabled>Disabled</button>
+        <button class="link">Link</button>
+      </div>
+    </section>
+
+    <section id="ks-forms" class="vignette">
+      <p class="vignette-label">Forms</p>
+      <form>
+        <fieldset>
+          <legend>Details</legend>
+          <div class="form-group">
+            <label for="ks-name">Name</label>
+            <input type="text" id="ks-name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="ks-email">Email</label>
+            <input type="email" id="ks-email" placeholder="jane@example.com">
+          </div>
+          <div class="form-group">
+            <label for="ks-message">Message</label>
+            <textarea id="ks-message" rows="3" placeholder="Your message…"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="ks-select">Topic</label>
+            <select id="ks-select">
+              <option>Choose…</option>
+              <option>General</option>
+              <option>Support</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" checked> Subscribe to updates</label>
+            <label><input type="radio" name="ks-radio" checked> Option A</label>
+            <label><input type="radio" name="ks-radio"> Option B</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-block-end:1rem">
+            <div class="toggle"><input type="checkbox" id="ks-toggle" checked><label for="ks-toggle">Toggle</label></div>
+            <span style="font-size:0.875rem">Notifications enabled</span>
+          </div>
+          <input type="range" min="0" max="100" value="60" style="margin-block-end:1rem">
+          <div class="button-row">
+            <input type="submit" value="Submit">
+            <input type="reset" value="Reset">
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section id="ks-tables" class="vignette">
+      <p class="vignette-label">Tables</p>
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Alice Chen</td><td>Designer</td><td>Active</td></tr>
+          <tr><td>Marcus Webb</td><td>Engineer</td><td>Active</td></tr>
+          <tr><td>Priya Nair</td><td>PM</td><td>On Leave</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="ks-lists" class="vignette">
+      <p class="vignette-label">Lists</p>
+      <ul>
+        <li>Design tokens</li>
+        <li>Accessible HTML<ul><li>Keyboard nav</li><li>ARIA support</li></ul></li>
+        <li>Light &amp; dark mode</li>
+      </ul>
+      <ol>
+        <li>Define tokens</li>
+        <li>Import styles</li>
+        <li>Customize</li>
+      </ol>
+      <dl>
+        <dt>Design Token</dt><dd>A named design decision value.</dd>
+        <dt>CSS Custom Property</dt><dd>A variable using <code>--name</code> syntax.</dd>
+      </dl>
+    </section>
+
+    <section id="ks-media" class="vignette">
+      <p class="vignette-label">Media</p>
+      <figure>
+        <div class="media-placeholder">16 × 9 Placeholder</div>
+        <figcaption>A descriptive caption for the image above.</figcaption>
+      </figure>
+    </section>
+
+    <section id="ks-details" class="vignette">
+      <p class="vignette-label">Details / Summary</p>
+      <details open><summary>What is rek-room?</summary><p>A classless CSS design system built on native HTML elements and design tokens.</p></details>
+      <details><summary>How do I customize it?</summary><p>Override CSS custom properties in <code>tokens/core.css</code> to match your brand.</p></details>
+      <details><summary>Dark mode support?</summary><p>Yes — set <code>color-scheme: dark</code> on the root element.</p></details>
+    </section>
+
+    <section id="ks-dialog" class="vignette">
+      <p class="vignette-label">Dialog</p>
+      <div class="dialog-preview" role="dialog" aria-labelledby="ks-dialog-title">
+        <h2 id="ks-dialog-title">Confirm Action</h2>
+        <p>Are you sure you want to delete this item? This cannot be undone.</p>
+        <div class="button-row">
+          <button class="error">Delete</button>
+          <button class="outline">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="ks-progress" class="vignette">
+      <p class="vignette-label">Progress &amp; Meter</p>
+      <div class="progress-group"><p class="progress-label">Upload — 70%</p><progress value="70" max="100">70%</progress></div>
+      <div class="progress-group"><p class="progress-label">Indeterminate</p><progress>Loading…</progress></div>
+      <div class="progress-group"><p class="progress-label">Disk — good</p><meter value="0.4" min="0" max="1" low="0.7" high="0.85" optimum="0.4">40%</meter></div>
+      <div class="progress-group"><p class="progress-label">CPU — warning</p><meter value="0.75" min="0" max="1" low="0.5" high="0.8" optimum="0.3">75%</meter></div>
+    </section>
+
+    <section id="ks-scrollbars" class="vignette">
+      <p class="vignette-label">Scrollbars</p>
+      <div class="scroll-container">
+        <p>Scroll to see themed scrollbar styling.</p>
+        <p>The thumb uses the action color, consistent with interactive elements throughout the design system.</p>
+        <p>Scrollbar styling adapts automatically to light and dark mode via <code>light-dark()</code>.</p>
+        <p>Supported in Firefox 64+, Chrome 121+, Safari 18+.</p>
+        <p>End of scrollable content.</p>
+      </div>
+    </section>
+
+  </div><!-- /kitchen-sink -->
+
+
+  <script>
+    // ── Color scheme from query param ──
+    const params = new URLSearchParams(window.location.search);
+    const scheme = params.get('scheme') || 'light';
+    document.documentElement.style.colorScheme = scheme;
+
+    // ── postMessage handler ──
+    window.addEventListener('message', (event) => {
+      const { type, ...data } = event.data;
+      switch (type) {
+        case 'apply-overrides':
+          document.getElementById('overrides').textContent = data.css;
+          break;
+        case 'set-preview-mode': {
+          const vignettes = document.getElementById('vignettes');
+          const kitchenSink = document.getElementById('kitchen-sink');
+          if (data.mode === 'kitchen-sink') {
+            vignettes.style.display = 'none';
+            kitchenSink.style.display = 'block';
+          } else {
+            vignettes.style.display = 'block';
+            kitchenSink.style.display = 'none';
+          }
+          break;
+        }
+        case 'scroll-to-vignette': {
+          const el = document.getElementById(data.vignette);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+          break;
+        }
+        case 'load-font': {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = data.url;
+          document.head.appendChild(link);
+          break;
+        }
+      }
+    });
+
+    // ── Scroll sync to parent ──
+    let scrollTicking = false;
+    document.addEventListener('scroll', () => {
+      if (!scrollTicking) {
+        requestAnimationFrame(() => {
+          window.parent.postMessage({ type: 'scroll', scrollTop: document.documentElement.scrollTop }, '*');
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
+    });
+
+    // ── Ready signal ──
+    window.parent.postMessage({ type: 'ready' }, '*');
+  </script>
+
+</body>
+</html>
