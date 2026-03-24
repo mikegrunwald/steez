@@ -29,7 +29,11 @@ interface WeightControlProps {
 
 export function WeightControl({ token }: WeightControlProps) {
   const { overrides, dispatch } = useTokens();
-  const currentValue = overrides[token.key] ?? token.defaultValue;
+  const rawValue = overrides[token.key] ?? token.defaultValue;
+  // Resolve var() references to a numeric weight for the select
+  const currentValue = FONT_WEIGHTS.some((w) => w.value === rawValue)
+    ? rawValue
+    : '400'; // fallback to Regular if value is a var() reference
 
   return (
     <div className="flex items-center gap-2">

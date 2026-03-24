@@ -43,8 +43,8 @@ export function DimensionControl({ token }: DimensionControlProps) {
       />
       <Input
         type="number"
-        value={isExpression ? '' : displayValue}
-        placeholder={isExpression ? 'auto' : undefined}
+        value={isExpression ? '' : String(displayValue)}
+        placeholder="auto"
         min={min}
         max={max}
         step={step}
