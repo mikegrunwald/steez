@@ -77,11 +77,11 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
   // Tokens that have derived children within this category
   const sourceKeys = getSourceTokenKeys(category);
 
-  // Filter out derived tokens so they appear under their source only
-  const topLevelTokens = tokens.filter((t) => !t.derivedFrom);
+  // Filter out derived tokens and hidden constants
+  const topLevelTokens = tokens.filter((t) => !t.derivedFrom && !t.hidden);
 
   // Heading size tokens to conditionally show
-  const headingTokens = tokens.filter((t) => HEADING_KEYS.has(t.key));
+  const headingTokens = tokens.filter((t) => HEADING_KEYS.has(t.key) && !t.hidden);
   const nonHeadingTokens = topLevelTokens.filter((t) => !HEADING_KEYS.has(t.key));
 
   const renderToken = (token: TokenDefinition) => {
@@ -89,11 +89,11 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
 
     return (
       <div key={token.key} className="flex flex-col">
-        <div className="flex items-center justify-between gap-4 py-1.5">
-          <span className="text-sm font-medium shrink-0 min-w-0 text-foreground">
+        <div className="group/row flex items-center justify-between gap-4 min-h-[40px]">
+          <span className="text-xs font-medium shrink-0 min-w-0 text-muted-foreground group-has-[input:focus]/row:hidden">
             {token.label}
           </span>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 group-has-[input:focus]/row:flex-1 group-has-[input:focus]/row:shrink group-has-[input:focus]/row:min-w-0">
             <TokenControl token={token} />
           </div>
         </div>
@@ -104,7 +104,7 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
 
   if (isTypography) {
     return (
-      <div className="flex flex-col gap-0.5">
+      <div className="flex flex-col">
         {nonHeadingTokens.map(renderToken)}
         <TypeScaleToggle />
         {typeScaleUnlocked && headingTokens.map(renderToken)}
@@ -112,8 +112,44 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
     );
   }
 
+  // Color subcategory grouping
+  const isColors = category === 'colors';
+  if (isColors) {
+    const SUBCATEGORY_ORDER = ['Palette', 'Brand', 'Semantic'];
+    const grouped = new Map<string, TokenDefinition[]>();
+    const ungrouped: TokenDefinition[] = [];
+
+    for (const token of topLevelTokens) {
+      const sub = token.subcategory;
+      if (sub) {
+        if (!grouped.has(sub)) grouped.set(sub, []);
+        grouped.get(sub)!.push(token);
+      } else {
+        ungrouped.push(token);
+      }
+    }
+
+    return (
+      <div className="flex flex-col">
+        {ungrouped.map(renderToken)}
+        {SUBCATEGORY_ORDER.map((sub) => {
+          const group = grouped.get(sub);
+          if (!group?.length) return null;
+          return (
+            <div key={sub}>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground pt-4 pb-2 border-b border-border mb-1.5">
+                {sub}
+              </div>
+              {group.map(renderToken)}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className="flex flex-col">
       {topLevelTokens.map(renderToken)}
     </div>
   );

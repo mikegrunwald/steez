@@ -5,16 +5,46 @@ import { HexColorPicker } from 'react-colorful';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { ChangeIndicator } from '@/components/change-indicator';
+import { AliasValue } from '@/components/alias-value';
+import { hasVarReference } from '@/lib/tokens/value-parser';
 import { useTokens } from '@/lib/state/token-context';
+import { TOKEN_REGISTRY } from '@/lib/tokens/registry';
 import type { TokenDefinition } from '@/lib/tokens/types';
 
 interface ColorPairControlProps {
   token: TokenDefinition;
 }
 
-function parseLightDarkDefault(defaultValue: string): { light: string; dark: string } {
-  const match = defaultValue.match(/light-dark\(\s*(#[0-9a-fA-F]{6}),\s*(#[0-9a-fA-F]{6})\s*\)/);
-  if (match) return { light: match[1], dark: match[2] };
+const REGISTRY_MAP = new Map(TOKEN_REGISTRY.map((t) => [t.key, t]));
+
+/** Resolve a token key to a hex color, following one level of var() references */
+function resolveColorHex(key: string): string | undefined {
+  const token = REGISTRY_MAP.get(key);
+  if (!token) return undefined;
+  const val = token.defaultValue;
+  if (val && /^#[0-9a-fA-F]{3,8}$/.test(val)) return val;
+  // Follow one var() ref
+  const varMatch = val?.match(/^var\(([^)]+)\)$/);
+  if (varMatch) {
+    const inner = REGISTRY_MAP.get(varMatch[1]);
+    if (inner?.defaultValue && /^#[0-9a-fA-F]{3,8}$/.test(inner.defaultValue)) {
+      return inner.defaultValue;
+    }
+  }
+  return undefined;
+}
+
+export function parseLightDarkDefault(defaultValue: string): { light: string; dark: string } {
+  // Try hex literals first
+  const hexMatch = defaultValue.match(/light-dark\(\s*(#[0-9a-fA-F]{3,8}),\s*(#[0-9a-fA-F]{3,8})\s*\)/);
+  if (hexMatch) return { light: hexMatch[1], dark: hexMatch[2] };
+  // Try resolving var() references
+  const varMatch = defaultValue.match(/light-dark\(\s*var\(([^)]+)\)\s*,\s*var\(([^)]+)\)\s*\)/);
+  if (varMatch) {
+    const light = resolveColorHex(varMatch[1]) ?? '#ffffff';
+    const dark = resolveColorHex(varMatch[2]) ?? '#000000';
+    return { light, dark };
+  }
   return { light: '#ffffff', dark: '#000000' };
 }
 
@@ -47,7 +77,7 @@ function ColorSwatch({ label, value, onCommit }: SwatchProps) {
         <PopoverTrigger
           render={
             <button
-              className="size-6 rounded border border-input shrink-0 cursor-pointer"
+              className="size-4 rounded border border-input shrink-0 cursor-pointer"
               style={{ backgroundColor: value }}
               aria-label={`Open ${label} color picker`}
             />
@@ -79,6 +109,25 @@ export function ColorPairControl({ token }: ColorPairControlProps) {
 
   const setDark = (color: string) =>
     dispatch({ type: 'SET_TOKEN', key: token.key + '--dark', value: color });
+
+  // If the default value is a var() reference, show clickable alias badge
+  if (hasVarReference(token.defaultValue) && !(token.key + '--light' in overrides) && !(token.key + '--dark' in overrides)) {
+    const activateEdit = () => {
+      setLight(fallback.light);
+      setDark(fallback.dark);
+    };
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          className="flex-1 text-left cursor-pointer hover:bg-accent/50 rounded px-1 -mx-1 transition-colors truncate"
+          onClick={activateEdit}
+        >
+          <AliasValue value={token.defaultValue} className="flex-1 truncate" />
+        </button>
+        <ChangeIndicator tokenKey={token.key} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-3">

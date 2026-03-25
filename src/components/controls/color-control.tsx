@@ -5,6 +5,8 @@ import { HexColorPicker } from 'react-colorful';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { ChangeIndicator } from '@/components/change-indicator';
+import { AliasValue } from '@/components/alias-value';
+import { hasVarReference } from '@/lib/tokens/value-parser';
 import { useTokens } from '@/lib/state/token-context';
 import type { TokenDefinition } from '@/lib/tokens/types';
 
@@ -36,7 +38,7 @@ export function ColorControl({ token }: ColorControlProps) {
         <PopoverTrigger
           render={
             <button
-              className="size-6 rounded border border-input shrink-0 cursor-pointer"
+              className="size-4 rounded border border-input shrink-0 cursor-pointer"
               style={{ backgroundColor: currentValue }}
               aria-label="Open color picker"
             />
@@ -52,7 +54,11 @@ export function ColorControl({ token }: ColorControlProps) {
           />
         </PopoverContent>
       </Popover>
-      <span className="text-sm font-mono text-muted-foreground truncate">{currentValue}</span>
+      {hasVarReference(currentValue) ? (
+        <AliasValue value={currentValue} className="flex-1 truncate" />
+      ) : (
+        <span className="text-xs font-mono text-foreground truncate">{currentValue}</span>
+      )}
       <ChangeIndicator tokenKey={token.key} />
     </div>
   );

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm --version)",
+      "Bash(pnpm --version)",
+      "Bash(bun --version)",
+      "Bash(source ~/.zshrc)",
+      "Bash(source ~/.bashrc)",
+      "Bash(kill 54681)",
+      "Bash(source ~/.nvm/nvm.sh)",
+      "Bash(npm run:*)",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(kill 73813)",
+      "Bash(find /Users/mikeg/ActiveTheory/personal-playground/combobulator/node_modules/rek-room -type f \\\\\\(-name *.html -o -name *.md -o -name package.json \\\\\\))",
+      "Bash(lsof -ti:3000)",
+      "Bash(/opt/homebrew/bin/npx next:*)"
+    ]
+  }
+}

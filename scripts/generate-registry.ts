@@ -196,6 +196,8 @@ async function main() {
     step?: number;
     unit?: string;
     gradient?: boolean;
+    hidden?: boolean;
+    subcategory?: string;
   }> = [];
 
   const defaults: Record<string, string> = {};
@@ -228,6 +230,8 @@ async function main() {
     if (meta.step !== undefined) entry.step = meta.step;
     if (meta.unit !== undefined) entry.unit = meta.unit;
     if (meta.gradient !== undefined) entry.gradient = meta.gradient;
+    if (meta.hidden !== undefined) entry.hidden = meta.hidden;
+    if (meta.subcategory !== undefined) entry.subcategory = meta.subcategory;
 
     registry.push(entry);
     defaults[prop] = value;
@@ -263,6 +267,8 @@ async function main() {
 
     if (entry.lightDark !== undefined) fields.push(`    lightDark: ${entry.lightDark}`);
     if (entry.gradient !== undefined) fields.push(`    gradient: ${entry.gradient}`);
+    if (entry.hidden !== undefined) fields.push(`    hidden: ${entry.hidden}`);
+    if (entry.subcategory !== undefined) fields.push(`    subcategory: ${JSON.stringify(entry.subcategory)}`);
     if (entry.derivedFrom !== undefined) fields.push(`    derivedFrom: ${JSON.stringify(entry.derivedFrom)}`);
     if (entry.min !== undefined) fields.push(`    min: ${entry.min}`);
     if (entry.max !== undefined) fields.push(`    max: ${entry.max}`);

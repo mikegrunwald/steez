@@ -10,6 +10,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-primary)",
+    subcategory: "Brand",
     derivedFrom: "--color-primary",
   },
   {
@@ -18,6 +19,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-action) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-action",
   },
   {
@@ -26,6 +28,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-action",
   },
   {
@@ -34,6 +37,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-action) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-action",
   },
   {
@@ -42,6 +46,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-action",
   },
   {
@@ -50,6 +55,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#000",
+    subcategory: "Palette",
   },
   {
     key: "--color-border",
@@ -58,6 +64,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     category: "colors",
     defaultValue: "light-dark(var(--color-neutral-3), var(--color-neutral-7))",
     lightDark: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-error",
@@ -65,6 +72,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-red)",
+    subcategory: "Brand",
     derivedFrom: "--color-red",
   },
   {
@@ -73,6 +81,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-error) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-error",
   },
   {
@@ -81,6 +90,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-error",
   },
   {
@@ -89,6 +99,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-error) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-error",
   },
   {
@@ -97,6 +108,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-error",
   },
   {
@@ -105,6 +117,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#A3BE8C",
+    subcategory: "Palette",
   },
   {
     key: "--color-highlight",
@@ -112,6 +125,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-secondary)",
+    subcategory: "Brand",
     derivedFrom: "--color-secondary",
   },
   {
@@ -120,6 +134,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-highlight) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-highlight",
   },
   {
@@ -128,6 +143,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-highlight",
   },
   {
@@ -136,6 +152,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-highlight) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-highlight",
   },
   {
@@ -144,6 +161,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-highlight",
   },
   {
@@ -152,6 +170,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Palette",
     derivedFrom: "--color-white",
   },
   {
@@ -160,6 +179,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 10%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -168,6 +188,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-black)",
+    subcategory: "Palette",
     derivedFrom: "--color-black",
   },
   {
@@ -176,6 +197,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 20%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -184,6 +206,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 30%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -192,6 +215,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 40%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -200,6 +224,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 50%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -208,6 +233,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 60%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -216,6 +242,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 70%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -224,6 +251,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 80%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -232,6 +260,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "color-mix(in oklch, var(--color-neutral-10) 90%, var(--color-white))",
+    subcategory: "Palette",
     derivedFrom: "--color-neutral-10",
   },
   {
@@ -240,6 +269,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#81A1C1",
+    subcategory: "Brand",
   },
   {
     key: "--color-primary-dark",
@@ -247,6 +277,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-primary) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-primary",
   },
   {
@@ -255,6 +286,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-primary",
   },
   {
@@ -263,6 +295,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-primary) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-primary",
   },
   {
@@ -271,6 +304,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-primary",
   },
   {
@@ -279,6 +313,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#BF616A",
+    subcategory: "Palette",
   },
   {
     key: "--color-secondary",
@@ -286,6 +321,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#B48EAD",
+    subcategory: "Brand",
   },
   {
     key: "--color-secondary-dark",
@@ -293,6 +329,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-secondary) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-secondary",
   },
   {
@@ -301,6 +338,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-secondary",
   },
   {
@@ -309,6 +347,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-secondary) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-secondary",
   },
   {
@@ -317,6 +356,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-secondary",
   },
   {
@@ -325,6 +365,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-green)",
+    subcategory: "Brand",
     derivedFrom: "--color-green",
   },
   {
@@ -333,6 +374,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-success) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-success",
   },
   {
@@ -341,6 +383,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-success",
   },
   {
@@ -349,6 +392,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-success) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-success",
   },
   {
@@ -357,6 +401,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-success",
   },
   {
@@ -367,6 +412,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     defaultValue: "light-dark(var(--color-white), var(--color-neutral-9))",
     lightDark: true,
     gradient: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-surface-raised",
@@ -376,6 +422,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     defaultValue: "light-dark(var(--color-neutral-0), var(--color-neutral-8))",
     lightDark: true,
     gradient: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-tertiary",
@@ -383,6 +430,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#f1be5f",
+    subcategory: "Brand",
   },
   {
     key: "--color-tertiary-dark",
@@ -390,6 +438,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-tertiary) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-tertiary",
   },
   {
@@ -398,6 +447,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-tertiary",
   },
   {
@@ -406,6 +456,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-tertiary) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-tertiary",
   },
   {
@@ -414,6 +465,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-tertiary",
   },
   {
@@ -423,6 +475,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     category: "colors",
     defaultValue: "light-dark(var(--color-neutral-8), var(--color-neutral-2))",
     lightDark: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-text-primary",
@@ -431,6 +484,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     category: "colors",
     defaultValue: "light-dark(var(--color-neutral-8), var(--color-neutral-1))",
     lightDark: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-text-secondary",
@@ -439,6 +493,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     category: "colors",
     defaultValue: "light-dark(var(--color-neutral-6), var(--color-neutral-3))",
     lightDark: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-text-tertiary",
@@ -447,6 +502,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     category: "colors",
     defaultValue: "light-dark(var(--color-secondary), var(--color-secondary-light))",
     lightDark: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-viewport-background",
@@ -456,6 +512,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     defaultValue: "light-dark(var(--color-white), var(--color-neutral-10))",
     lightDark: true,
     gradient: true,
+    subcategory: "Semantic",
   },
   {
     key: "--color-warning",
@@ -463,6 +520,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-yellow)",
+    subcategory: "Brand",
     derivedFrom: "--color-yellow",
   },
   {
@@ -471,6 +529,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-warning) calc(l - 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-warning",
   },
   {
@@ -479,6 +538,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-warning",
   },
   {
@@ -487,6 +547,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "oklch(from var(--color-warning) calc(l + 0.15) c h)",
+    subcategory: "Brand",
     derivedFrom: "--color-warning",
   },
   {
@@ -495,6 +556,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "var(--color-white)",
+    subcategory: "Brand",
     derivedFrom: "--color-warning",
   },
   {
@@ -503,6 +565,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#fff",
+    subcategory: "Palette",
   },
   {
     key: "--color-yellow",
@@ -510,6 +573,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "colors",
     defaultValue: "#EBCB8B",
+    subcategory: "Palette",
   },
   {
     key: "--font-family",
@@ -673,6 +737,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "900",
+    hidden: true,
   },
   {
     key: "--font-weight-bold",
@@ -680,6 +745,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "700",
+    hidden: true,
   },
   {
     key: "--font-weight-extra-bold",
@@ -687,6 +753,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "800",
+    hidden: true,
   },
   {
     key: "--font-weight-extra-light",
@@ -694,6 +761,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "200",
+    hidden: true,
   },
   {
     key: "--font-weight-heading",
@@ -708,6 +776,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "300",
+    hidden: true,
   },
   {
     key: "--font-weight-medium",
@@ -715,6 +784,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "500",
+    hidden: true,
   },
   {
     key: "--font-weight-normal",
@@ -722,6 +792,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "400",
+    hidden: true,
   },
   {
     key: "--font-weight-semi-bold",
@@ -729,6 +800,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "600",
+    hidden: true,
   },
   {
     key: "--font-weight-thin",
@@ -736,6 +808,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "weight",
     category: "typography",
     defaultValue: "100",
+    hidden: true,
   },
   {
     key: "--line-height-heading",
@@ -860,6 +933,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "duration",
     category: "animation",
     defaultValue: "calc(var(--animation-duration) / 2)",
+    derivedFrom: "--animation-duration",
     min: 0.01,
     max: 1,
     step: 0.01,
@@ -871,6 +945,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "duration",
     category: "animation",
     defaultValue: "calc(var(--animation-duration) * 2)",
+    derivedFrom: "--animation-duration",
     min: 0.1,
     max: 4,
     step: 0.05,
@@ -889,6 +964,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.250, 0.100, 0.250, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in",
@@ -896,6 +972,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.420, 0.000, 1.000, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-back",
@@ -903,6 +980,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.600, -0.280, 0.735, 0.045)",
+    hidden: true,
   },
   {
     key: "--ease-in-circ",
@@ -910,6 +988,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.600, 0.040, 0.980, 0.335)",
+    hidden: true,
   },
   {
     key: "--ease-in-cubic",
@@ -917,6 +996,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.550, 0.055, 0.675, 0.190)",
+    hidden: true,
   },
   {
     key: "--ease-in-expo",
@@ -924,6 +1004,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.950, 0.050, 0.795, 0.035)",
+    hidden: true,
   },
   {
     key: "--ease-in-out",
@@ -931,6 +1012,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.420, 0.000, 0.580, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-back",
@@ -938,6 +1020,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.680, -0.550, 0.265, 1.550)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-circ",
@@ -945,6 +1028,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.785, 0.135, 0.150, 0.860)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-cubic",
@@ -952,6 +1036,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.645, 0.045, 0.355, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-expo",
@@ -959,6 +1044,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(1.000, 0.000, 0.000, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-quad",
@@ -966,6 +1052,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.455, 0.030, 0.515, 0.955)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-quart",
@@ -973,6 +1060,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.770, 0.000, 0.175, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-quint",
@@ -980,6 +1068,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.860, 0.000, 0.070, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-in-out-sine",
@@ -987,6 +1076,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.445, 0.050, 0.550, 0.950)",
+    hidden: true,
   },
   {
     key: "--ease-in-quad",
@@ -994,6 +1084,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.550, 0.085, 0.680, 0.530)",
+    hidden: true,
   },
   {
     key: "--ease-in-quart",
@@ -1001,6 +1092,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.895, 0.030, 0.685, 0.220)",
+    hidden: true,
   },
   {
     key: "--ease-in-quint",
@@ -1008,6 +1100,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.755, 0.050, 0.855, 0.060)",
+    hidden: true,
   },
   {
     key: "--ease-in-sine",
@@ -1015,6 +1108,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.470, 0.000, 0.745, 0.715)",
+    hidden: true,
   },
   {
     key: "--ease-out",
@@ -1022,6 +1116,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.000, 0.000, 0.580, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-back",
@@ -1029,6 +1124,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.175, 0.885, 0.320, 1.275)",
+    hidden: true,
   },
   {
     key: "--ease-out-circ",
@@ -1036,6 +1132,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.075, 0.820, 0.165, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-cubic",
@@ -1043,6 +1140,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.215, 0.610, 0.355, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-expo",
@@ -1050,6 +1148,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.190, 1.000, 0.220, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-quad",
@@ -1057,6 +1156,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.250, 0.460, 0.450, 0.940)",
+    hidden: true,
   },
   {
     key: "--ease-out-quart",
@@ -1064,6 +1164,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.165, 0.840, 0.440, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-quint",
@@ -1071,6 +1172,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.230, 1.000, 0.320, 1.000)",
+    hidden: true,
   },
   {
     key: "--ease-out-sine",
@@ -1078,6 +1180,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.390, 0.575, 0.565, 1.000)",
+    hidden: true,
   },
   {
     key: "--linear",
@@ -1085,6 +1188,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "easing",
     category: "animation",
     defaultValue: "cubic-bezier(0.250, 0.250, 0.750, 0.750)",
+    hidden: true,
   },
   {
     key: "--border-color",
@@ -1092,6 +1196,7 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "color",
     category: "borders",
     defaultValue: "var(--color-border)",
+    hidden: true,
   },
   {
     key: "--border-radius",
@@ -1185,10 +1290,6 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "dimension",
     category: "controls",
     defaultValue: "3rem",
-    min: 32,
-    max: 64,
-    step: 1,
-    unit: "px",
   },
   {
     key: "--control-block-size-lg",
@@ -1196,10 +1297,6 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "dimension",
     category: "controls",
     defaultValue: "calc(var(--control-block-size) * 1.1875)",
-    min: 40,
-    max: 80,
-    step: 1,
-    unit: "px",
   },
   {
     key: "--control-block-size-sm",
@@ -1207,10 +1304,6 @@ export const TOKEN_REGISTRY: TokenDefinition[] = [
     type: "dimension",
     category: "controls",
     defaultValue: "calc(var(--control-block-size) * 0.75)",
-    min: 24,
-    max: 48,
-    step: 1,
-    unit: "px",
   },
   {
     key: "--control-font-size",

@@ -148,7 +148,7 @@ export function GradientBuilder({ token }: GradientBuilderProps) {
                 onChange={(e) => updateStop(i, { position: parseInt(e.target.value) || 0 })}
                 className="w-12 h-6 text-xs font-mono px-1"
               />
-              <span className="text-xs text-muted-foreground">%</span>
+              <span className="text-xs text-foreground">%</span>
               {stops.length > 2 && (
                 <button
                   onClick={() => removeStop(i)}

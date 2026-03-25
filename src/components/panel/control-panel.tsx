@@ -109,22 +109,20 @@ export function ControlPanel() {
 
   return (
     <aside
-      className="flex flex-col shrink-0 lg:h-screen max-h-[50vh] lg:max-h-none border-t lg:border-t-0 bg-background overflow-hidden relative"
+      className="flex flex-col shrink-0 lg:h-screen max-h-[50vh] lg:max-h-none border-t lg:border-t-0 bg-background overflow-hidden relative text-xs"
       style={{ width: `${width}px` }}
     >
       {/* Resize handle */}
       <div
         className="hidden lg:flex absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize items-center justify-center z-10 hover:bg-primary/10 active:bg-primary/20 transition-colors"
-        style={{ borderRight: "1px solid var(--border)" }}
+        style={{ borderLeft: "1px solid var(--border)" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
       />
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
-        <span className="text-sm font-semibold tracking-tight flex-1">
-          rek-room
-        </span>
+      <div className="h-[67px] flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
+        <div className="flex-1" />
         {changedCount > 0 && (
           <span className="text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-1.5 py-0.5 rounded-full">
             {changedCount}
@@ -143,7 +141,7 @@ export function ControlPanel() {
           <Download />
           Export
         </Button>
-        <TooltipProvider delayDuration={300}>
+        <TooltipProvider>
           <Tooltip>
             <TooltipTrigger
               className="group/button inline-flex shrink-0 items-center justify-center rounded-md text-sm disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground size-7 cursor-pointer"
@@ -164,7 +162,7 @@ export function ControlPanel() {
             const tokens = TOKEN_REGISTRY.filter((t) => t.category === key);
             return (
               <AccordionItem key={key} value={key}>
-                <AccordionTrigger className="px-4">{label}</AccordionTrigger>
+                <AccordionTrigger className="px-4 text-[15px] font-bold text-muted-foreground">{label}</AccordionTrigger>
                 <AccordionContent>
                   <div className="px-4 pb-2">
                     <TokenGroup category={key} tokens={tokens} />

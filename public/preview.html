@@ -301,7 +301,7 @@ function greet(name) {
       <p class="vignette-label">Lists</p>
 
       <h3>Unordered List</h3>
-      <ul>
+      <ul class="bullets">
         <li>Design tokens for color, spacing, and typography</li>
         <li>Accessible, semantic HTML elements
           <ul>
@@ -314,7 +314,7 @@ function greet(name) {
       </ul>
 
       <h3>Ordered List</h3>
-      <ol>
+      <ol class="bullets">
         <li>Define your design tokens in <code>core.css</code></li>
         <li>Import the reset and base styles</li>
         <li>Add component stylesheets as needed</li>
@@ -428,167 +428,879 @@ function greet(name) {
   <!-- ── Kitchen Sink ── -->
   <div id="kitchen-sink" style="display: none">
 
-    <section id="ks-typography" class="vignette">
-      <p class="vignette-label">Typography</p>
-      <h1>Heading Level 1</h1>
-      <h2>Heading Level 2</h2>
-      <h3>Heading Level 3</h3>
-      <h4>Heading Level 4</h4>
-      <h5>Heading Level 5</h5>
-      <h6>Heading Level 6</h6>
-      <hr>
-      <p>Body text looks like this. Good typography creates a clear hierarchy and helps readers navigate content effortlessly. Line length, spacing, and contrast all contribute to readability.</p>
-      <blockquote>
-        Good design is as little design as possible. Less, but better — because it concentrates on the essential aspects.
-        <footer>— Dieter Rams</footer>
-      </blockquote>
-      <p>Inline elements: <code>const x = 42</code>, <a href="#">a styled link</a>, <small>small print</small>, <mark>highlighted</mark>, <abbr title="HyperText Markup Language">HTML</abbr>, <em>emphasis</em>, <strong>strong</strong>.</p>
-      <pre><code>function greet(name) {
-  return `Hello, ${name}!`;
+    <!-- Styleguide-only presentation styles (from rek-room index.html) -->
+    <style>
+      .section-header {
+        background-color: light-dark(var(--color-neutral-1), var(--color-neutral-7));
+        border-radius: var(--border-radius);
+        padding: var(--spacing-sm);
+        margin-block-end: var(--spacing-md);
+      }
+
+      /* ── Color Chips ── */
+
+      .chip-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        margin-block-end: var(--spacing-md);
+
+        & .color-chip {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          inline-size: 5.5rem;
+          block-size: 5.5rem;
+          border: var(--border);
+          border-radius: calc(var(--border-radius) / 2);
+          font-family: var(--font-tertiary-stack);
+          font-size: 0.7rem;
+          text-align: center;
+
+          & .label {
+            padding: 0.25rem;
+            border-radius: calc(var(--border-radius) / 2);
+            background: light-dark(rgb(255 255 255 / 0.7), rgb(0 0 0 / 0.5));
+            line-height: 1;
+          }
+        }
+
+        /* Brand colors */
+        &.brand .color-chip {
+          &:nth-of-type(1) {
+            background-color: var(--color-primary);
+          }
+
+          &:nth-of-type(2) {
+            background-color: var(--color-secondary);
+          }
+
+          &:nth-of-type(3) {
+            background-color: var(--color-tertiary);
+          }
+        }
+
+        /* Neutral scale */
+        &.neutrals .color-chip {
+          &:nth-of-type(1) {
+            background-color: var(--color-neutral-0);
+          }
+
+          &:nth-of-type(2) {
+            background-color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(3) {
+            background-color: var(--color-neutral-2);
+          }
+
+          &:nth-of-type(4) {
+            background-color: var(--color-neutral-3);
+          }
+
+          &:nth-of-type(5) {
+            background-color: var(--color-neutral-4);
+          }
+
+          &:nth-of-type(6) {
+            background-color: var(--color-neutral-5);
+            color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(7) {
+            background-color: var(--color-neutral-6);
+            color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(8) {
+            background-color: var(--color-neutral-7);
+            color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(9) {
+            background-color: var(--color-neutral-8);
+            color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(10) {
+            background-color: var(--color-neutral-9);
+            color: var(--color-neutral-1);
+          }
+
+          &:nth-of-type(11) {
+            background-color: var(--color-neutral-10);
+            color: var(--color-neutral-1);
+          }
+        }
+
+        /* UI / semantic colors */
+        &.ui .color-chip {
+          &:nth-of-type(1) {
+            background-color: var(--color-action);
+          }
+
+          &:nth-of-type(2) {
+            background-color: var(--color-highlight);
+          }
+
+          &:nth-of-type(3) {
+            background-color: var(--color-success);
+          }
+
+          &:nth-of-type(4) {
+            background-color: var(--color-warning);
+          }
+
+          &:nth-of-type(5) {
+            background-color: var(--color-error);
+          }
+        }
+      }
+
+      /* ── Semantic Surface Demo ── */
+
+      .surface-demo {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-block-end: var(--spacing-md);
+
+        & .swatch {
+          padding: var(--spacing-sm) var(--spacing-md);
+          border-radius: var(--border-radius);
+          border: var(--border);
+          font-family: var(--font-tertiary-stack);
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+
+    <hr />
+
+
+    <!-- ── Colors ── -->
+
+    <h2 id="ks-colors" class="section-header">Colors</h2>
+
+    <h3>Brand Colors</h3>
+    <div class="chip-container brand">
+      <div class="color-chip">
+        <div class="label">primary</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">secondary</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">tertiary</div>
+      </div>
+    </div>
+
+    <h3>Neutrals</h3>
+    <div class="chip-container neutrals">
+      <div class="color-chip">
+        <div class="label">white (0%)</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">10%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">20%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">30%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">40%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">50%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">60%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">70%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">80%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">90%</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">black (100%)</div>
+      </div>
+    </div>
+
+    <h3>UI Colors</h3>
+    <div class="chip-container ui">
+      <div class="color-chip">
+        <div class="label">action</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">highlight</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">success</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">warning</div>
+      </div>
+      <div class="color-chip">
+        <div class="label">error</div>
+      </div>
+    </div>
+
+    <hr />
+
+
+    <!-- ── Headings ── -->
+
+    <h2 id="ks-headings" class="section-header">Headings</h2>
+
+    <h2 class="display">Display</h2>
+    <h1>Heading 1</h1>
+    <h2>Heading 2</h2>
+    <h3>Heading 3</h3>
+    <h4>Heading 4</h4>
+    <h5>Heading 5</h5>
+    <h6  style="margin-bottom: var(--spacing-md);">Heading 6</h6>
+
+    <hr>
+
+    <h2 class="section-header">Class-Based Overrides</h2>
+    <p>Use <code>.h1</code>&ndash;<code>.h6</code> classes to visually override heading size:</p>
+    <h2 class="h4">h2 element with .h4 class</h2>
+    <span class="h2">span element with .h2 class</span>
+
+    <hr />
+
+
+    <!-- ── Headings with Text ── -->
+
+    <h2 id="ks-headings-with-text" class="section-header">Headings with Text</h2>
+
+    <h1>Heading 1</h1>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+    <h2>Heading 2</h2>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+    <h3>Heading 3</h3>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+    <h4>Heading 4</h4>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+    <h5>Heading 5</h5>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+    <h6>Heading 6</h6>
+    <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+
+    <hr />
+
+
+    <!-- ── Block Elements ── -->
+
+    <h2 id="ks-text-block" class="section-header">Block Elements</h2>
+
+    <h3 id="ks-paragraph">Paragraphs and Images</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
+    <p>Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl. Praesent mattis, massa quis luctus fermentum, turpis mi volutpat justo, eu volutpat enim diam eget metus. Maecenas ornare tortor.</p>
+
+    <p><img alt="Placeholder Image and Some Alt Text" src="https://placehold.co/350x150" title="A title element for this placeholder image." /></p>
+
+    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
+
+    <h3>Blockquote</h3>
+
+    <p>This is a standard paragraph. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+
+    <blockquote>
+      <strong>This is a blockquote.</strong> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at,
+      tincidunt nec, gravida vehicula, nisl.
+      <footer class="cite">John Doe</footer>
+    </blockquote>
+
+    <p>This is a standard paragraph. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
+
+    <h3>Figure-Caption</h3>
+
+    <figure>
+      <img src="https://placehold.co/350x150" alt="A placeholder figure image." />
+      <figcaption>The figcaption element example</figcaption>
+    </figure>
+
+    <hr />
+
+
+    <!-- ── Details / Summary ── -->
+
+    <h2 id="ks-details" class="section-header">Details / Summary</h2>
+
+    <p>Individual details element:</p>
+    <details>
+      <summary>Click to expand</summary>
+      <p>The details element content. This is hidden by default and shown when the summary is clicked.</p>
+    </details>
+
+    <p>Accordion pattern (stacked with <code>name</code> attribute):</p>
+    <details name="ks-faq">
+      <summary>Question 1: What is rek-room?</summary>
+      <p>A zero-dependency CSS starting point for styling HTML primitives and simple components.</p>
+    </details>
+    <details name="ks-faq">
+      <summary>Question 2: Does it require JavaScript?</summary>
+      <p>No. Everything is pure CSS &mdash; no JavaScript required for any component.</p>
+    </details>
+    <details name="ks-faq">
+      <summary>Question 3: How do I customize it?</summary>
+      <p>Override any CSS custom property. Because the system uses <code>@layer</code>, your overrides automatically win.</p>
+    </details>
+
+    <hr />
+
+
+    <!-- ── Dialog ── -->
+
+    <h2 id="ks-dialog" class="section-header">Dialog</h2>
+
+    <p>Native <code>&lt;dialog&gt;</code> with backdrop blur and entry/exit animations:</p>
+    <button type="button" onclick="document.getElementById('ks-demo-dialog').showModal()">Open Dialog</button>
+
+    <dialog id="ks-demo-dialog" closedBy="any">
+      <h3>Dialog Title</h3>
+      <p>This is a native dialog element. It uses <code>@starting-style</code> for smooth open/close animations and <code>::backdrop</code> for the overlay.</p>
+      <button type="button" onclick="this.closest('dialog').close()">Close</button>
+    </dialog>
+
+    <hr />
+
+
+    <!-- ── Popover ── -->
+
+    <h2 id="ks-popover" class="section-header">Popover</h2>
+
+    <p>Native Popover API with <code>@starting-style</code> entry/exit animations:</p>
+
+    <button type="button" popovertarget="ks-demo-popover-auto">Toggle Popover (auto)</button>
+    <button type="button" popovertarget="ks-demo-popover-manual" popovertargetaction="show">Show Manual Popover</button>
+
+    <div id="ks-demo-popover-auto" popover>
+      <p><strong>Auto popover.</strong> Click outside or press <kbd>Esc</kbd> to dismiss. This uses the Popover API with no JavaScript required for show/hide behavior.</p>
+    </div>
+
+    <div id="ks-demo-popover-manual" popover="manual">
+      <p><strong>Manual popover.</strong> Must be explicitly dismissed.</p>
+      <button type="button" popovertarget="ks-demo-popover-manual" popovertargetaction="hide" class="sm">Dismiss</button>
+    </div>
+
+    <hr />
+
+
+    <!-- ── Text Elements ── -->
+
+    <h2 id="ks-text-elements" class="section-header">Text Elements</h2>
+
+    <p>The <a href="#">a element</a> and <a href="https://example.com" target="_blank">external a element</a> examples</p>
+    <p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
+    <p>The <b>b element</b> example</p>
+    <p>The <cite>cite element</cite> example</p>
+    <p>The <code>code element</code> example</p>
+    <p>The <data value="3967381398">data element</data> example</p>
+    <p>The <del>del element</del> example</p>
+    <p>The <dfn>dfn element</dfn> and <dfn title="Title text">dfn element with title</dfn> examples</p>
+    <p>The <em>em element</em> example</p>
+    <p>The <i>i element</i> example</p>
+    <p>The <ins>ins element</ins> example</p>
+    <p>The <kbd>kbd element</kbd> example</p>
+    <p>The <mark>mark element</mark> example</p>
+    <p>The <q>q element</q> example</p>
+    <p>The <q>q element <q>inside</q> a q element</q> example</p>
+    <p>The <s>s element</s> example</p>
+    <p>The <samp>samp element</samp> example</p>
+    <p>The <small>small element</small> example</p>
+    <p>The <span>span element</span> example</p>
+    <p>The <strong>strong element</strong> example</p>
+    <p>The <sub>sub element</sub> example</p>
+    <p>The <sup>sup element</sup> example</p>
+    <p>The <time datetime="2005-05-15 19:00">time element</time> example</p>
+    <p>The <u>u element</u> example</p>
+    <p>The <var>var element</var> example</p>
+
+    <hr />
+
+
+    <!-- ── Monospace / Preformatted ── -->
+
+    <h2 id="ks-monospace" class="section-header">Monospace / Preformatted</h2>
+
+    <p>Code block wrapped in <code>pre</code> and <code>code</code> tags:</p>
+    <pre><code>// Loop through Divs using Javascript.
+var divs = document.querySelectorAll('div'), i;
+
+for (i = 0; i &lt; divs.length; ++i) {
+  divs[i].style.color = "green";
 }</code></pre>
-    </section>
 
-    <section id="ks-buttons" class="vignette">
-      <p class="vignette-label">Buttons</p>
-      <div class="button-row">
-        <button>Primary</button>
-        <button class="secondary">Secondary</button>
-        <button class="success">Success</button>
-        <button class="error">Destructive</button>
-        <button class="warning">Warning</button>
-        <button class="light">Light</button>
-        <button class="dark">Dark</button>
-      </div>
-      <div class="button-row">
-        <button class="outline">Outline</button>
-        <button class="outline secondary">Outline Secondary</button>
-        <button class="outline error">Outline Destructive</button>
-        <button class="sm">Small</button>
-        <button>Medium</button>
-        <button class="lg">Large</button>
-        <button disabled>Disabled</button>
-        <button class="link">Link</button>
-      </div>
-    </section>
+    <p>Monospace text wrapped in <code>pre</code> tags:</p>
+    <pre>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
+Nullam dignissim convallis est. Quisque aliquam.</pre>
 
-    <section id="ks-forms" class="vignette">
-      <p class="vignette-label">Forms</p>
+    <hr />
+
+
+    <!-- ── List Types ── -->
+
+    <h2 id="ks-list-types" class="section-header">List Types</h2>
+
+    <h3>Ordered List (reset)</h3>
+    <ol style="margin-bottom: var(--spacing-md);">
+      <li>List Item 1</li>
+      <li>List Item 2</li>
+      <li>List Item 3
+        <ol>
+          <li>List Item 3.1</li>
+          <li>List Item 3.2
+            <ol>
+              <li>List Item 3.2.1</li>
+              <li>List Item 3.2.2</li>
+            </ol>
+          </li>
+          <li>List Item 3.3</li>
+        </ol>
+      </li>
+      <li>List Item 4</li>
+    </ol>
+
+    <h3>Ordered List (formatted)</h3>
+    <ol class="bullets" style="margin-bottom: var(--spacing-md);">
+      <li>List Item 1</li>
+      <li>List Item 2</li>
+      <li>List Item 3
+        <ol>
+          <li>List Item 3.1</li>
+          <li>List Item 3.2
+            <ol>
+              <li>List Item 3.2.1</li>
+              <li>List Item 3.2.2</li>
+            </ol>
+          </li>
+          <li>List Item 3.3</li>
+        </ol>
+      </li>
+      <li>List Item 4</li>
+    </ol>
+
+    <h3>Unordered List (reset)</h3>
+    <ul style="margin-bottom: var(--spacing-md);">
+      <li>List Item 1</li>
+      <li>List Item 2</li>
+      <li>List Item 3
+        <ul>
+          <li>List Item 3.1</li>
+          <li>List Item 3.2
+            <ul>
+              <li>List Item 3.2.1</li>
+              <li>List Item 3.2.2</li>
+            </ul>
+          </li>
+          <li>List Item 3.3</li>
+        </ul>
+      </li>
+      <li>List Item 4</li>
+    </ul>
+
+    <h3>Unordered List (formatted)</h3>
+    <ul class="bullets" style="margin-bottom: var(--spacing-md);">
+      <li>List Item 1</li>
+      <li>List Item 2</li>
+      <li>List Item 3
+        <ul>
+          <li>List Item 3.1</li>
+          <li>List Item 3.2
+            <ul>
+              <li>List Item 3.2.1</li>
+              <li>List Item 3.2.2</li>
+            </ul>
+          </li>
+          <li>List Item 3.3</li>
+        </ul>
+      </li>
+      <li>List Item 4</li>
+    </ul>
+
+    <h3>Definition List</h3>
+    <dl>
+      <dt>Definition Term 1</dt>
+      <dd>Definition Description 1</dd>
+      <dt>Definition Term 2</dt>
+      <dd>Definition Description 2</dd>
+    </dl>
+
+    <hr />
+
+
+    <!-- ── Tables ── -->
+
+    <h2 id="ks-tables" class="section-header">Tables</h2>
+
+    <table>
+      <caption>This is a table caption</caption>
+      <thead>
+        <tr>
+          <th>Table Header 1</th>
+          <th>Table Header 2</th>
+          <th>Table Header 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Division 1</td>
+          <td>Division 2</td>
+          <td>Division 3</td>
+        </tr>
+        <tr>
+          <td>Division 1</td>
+          <td>Division 2</td>
+          <td>Division 3</td>
+        </tr>
+        <tr>
+          <td>Division 1</td>
+          <td>Division 2</td>
+          <td>Division 3</td>
+        </tr>
+        <tr>
+          <td colspan="3">A row with a cell spanning all 3 columns</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Table Footer 1</th>
+          <th>Table Footer 2</th>
+          <th>Table Footer 3</th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <hr />
+
+
+    <!-- ── Progress & Meter ── -->
+
+    <h2 id="ks-progress-meter" class="section-header">Progress &amp; Meter</h2>
+
+    <div class="form-group">
+      <label for="ks-progress-demo">Progress (65%):</label>
+      <progress id="ks-progress-demo" value="65" max="100">65%</progress>
+    </div>
+
+    <div class="form-group">
+      <label for="ks-progress-indeterminate">Indeterminate Progress:</label>
+      <progress id="ks-progress-indeterminate">Loading...</progress>
+    </div>
+
+    <div class="form-group">
+      <label for="ks-meter-optimum">Meter (optimum range):</label>
+      <meter id="ks-meter-optimum" min="0" max="100" low="30" high="70" optimum="80" value="75">75%</meter>
+    </div>
+
+    <div class="form-group">
+      <label for="ks-meter-suboptimum">Meter (suboptimum range):</label>
+      <meter id="ks-meter-suboptimum" min="0" max="100" low="30" high="70" optimum="80" value="50">50%</meter>
+    </div>
+
+    <div class="form-group">
+      <label for="ks-meter-low">Meter (low range):</label>
+      <meter id="ks-meter-low" min="0" max="100" low="30" high="70" optimum="80" value="15">15%</meter>
+    </div>
+
+    <hr />
+
+
+    <!-- ── Media ── -->
+
+    <h2 id="ks-media" class="section-header">Media</h2>
+
+    <h3>The Audio Element:</h3>
+    <audio controls  style="margin-bottom: var(--spacing-md);">
+      <source src="https://www.w3schools.com/tags/horse.ogg" type="audio/ogg" />
+      <source src="https://www.w3schools.com/tags/horse.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <h3>The Video Element:</h3>
+    <video width="320" height="240" controls>
+      <source src="https://www.w3schools.com/tags/movie.mp4" type="video/mp4" />
+      <source src="https://www.w3schools.com/tags/movie.ogg" type="video/ogg" />
+      Your browser does not support the video tag.
+    </video>
+
+    <hr />
+
+
+    <!-- ── Form Elements ── -->
+
+    <h2 id="ks-form-elements" class="section-header">Form Elements</h2>
+
+    <fieldset>
+      <legend>Legend</legend>
+
       <form>
-        <fieldset>
-          <legend>Details</legend>
-          <div class="form-group">
-            <label for="ks-name">Name</label>
-            <input type="text" id="ks-name" placeholder="Jane Smith" required>
-          </div>
-          <div class="form-group">
-            <label for="ks-email">Email</label>
-            <input type="email" id="ks-email" placeholder="jane@example.com">
-          </div>
-          <div class="form-group">
-            <label for="ks-message">Message</label>
-            <textarea id="ks-message" rows="3" placeholder="Your message…"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="ks-select">Topic</label>
-            <select id="ks-select">
-              <option>Choose…</option>
-              <option>General</option>
-              <option>Support</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label><input type="checkbox" checked> Subscribe to updates</label>
-            <label><input type="radio" name="ks-radio" checked> Option A</label>
-            <label><input type="radio" name="ks-radio"> Option B</label>
-          </div>
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-block-end:1rem">
-            <div class="toggle"><input type="checkbox" id="ks-toggle" checked><label for="ks-toggle">Toggle</label></div>
-            <span style="font-size:0.875rem">Notifications enabled</span>
-          </div>
-          <input type="range" min="0" max="100" value="60" style="margin-block-end:1rem">
-          <div class="button-row">
-            <input type="submit" value="Submit">
-            <input type="reset" value="Reset">
-          </div>
-        </fieldset>
-      </form>
-    </section>
-
-    <section id="ks-tables" class="vignette">
-      <p class="vignette-label">Tables</p>
-      <table>
-        <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Alice Chen</td><td>Designer</td><td>Active</td></tr>
-          <tr><td>Marcus Webb</td><td>Engineer</td><td>Active</td></tr>
-          <tr><td>Priya Nair</td><td>PM</td><td>On Leave</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section id="ks-lists" class="vignette">
-      <p class="vignette-label">Lists</p>
-      <ul>
-        <li>Design tokens</li>
-        <li>Accessible HTML<ul><li>Keyboard nav</li><li>ARIA support</li></ul></li>
-        <li>Light &amp; dark mode</li>
-      </ul>
-      <ol>
-        <li>Define tokens</li>
-        <li>Import styles</li>
-        <li>Customize</li>
-      </ol>
-      <dl>
-        <dt>Design Token</dt><dd>A named design decision value.</dd>
-        <dt>CSS Custom Property</dt><dd>A variable using <code>--name</code> syntax.</dd>
-      </dl>
-    </section>
-
-    <section id="ks-media" class="vignette">
-      <p class="vignette-label">Media</p>
-      <figure>
-        <div class="media-placeholder">16 × 9 Placeholder</div>
-        <figcaption>A descriptive caption for the image above.</figcaption>
-      </figure>
-    </section>
-
-    <section id="ks-details" class="vignette">
-      <p class="vignette-label">Details / Summary</p>
-      <details open><summary>What is rek-room?</summary><p>A classless CSS design system built on native HTML elements and design tokens.</p></details>
-      <details><summary>How do I customize it?</summary><p>Override CSS custom properties in <code>tokens/core.css</code> to match your brand.</p></details>
-      <details><summary>Dark mode support?</summary><p>Yes — set <code>color-scheme: dark</code> on the root element.</p></details>
-    </section>
-
-    <section id="ks-dialog" class="vignette">
-      <p class="vignette-label">Dialog</p>
-      <div class="dialog-preview" role="dialog" aria-labelledby="ks-dialog-title">
-        <h2 id="ks-dialog-title">Confirm Action</h2>
-        <p>Are you sure you want to delete this item? This cannot be undone.</p>
-        <div class="button-row">
-          <button class="error">Delete</button>
-          <button class="outline">Cancel</button>
+        <div class="form-group">
+          <label for="ks-text_field">Text Field:</label>
+          <input type="text" id="ks-text_field" />
         </div>
-      </div>
-    </section>
 
-    <section id="ks-progress" class="vignette">
-      <p class="vignette-label">Progress &amp; Meter</p>
-      <div class="progress-group"><p class="progress-label">Upload — 70%</p><progress value="70" max="100">70%</progress></div>
-      <div class="progress-group"><p class="progress-label">Indeterminate</p><progress>Loading…</progress></div>
-      <div class="progress-group"><p class="progress-label">Disk — good</p><meter value="0.4" min="0" max="1" low="0.7" high="0.85" optimum="0.4">40%</meter></div>
-      <div class="progress-group"><p class="progress-label">CPU — warning</p><meter value="0.75" min="0" max="1" low="0.5" high="0.8" optimum="0.3">75%</meter></div>
-    </section>
+        <div class="form-group">
+          <label for="ks-text_field_disabled">Disabled Text Field:</label>
+          <input type="text" id="ks-text_field_disabled" disabled value="I'm disabled" />
+        </div>
 
-    <section id="ks-scrollbars" class="vignette">
-      <p class="vignette-label">Scrollbars</p>
-      <div class="scroll-container">
-        <p>Scroll to see themed scrollbar styling.</p>
-        <p>The thumb uses the action color, consistent with interactive elements throughout the design system.</p>
-        <p>Scrollbar styling adapts automatically to light and dark mode via <code>light-dark()</code>.</p>
-        <p>Supported in Firefox 64+, Chrome 121+, Safari 18+.</p>
-        <p>End of scrollable content.</p>
-      </div>
-    </section>
+        <div class="form-group">
+          <label for="ks-text_field_readonly">Readonly Text Field:</label>
+          <input type="text" id="ks-text_field_readonly" readonly value="I'm readonly" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-text_field_required">Required Text Field:</label>
+          <input type="text" id="ks-text_field_required" required placeholder="This field is required" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-email_field">Email (with validation):</label>
+          <input type="email" id="ks-email_field" placeholder="email@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-text_area1">Text Area:</label>
+          <textarea id="ks-text_area1"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-text_area_disabled">Disabled Text Area:</label>
+          <textarea id="ks-text_area_disabled" disabled>I'm disabled</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-text_area_readonly">Readonly Text Area:</label>
+          <textarea id="ks-text_area_readonly" readonly>I'm readonly</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-select_element1">Select Element:</label>
+          <select id="ks-select_element1">
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-select_element2">Option Groups:</label>
+          <select id="ks-select_element2">
+            <optgroup label="Option Group 1">
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+            </optgroup>
+            <optgroup label="Option Group 2">
+              <option value="1">Option 1</option>
+              <option value="2">Option 2</option>
+              <option value="3" disabled>Disabled Option</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-select_element_disabled">Disabled Select Element:</label>
+          <select id="ks-select_element_disabled" disabled>
+            <option value="1">Unselectable Option</option>
+            <option value="2">This option should not even be seen</option>
+          </select>
+        </div>
+
+        <!-- Radio Buttons -->
+        <div class="form-group">
+          <h4>Radio Buttons:</h4>
+          <ul>
+            <li>
+              <label><input type="radio" name="ks-radio_button" value="radio_1" /> Radio 1</label>
+            </li>
+            <li>
+              <label><input type="radio" name="ks-radio_button" value="radio_2" /> Radio 2</label>
+            </li>
+            <li>
+              <label><input type="radio" name="ks-radio_button" value="radio_3" /> Radio 3</label>
+            </li>
+            <li>
+              <label><input type="radio" name="ks-radio_button" value="radio_4" disabled /> Radio 4 (disabled)</label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="form-group">
+          <h4>Checkboxes:</h4>
+          <ul>
+            <li>
+              <label><input type="checkbox" name="ks-checkboxes" value="check_1" /> Checkbox 1</label>
+            </li>
+            <li>
+              <label><input type="checkbox" name="ks-checkboxes" value="check_2" /> Checkbox 2</label>
+            </li>
+            <li>
+              <label><input type="checkbox" name="ks-checkboxes" value="check_3" /> Checkbox 3</label>
+            </li>
+            <li>
+              <label><input type="checkbox" name="ks-checkboxes" value="check_4" disabled /> Checkbox 4 (disabled)</label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Toggles -->
+        <div class="form-group">
+          <h4>Toggles:</h4>
+          <ul>
+            <li>
+              <div class="form-group">
+                <div class="toggle-label">Toggle label</div>
+                <div class="toggle">
+                  <input type="checkbox" id="ks-switch" />
+                  <label for="ks-switch">Toggle</label>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="form-group">
+                <div class="toggle-label">Toggle label</div>
+                <div class="toggle">
+                  <input type="checkbox" id="ks-switch-2" />
+                  <label for="ks-switch-2">Toggle</label>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-password">Password:</label>
+          <input type="password" id="ks-password" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-file">File Input:</label>
+          <input type="file" id="ks-file" />
+        </div>
+
+        <!-- HTML5 Form Elements -->
+        <h3>HTML5-specific Form Elements</h3>
+
+        <div class="form-group">
+          <label for="ks-url">URL:</label>
+          <input type="url" id="ks-url" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-tel">Telephone:</label>
+          <input type="tel" id="ks-tel" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-number">Number:</label>
+          <input type="number" id="ks-number" min="0" max="10" step="1" value="5" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-search">Search:</label>
+          <input type="search" id="ks-search" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-date">Date:</label>
+          <input type="date" id="ks-date" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-time">Time:</label>
+          <input type="time" id="ks-time" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-color">Color:</label>
+          <input type="color" id="ks-color" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-datalist">Datalist:</label>
+          <input list="ks-browsers" name="browser" id="ks-datalist" />
+          <datalist id="ks-browsers">
+            <option value="Firefox" />
+            <option value="Chrome" />
+            <option value="Safari" />
+            <option value="Edge" />
+          </datalist>
+        </div>
+
+        <div class="form-group">
+          <label for="ks-range">Range:</label>
+          <input type="range" id="ks-range" name="points" min="1" max="10" />
+        </div>
+
+        <div class="form-group">
+          <label for="ks-output">Output:</label>
+          <output name="result" id="ks-output">42</output>
+        </div>
+
+        <!-- Buttons -->
+        <hr />
+
+        <h2 id="ks-buttons" class="section-header">Buttons</h2>
+
+        <div class="form-group">
+          <h4>HTML Elements</h4>
+          <button type="button">Button</button>
+          <input type="button" value="Input" />
+          <input type="submit" value="Submit" />
+          <input type="reset" value="Reset" />
+          <a href="#" role="button">a[role="button"]</a>
+          <button type="button" class="text">button.text</button>
+        </div>
+
+        <div class="form-group">
+          <h4>Variants</h4>
+          <button type="button">Primary (default)</button>
+          <button type="button" class="secondary">Secondary</button>
+          <button type="button" class="success">Success</button>
+          <button type="button" class="error">Error</button>
+          <button type="button" class="warning">Warning</button>
+          <button type="button" class="light">Light</button>
+          <button type="button" class="dark">Dark</button>
+        </div>
+
+        <div class="form-group">
+          <h4>Outlines</h4>
+          <button type="button" class="outline">Primary Outline</button>
+          <button type="button" class="outline secondary">Secondary</button>
+          <button type="button" class="outline success">Success</button>
+          <button type="button" class="outline error">Error</button>
+          <button type="button" class="outline warning">Warning</button>
+          <button type="button" class="outline light">Light</button>
+          <button type="button" class="outline dark">Dark</button>
+        </div>
+
+        <div class="form-group">
+          <h4>Sizes</h4>
+          <button type="button" class="sm">Small</button>
+          <button type="button">Medium (Default)</button>
+          <button type="button" class="lg">Large</button>
+        </div>
+
+        <div class="form-group">
+          <h4>States</h4>
+          <button type="button">Normal</button>
+          <button type="button" disabled>Disabled</button>
+        </div>
+
+      </form>
+    </fieldset>
 
   </div><!-- /kitchen-sink -->
 
@@ -626,6 +1338,25 @@ function greet(name) {
           if (el) el.scrollIntoView({ behavior: 'smooth' });
           break;
         }
+        case 'set-scroll':
+          scrollFromParent = true;
+          document.documentElement.scrollTop = data.scrollTop;
+          // Reset flag after the scroll event fires
+          requestAnimationFrame(() => { scrollFromParent = false; });
+          break;
+        case 'set-scroll-mode':
+          if (data.mode === 'external') {
+            // Disable internal scrolling — parent container will scroll us
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'visible';
+            externalScrollMode = true;
+            reportContentHeight();
+          } else {
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
+            externalScrollMode = false;
+          }
+          break;
         case 'load-font': {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
@@ -636,15 +1367,33 @@ function greet(name) {
       }
     });
 
-    // ── Scroll sync to parent ──
+    // ── External scroll mode (iframes in shared container) ──
+    let externalScrollMode = false;
+
+    function reportContentHeight() {
+      const height = document.documentElement.scrollHeight;
+      window.parent.postMessage({ type: 'content-height', height }, '*');
+    }
+
+    // Report height changes on resize or DOM mutation
+    const heightObserver = new ResizeObserver(() => {
+      if (externalScrollMode) reportContentHeight();
+    });
+    heightObserver.observe(document.body);
+
+    // ── Scroll sync to parent (only in internal scroll mode) ──
+    let scrollFromParent = false;
     let scrollTicking = false;
     document.addEventListener('scroll', () => {
+      if (externalScrollMode) return;
+      // Don't echo back scroll events triggered by parent
+      if (scrollFromParent) return;
       if (!scrollTicking) {
+        scrollTicking = true;
         requestAnimationFrame(() => {
           window.parent.postMessage({ type: 'scroll', scrollTop: document.documentElement.scrollTop }, '*');
           scrollTicking = false;
         });
-        scrollTicking = true;
       }
     });
 

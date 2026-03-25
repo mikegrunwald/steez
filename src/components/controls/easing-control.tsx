@@ -1,13 +1,21 @@
 'use client';
 
+import { useState } from 'react';
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+} from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import { ChangeIndicator } from '@/components/change-indicator';
+import { AliasValue } from '@/components/alias-value';
+import { hasVarReference } from '@/lib/tokens/value-parser';
 import { useTokens } from '@/lib/state/token-context';
 import type { TokenDefinition } from '@/lib/tokens/types';
 
@@ -15,59 +23,65 @@ interface EasingControlProps {
   token: TokenDefinition;
 }
 
-type EasingEntry = { label: string; value: string; bezier: [number, number, number, number] };
+type EasingEntry = { label: string; varName: string; group: string };
 
 const EASINGS: EasingEntry[] = [
-  { label: 'linear', value: 'linear', bezier: [0, 0, 1, 1] },
-  { label: 'ease', value: 'ease', bezier: [0.25, 0.1, 0.25, 1] },
-  { label: 'ease-in', value: 'ease-in', bezier: [0.42, 0, 1, 1] },
-  { label: 'ease-out', value: 'ease-out', bezier: [0, 0, 0.58, 1] },
-  { label: 'ease-in-out', value: 'ease-in-out', bezier: [0.42, 0, 0.58, 1] },
-  { label: 'ease-in-quad', value: 'ease-in-quad', bezier: [0.55, 0.085, 0.68, 0.53] },
-  { label: 'ease-out-quad', value: 'ease-out-quad', bezier: [0.25, 0.46, 0.45, 0.94] },
-  { label: 'ease-in-out-quad', value: 'ease-in-out-quad', bezier: [0.455, 0.03, 0.515, 0.955] },
-  { label: 'ease-in-cubic', value: 'ease-in-cubic', bezier: [0.55, 0.055, 0.675, 0.19] },
-  { label: 'ease-out-cubic', value: 'ease-out-cubic', bezier: [0.215, 0.61, 0.355, 1] },
-  { label: 'ease-in-out-cubic', value: 'ease-in-out-cubic', bezier: [0.645, 0.045, 0.355, 1] },
-  { label: 'ease-in-quart', value: 'ease-in-quart', bezier: [0.895, 0.03, 0.685, 0.22] },
-  { label: 'ease-out-quart', value: 'ease-out-quart', bezier: [0.165, 0.84, 0.44, 1] },
-  { label: 'ease-in-out-quart', value: 'ease-in-out-quart', bezier: [0.77, 0, 0.175, 1] },
-  { label: 'ease-in-back', value: 'ease-in-back', bezier: [0.36, 0, 0.66, -0.56] },
-  { label: 'ease-out-back', value: 'ease-out-back', bezier: [0.34, 1.56, 0.64, 1] },
-  { label: 'ease-in-out-back', value: 'ease-in-out-back', bezier: [0.68, -0.6, 0.32, 1.6] },
+  // Standard
+  { label: 'linear', varName: '--linear', group: 'Standard' },
+  { label: 'ease', varName: '--ease', group: 'Standard' },
+  { label: 'ease-in', varName: '--ease-in', group: 'Standard' },
+  { label: 'ease-out', varName: '--ease-out', group: 'Standard' },
+  { label: 'ease-in-out', varName: '--ease-in-out', group: 'Standard' },
+  // Ease In
+  { label: 'ease-in-quad', varName: '--ease-in-quad', group: 'Ease In' },
+  { label: 'ease-in-cubic', varName: '--ease-in-cubic', group: 'Ease In' },
+  { label: 'ease-in-quart', varName: '--ease-in-quart', group: 'Ease In' },
+  { label: 'ease-in-quint', varName: '--ease-in-quint', group: 'Ease In' },
+  { label: 'ease-in-sine', varName: '--ease-in-sine', group: 'Ease In' },
+  { label: 'ease-in-expo', varName: '--ease-in-expo', group: 'Ease In' },
+  { label: 'ease-in-circ', varName: '--ease-in-circ', group: 'Ease In' },
+  { label: 'ease-in-back', varName: '--ease-in-back', group: 'Ease In' },
+  // Ease Out
+  { label: 'ease-out-quad', varName: '--ease-out-quad', group: 'Ease Out' },
+  { label: 'ease-out-cubic', varName: '--ease-out-cubic', group: 'Ease Out' },
+  { label: 'ease-out-quart', varName: '--ease-out-quart', group: 'Ease Out' },
+  { label: 'ease-out-quint', varName: '--ease-out-quint', group: 'Ease Out' },
+  { label: 'ease-out-sine', varName: '--ease-out-sine', group: 'Ease Out' },
+  { label: 'ease-out-expo', varName: '--ease-out-expo', group: 'Ease Out' },
+  { label: 'ease-out-circ', varName: '--ease-out-circ', group: 'Ease Out' },
+  { label: 'ease-out-back', varName: '--ease-out-back', group: 'Ease Out' },
+  // Ease In Out
+  { label: 'ease-in-out-quad', varName: '--ease-in-out-quad', group: 'Ease In Out' },
+  { label: 'ease-in-out-cubic', varName: '--ease-in-out-cubic', group: 'Ease In Out' },
+  { label: 'ease-in-out-quart', varName: '--ease-in-out-quart', group: 'Ease In Out' },
+  { label: 'ease-in-out-quint', varName: '--ease-in-out-quint', group: 'Ease In Out' },
+  { label: 'ease-in-out-sine', varName: '--ease-in-out-sine', group: 'Ease In Out' },
+  { label: 'ease-in-out-expo', varName: '--ease-in-out-expo', group: 'Ease In Out' },
+  { label: 'ease-in-out-circ', varName: '--ease-in-out-circ', group: 'Ease In Out' },
+  { label: 'ease-in-out-back', varName: '--ease-in-out-back', group: 'Ease In Out' },
 ];
 
-function BezierCurvePreview({ bezier }: { bezier: [number, number, number, number] }) {
-  const [x1, y1, x2, y2] = bezier;
-  // Map bezier to SVG coords: x is time 0→40, y is value 0→30 (flipped)
-  const W = 40;
-  const H = 30;
-  const pad = 4;
-  const cx = (x: number) => pad + x * (W - pad * 2);
-  const cy = (y: number) => H - pad - y * (H - pad * 2);
+const GROUPS = ['Standard', 'Ease In', 'Ease Out', 'Ease In Out'];
 
-  const p0x = cx(0), p0y = cy(0);
-  const p3x = cx(1), p3y = cy(1);
-  const c1x = cx(x1), c1y = cy(y1);
-  const c2x = cx(x2), c2y = cy(y2);
+/** Resolve a value to display label */
+function resolveLabel(value: string): string {
+  // Check var() ref
+  const varMatch = value.match(/^var\((.+)\)$/);
+  if (varMatch) {
+    const entry = EASINGS.find((e) => e.varName === varMatch[1]);
+    if (entry) return entry.label;
+  }
+  // Check bare name
+  const nameMatch = EASINGS.find((e) => e.label === value || e.varName === `--${value}`);
+  if (nameMatch) return nameMatch.label;
+  return value;
+}
 
+function isSelected(currentValue: string, easing: EasingEntry): boolean {
   return (
-    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="shrink-0">
-      {/* guide lines */}
-      <line x1={p0x} y1={p0y} x2={c1x} y2={c1y} stroke="currentColor" strokeWidth={0.5} opacity={0.3} />
-      <line x1={p3x} y1={p3y} x2={c2x} y2={c2y} stroke="currentColor" strokeWidth={0.5} opacity={0.3} />
-      {/* curve */}
-      <path
-        d={`M${p0x},${p0y} C${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={1.5}
-        strokeLinecap="round"
-      />
-      {/* endpoints */}
-      <circle cx={p0x} cy={p0y} r={1.5} fill="currentColor" />
-      <circle cx={p3x} cy={p3y} r={1.5} fill="currentColor" />
-    </svg>
+    currentValue === `var(${easing.varName})` ||
+    currentValue === easing.label ||
+    currentValue === easing.varName
   );
 }
 
@@ -75,26 +89,105 @@ export function EasingControl({ token }: EasingControlProps) {
   const { overrides, dispatch } = useTokens();
   const currentValue = overrides[token.key] ?? token.defaultValue;
 
-  const matched = EASINGS.find((e) => e.value === currentValue) ?? EASINGS[0];
+  const [open, setOpen] = useState(false);
+  const [customMode, setCustomMode] = useState(false);
+  const [customInput, setCustomInput] = useState('');
+
+  const displayLabel = resolveLabel(currentValue);
+  const isAlias = hasVarReference(currentValue);
+
+  const commit = (value: string) => {
+    dispatch({ type: 'SET_TOKEN', key: token.key, value });
+    setOpen(false);
+  };
+
+  if (customMode) {
+    return (
+      <div className="flex items-center gap-2">
+        <Input
+          value={customInput}
+          onChange={(e) => setCustomInput(e.target.value)}
+          onBlur={() => {
+            if (customInput) commit(customInput);
+            setCustomMode(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              if (customInput) commit(customInput);
+              setCustomMode(false);
+            }
+            if (e.key === 'Escape') setCustomMode(false);
+          }}
+          className="h-7 text-xs font-mono flex-1"
+          placeholder="cubic-bezier(0.25, 0.1, 0.25, 1)"
+          autoFocus
+        />
+        <button
+          onClick={() => setCustomMode(false)}
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          Cancel
+        </button>
+        <ChangeIndicator tokenKey={token.key} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">
-      <Select
-        value={currentValue}
-        onValueChange={(val) => val && dispatch({ type: 'SET_TOKEN', key: token.key, value: val })}
-      >
-        <SelectTrigger className="w-44">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {EASINGS.map((easing) => (
-            <SelectItem key={easing.value} value={easing.value}>
-              {easing.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <BezierCurvePreview bezier={matched.bezier} />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger
+          render={
+            <button className="flex items-center justify-between gap-1.5 h-7 px-2.5 rounded-lg border border-input text-xs w-44 bg-transparent hover:bg-accent/50 transition-colors">
+              {isAlias ? (
+                <AliasValue value={currentValue} className="truncate" />
+              ) : (
+                <span className="truncate">{displayLabel}</span>
+              )}
+              <ChevronsUpDownIcon className="size-3.5 text-muted-foreground shrink-0" />
+            </button>
+          }
+        />
+        <PopoverContent className="w-56 p-0" side="bottom" align="start">
+          <Command>
+            <CommandInput placeholder="Search easings…" />
+            <CommandList>
+              <CommandEmpty>No match.</CommandEmpty>
+              {GROUPS.map((group) => {
+                const entries = EASINGS.filter((e) => e.group === group);
+                return (
+                  <CommandGroup key={group} heading={group}>
+                    {entries.map((easing) => (
+                      <CommandItem
+                        key={easing.varName}
+                        value={easing.label}
+                        onSelect={() => commit(`var(${easing.varName})`)}
+                      >
+                        <CheckIcon
+                          className="size-3.5 shrink-0"
+                          style={{ opacity: isSelected(currentValue, easing) ? 1 : 0 }}
+                        />
+                        <span className="text-xs">{easing.label}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                );
+              })}
+              <CommandSeparator />
+              <CommandItem
+                value="__custom__"
+                onSelect={() => {
+                  setCustomInput(currentValue);
+                  setCustomMode(true);
+                  setOpen(false);
+                }}
+              >
+                Custom…
+              </CommandItem>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       <ChangeIndicator tokenKey={token.key} />
     </div>
   );

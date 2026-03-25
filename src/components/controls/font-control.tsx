@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { ChangeIndicator } from '@/components/change-indicator';
+import { AliasValue } from '@/components/alias-value';
+import { hasVarReference } from '@/lib/tokens/value-parser';
 import { useTokens } from '@/lib/state/token-context';
 import { GOOGLE_FONTS } from '@/lib/google-fonts';
 import type { TokenDefinition } from '@/lib/tokens/types';
@@ -42,7 +44,10 @@ export function FontControl({ token }: FontControlProps) {
   const [customInput, setCustomInput] = useState(currentValue);
 
   const isSystemStack = currentValue === SYSTEM_STACK_VALUE;
-  const matchedFont = GOOGLE_FONTS.find((f) => f.name === currentValue);
+  const isAlias = hasVarReference(currentValue);
+  // Strip quotes for matching against font list
+  const unquotedValue = currentValue.replace(/^["']|["']$/g, '');
+  const matchedFont = GOOGLE_FONTS.find((f) => f.name === unquotedValue || f.name === currentValue);
   const displayLabel = isSystemStack
     ? SYSTEM_STACK_LABEL
     : matchedFont
@@ -50,7 +55,11 @@ export function FontControl({ token }: FontControlProps) {
       : currentValue;
 
   const commit = (value: string) => {
-    dispatch({ type: 'SET_TOKEN', key: token.key, value });
+    // Quote font names that contain spaces for valid CSS font-family
+    const cssValue = value.includes(' ') && !value.startsWith('"') && !value.startsWith("'") && !value.startsWith('var(')
+      ? `"${value}"`
+      : value;
+    dispatch({ type: 'SET_TOKEN', key: token.key, value: cssValue });
     setOpen(false);
   };
 
@@ -65,7 +74,7 @@ export function FontControl({ token }: FontControlProps) {
             if (e.key === 'Enter') commit(customInput);
             if (e.key === 'Escape') setCustomMode(false);
           }}
-          className="h-7 text-sm flex-1"
+          className="h-7 text-xs flex-1"
           placeholder="font-family value…"
           autoFocus
         />
@@ -85,8 +94,12 @@ export function FontControl({ token }: FontControlProps) {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
-            <button className="flex items-center justify-between gap-1.5 h-8 px-2.5 rounded-lg border border-input text-sm w-48 bg-transparent hover:bg-accent/50 transition-colors">
-              <span className="truncate">{displayLabel}</span>
+            <button className="flex items-center justify-between gap-1.5 h-7 px-2.5 rounded-lg border border-input text-xs w-48 bg-transparent hover:bg-accent/50 transition-colors">
+              {isAlias ? (
+                <AliasValue value={currentValue} className="truncate" />
+              ) : (
+                <span className="truncate">{displayLabel}</span>
+              )}
               <ChevronsUpDownIcon className="size-4 text-muted-foreground shrink-0" />
             </button>
           }
@@ -120,7 +133,7 @@ export function FontControl({ token }: FontControlProps) {
                       >
                         <CheckIcon
                           className="size-4 shrink-0"
-                          style={{ opacity: currentValue === font.name ? 1 : 0 }}
+                          style={{ opacity: unquotedValue === font.name ? 1 : 0 }}
                         />
                         {font.name}
                       </CommandItem>
