@@ -105,7 +105,7 @@ export function ControlPanel() {
     setTheme(current === "light" ? "dark" : "light");
   };
 
-  const ThemeIcon = !mounted ? Sun : resolvedTheme === "dark" ? Moon : Sun;
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <aside
@@ -141,7 +141,7 @@ export function ControlPanel() {
       <div className="h-[67px] flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
         <div className="flex-1" />
         {changedCount > 0 && (
-          <span className="text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-1.5 py-0.5 rounded-full">
+          <span className="text-xs font-medium tabular-nums bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-1.5 py-0.5 rounded-full">
             {changedCount}
           </span>
         )}
@@ -165,7 +165,22 @@ export function ControlPanel() {
               aria-label="Toggle UI theme"
               onClick={cycleTheme}
             >
-              <ThemeIcon className="size-3.5" />
+              <span className="relative size-3.5">
+                <Moon
+                  className={`absolute inset-0 size-3.5 transition-[opacity,filter,scale] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
+                    isDark
+                      ? "scale-100 opacity-100 blur-0"
+                      : "scale-[0.25] opacity-0 blur-[4px]"
+                  }`}
+                />
+                <Sun
+                  className={`size-3.5 transition-[opacity,filter,scale] duration-300 [transition-timing-function:cubic-bezier(0.2,0,0,1)] ${
+                    isDark
+                      ? "scale-[0.25] opacity-0 blur-[4px]"
+                      : "scale-100 opacity-100 blur-0"
+                  }`}
+                />
+              </span>
             </TooltipTrigger>
             <TooltipContent side="bottom">Toggle UI theme</TooltipContent>
           </Tooltip>
