@@ -42,6 +42,10 @@ const CATEGORIES: { key: TokenCategory; label: string }[] = [
   { key: "controls", label: "Controls" },
 ];
 
+const TOKENS_BY_CATEGORY = new Map(
+  CATEGORIES.map(({ key }) => [key, TOKEN_REGISTRY.filter((t) => t.category === key)])
+);
+
 const MIN_WIDTH = 280;
 const MAX_WIDTH = 600;
 const DEFAULT_WIDTH = 400;
@@ -191,7 +195,7 @@ export function ControlPanel() {
       <div className="flex-1 overflow-y-auto">
         <Accordion value={accordionValue} onValueChange={handleValueChange}>
           {CATEGORIES.map(({ key, label }) => {
-            const tokens = TOKEN_REGISTRY.filter((t) => t.category === key);
+            const tokens = TOKENS_BY_CATEGORY.get(key) ?? [];
             return (
               <AccordionItem key={key} value={key}>
                 <AccordionTrigger className="px-4 text-[15px] font-bold text-muted-foreground">{label}</AccordionTrigger>

@@ -15,7 +15,8 @@
       "Bash(kill 73813)",
       "Bash(find /Users/mikeg/ActiveTheory/personal-playground/combobulator/node_modules/rek-room -type f \\\\\\(-name *.html -o -name *.md -o -name package.json \\\\\\))",
       "Bash(lsof -ti:3000)",
-      "Bash(/opt/homebrew/bin/npx next:*)"
+      "Bash(/opt/homebrew/bin/npx next:*)",
+      "Bash(grep -rn \"created at\\\\|0\\\\.\\\\d{4,}\\\\|\\\\.toFixed\" /Users/mikeg/ActiveTheory/personal-playground/combobulator/src --include=\"*.tsx\" --include=\"*.ts\")"
     ]
   }
 }

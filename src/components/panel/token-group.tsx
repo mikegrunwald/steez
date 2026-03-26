@@ -31,16 +31,18 @@ const HEADING_KEYS = new Set([
   '--font-size-h6',
 ]);
 
-function getSourceTokenKeys(category: TokenCategory): Set<string> {
+// Pre-compute source token keys per category at module level (TOKEN_REGISTRY is static)
+const SOURCE_KEYS_BY_CATEGORY = (() => {
   const allKeys = new Set(TOKEN_REGISTRY.map((t) => t.key));
-  const derived = new Set(
-    TOKEN_REGISTRY.filter((t) => t.derivedFrom && t.category === category).map(
-      (t) => t.derivedFrom as string
-    )
-  );
-  // Only include sources that are actually in the registry
-  return new Set([...derived].filter((k) => allKeys.has(k)));
-}
+  const map = new Map<TokenCategory, Set<string>>();
+  for (const t of TOKEN_REGISTRY) {
+    if (t.derivedFrom && allKeys.has(t.derivedFrom)) {
+      if (!map.has(t.category)) map.set(t.category, new Set());
+      map.get(t.category)!.add(t.derivedFrom);
+    }
+  }
+  return map;
+})();
 
 function TokenControl({ token }: { token: TokenDefinition }) {
   if (token.type === 'color' && token.lightDark) {
@@ -75,7 +77,7 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
   const isTypography = category === 'typography';
 
   // Tokens that have derived children within this category
-  const sourceKeys = getSourceTokenKeys(category);
+  const sourceKeys = SOURCE_KEYS_BY_CATEGORY.get(category) ?? new Set<string>();
 
   // Filter out derived tokens and hidden constants
   const topLevelTokens = tokens.filter((t) => !t.derivedFrom && !t.hidden);
@@ -137,7 +139,7 @@ export function TokenGroup({ category, tokens }: TokenGroupProps) {
           if (!group?.length) return null;
           return (
             <div key={sub}>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground pt-4 pb-2 border-b border-border mb-1.5">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground pt-4 pb-2 border-b border-border mb-1.5">
                 {sub}
               </div>
               {group.map(renderToken)}

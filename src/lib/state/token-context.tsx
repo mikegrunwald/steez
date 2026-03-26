@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useReducer,
   type ReactNode,
 } from 'react';
@@ -113,18 +114,21 @@ export function TokenProvider({ children }: { children: ReactNode }) {
   const overrides = state.history.present;
   const changedCount = Object.keys(overrides).length;
 
+  const value = useMemo(
+    () => ({
+      overrides,
+      previewMode: state.previewMode,
+      colorSchemeMode: state.colorSchemeMode,
+      expandedCategory: state.expandedCategory,
+      typeScaleUnlocked: state.typeScaleUnlocked,
+      changedCount,
+      dispatch,
+    }),
+    [overrides, state.previewMode, state.colorSchemeMode, state.expandedCategory, state.typeScaleUnlocked, changedCount, dispatch]
+  );
+
   return (
-    <TokenContext.Provider
-      value={{
-        overrides,
-        previewMode: state.previewMode,
-        colorSchemeMode: state.colorSchemeMode,
-        expandedCategory: state.expandedCategory,
-        typeScaleUnlocked: state.typeScaleUnlocked,
-        changedCount,
-        dispatch,
-      }}
-    >
+    <TokenContext.Provider value={value}>
       {children}
     </TokenContext.Provider>
   );
