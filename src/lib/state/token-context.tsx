@@ -78,7 +78,7 @@ export function TokenProvider({ children }: { children: ReactNode }) {
     history: createHistory({}),
     previewMode: 'vignettes' as PreviewMode,
     colorSchemeMode: 'both' as ColorSchemeMode,
-    expandedCategory: 'colors',
+    expandedCategory: null,
     typeScaleUnlocked: false,
   });
 
