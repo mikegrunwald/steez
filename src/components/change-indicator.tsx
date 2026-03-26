@@ -16,8 +16,9 @@ export function ChangeIndicator({ tokenKey }: ChangeIndicatorProps) {
 
   return (
     <TooltipProvider>
-      <div className="flex items-center gap-1">
-        <span className="size-1.5 rounded-full bg-purple-500 shrink-0" />
+      <div className="flex items-center gap-1" aria-label="Modified">
+        <span className="size-1.5 rounded-full bg-purple-500 shrink-0" aria-hidden="true" />
+        <span className="sr-only">Modified</span>
         <Tooltip>
           <TooltipTrigger
             className="text-muted-foreground hover:text-foreground transition-colors"

@@ -76,7 +76,7 @@ export function RatioControl({ token }: RatioControlProps) {
         />
         <button
           onClick={() => setCustomMode(false)}
-          className="text-xs text-muted-foreground hover:text-foreground"
+          className="text-xs text-muted-foreground hover:text-foreground focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 rounded px-1"
         >
           Cancel
         </button>
@@ -90,7 +90,7 @@ export function RatioControl({ token }: RatioControlProps) {
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
-            <button className="flex items-center justify-between gap-1.5 h-7 px-2.5 rounded-lg border border-input text-xs w-52 bg-transparent hover:bg-accent/50 transition-colors">
+            <button aria-label="Select type scale ratio" className="flex items-center justify-between gap-1.5 h-7 px-2.5 rounded-lg border border-input text-xs w-52 bg-transparent hover:bg-accent/50 transition-colors">
               <span className="truncate">{displayLabel}</span>
               <ChevronsUpDownIcon className="size-3.5 text-muted-foreground shrink-0" />
             </button>

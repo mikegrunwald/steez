@@ -28,17 +28,28 @@ export function ContrastDot({ textColor, surfaceColor }: ContrastDotProps) {
             <span
               aria-label={label}
               style={{
-                display: 'inline-block',
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: dotColor,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 2,
                 flexShrink: 0,
                 cursor: 'default',
               }}
             />
           }
-        />
+        >
+          <span
+            aria-hidden="true"
+            style={{
+              display: 'inline-block',
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: dotColor,
+              flexShrink: 0,
+            }}
+          />
+          <span className="sr-only">{label}</span>
+        </TooltipTrigger>
         <TooltipContent>{label}</TooltipContent>
       </Tooltip>
     </TooltipProvider>

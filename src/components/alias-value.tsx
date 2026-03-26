@@ -90,8 +90,8 @@ function LightDarkValue({ lightKey, darkKey }: { lightKey: string; darkKey: stri
 
   return (
     <span className="inline-flex items-center gap-1.5 text-xs">
-      <span className="inline-flex items-center gap-0.5" title={`Light: ${lightLabel}`}>
-        <SunIcon className="size-3 text-muted-foreground" />
+      <span className="inline-flex items-center gap-0.5" title={`Light: ${lightLabel}`} aria-label={`Light: ${lightLabel}`}>
+        <SunIcon className="size-3 text-muted-foreground" aria-hidden="true" />
         {lightColor ? (
           <span
             className="inline-block size-3.5 rounded-sm border border-current/20"
@@ -101,8 +101,8 @@ function LightDarkValue({ lightKey, darkKey }: { lightKey: string; darkKey: stri
           <span className="text-foreground font-mono">{lightLabel}</span>
         )}
       </span>
-      <span className="inline-flex items-center gap-0.5" title={`Dark: ${darkLabel}`}>
-        <MoonIcon className="size-3 text-muted-foreground" />
+      <span className="inline-flex items-center gap-0.5" title={`Dark: ${darkLabel}`} aria-label={`Dark: ${darkLabel}`}>
+        <MoonIcon className="size-3 text-muted-foreground" aria-hidden="true" />
         {darkColor ? (
           <span
             className="inline-block size-3.5 rounded-sm border border-current/20"

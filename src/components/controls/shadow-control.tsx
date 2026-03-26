@@ -120,7 +120,7 @@ function SliderRow({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-10 shrink-0">{label}</span>
+      <span className="text-xs text-muted-foreground w-10 shrink-0">{label}</span>
       <Slider
         value={[value]}
         min={min}
@@ -129,7 +129,7 @@ function SliderRow({
         onValueChange={(v) => onChange(Array.isArray(v) ? v[0] : (v as number))}
         className="flex-1"
       />
-      <span className="text-[10px] font-mono text-foreground w-6 text-right shrink-0">{value}</span>
+      <span className="text-xs font-mono text-foreground w-6 text-right shrink-0">{value}</span>
     </div>
   );
 }
@@ -155,7 +155,7 @@ function LayerEditor({
       <SliderRow label="Blur" value={layer.blur} min={0} max={50} onChange={(v) => onNumericChange({ blur: v })} />
       <SliderRow label="Spread" value={layer.spread} min={-10} max={30} onChange={(v) => onNumericChange({ spread: v })} />
       <div className="flex items-center gap-2">
-        <span className="text-[10px] text-muted-foreground w-10 shrink-0">Color</span>
+        <span className="text-xs text-muted-foreground w-10 shrink-0">Color</span>
         <Popover open={colorPickerOpen} onOpenChange={setColorPickerOpen}>
           <PopoverTrigger
             render={
@@ -170,7 +170,7 @@ function LayerEditor({
             <HexAlphaColorPicker color={color} onChange={onColorChange} />
           </PopoverContent>
         </Popover>
-        <span className="text-[10px] font-mono text-foreground truncate">{color}</span>
+        <span className="text-xs font-mono text-foreground truncate">{color}</span>
       </div>
     </div>
   );
@@ -226,7 +226,7 @@ export function ShadowControl({ token }: ShadowControlProps) {
           {layers.map((layer, i) => (
             <div key={i} className="flex flex-col gap-2">
               {layers.length > 1 && (
-                <p className="text-[10px] font-medium text-muted-foreground">
+                <p className="text-xs font-medium text-muted-foreground">
                   Layer {i + 1}
                 </p>
               )}
@@ -251,7 +251,7 @@ export function ShadowControl({ token }: ShadowControlProps) {
           ))}
         </PopoverContent>
       </Popover>
-      <span className="text-[10px] font-mono text-foreground truncate flex-1">
+      <span className="text-xs font-mono text-foreground truncate flex-1">
         {layers.length} layer{layers.length > 1 ? 's' : ''}
       </span>
       <ChangeIndicator tokenKey={token.key} />

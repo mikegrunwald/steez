@@ -114,11 +114,28 @@ export function ControlPanel() {
     >
       {/* Resize handle */}
       <div
-        className="hidden lg:flex absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize items-center justify-center z-10 hover:bg-primary/10 active:bg-primary/20 transition-colors"
+        role="separator"
+        aria-orientation="vertical"
+        aria-valuenow={width}
+        aria-valuemin={MIN_WIDTH}
+        aria-valuemax={MAX_WIDTH}
+        aria-label="Resize panel"
+        tabIndex={0}
+        className="hidden lg:flex absolute left-0 top-0 bottom-0 w-1.5 cursor-col-resize items-center justify-center z-10 hover:bg-primary/10 active:bg-primary/20 focus-visible:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 transition-colors"
         style={{ borderLeft: "1px solid var(--border)" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
+        onKeyDown={(e) => {
+          const step = e.shiftKey ? 50 : 10;
+          if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            setWidth((w) => Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, w + step)));
+          } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            setWidth((w) => Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, w - step)));
+          }
+        }}
       />
       {/* Header */}
       <div className="h-[67px] flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
