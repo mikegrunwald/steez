@@ -1,50 +1,72 @@
-# rek-room Editor — Design Spec
+# Steez — Design Spec
 
-A standalone web app for visually editing rek-room's CSS custom properties with live preview, built as a separate project that imports rek-room as a dependency.
+A standalone web app for visually editing rek-room's CSS custom properties with live light/dark preview and CSS export, built as a separate Next.js project that imports rek-room as a local dependency.
+
+> **Last updated:** 2026-03-26 — reflects the shipped application state.
 
 ## Audience
 
-Both developers customizing tokens for their projects and designers exploring the design system visually. The UI should be approachable without code knowledge while remaining powerful enough for developer workflows.
+Both developers customizing tokens for their projects and designers exploring the design system visually. The UI is approachable without code knowledge while remaining powerful enough for developer workflows.
 
 ## Tech Stack
 
-- **Framework:** Next.js (App Router)
+- **Framework:** Next.js 16 (App Router) with React Compiler enabled
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **Components:** Shadcn/ui (built on Base UI primitives)
-- **Theme:** Graphite (shadcn/tweakcn preset — neutral grey palette, tight 0.35rem radius)
-- **Dark mode:** next-themes — follows system preference on first load, toggleable via header button
-- **Color picker:** `react-colorful` (lightweight, accessible, zero-dep)
+- **Styling:** Tailwind CSS 4 + shadcn/ui (Base UI primitives)
+- **Theme:** Graphite (neutral grey palette, 0.35rem radius)
+- **Dark mode:** next-themes — follows system preference, toggleable via header button
+- **Color picker:** `react-colorful` (2KB, accessible, zero-dep)
+- **Font search:** `cmdk` (searchable combobox)
+- **Icons:** lucide-react
+- **Font:** Geist (via next/font/google)
 - **No backend required** — all state is client-side
+- **~7,000 lines** of TypeScript/TSX
 
 ## Architecture Overview
 
 ### Layout
 
-Side-by-side layout: full-width preview area on the left, resizable control panel on the right (default 400px, drag handle on left edge, 280–600px range).
+Side-by-side layout: full-width preview area on the left, resizable control panel on the right (default 400px, drag handle on left edge, 280–600px range, keyboard-accessible with arrow keys).
 
-**Top bar** (within the preview area, same `bg-background` as the panel):
-- Preview mode tabs: Vignettes | Kitchen Sink (TabsList style)
-- Mode selector: Light | Dark | Both (matching TabsList style)
+**Top bar** (67px, within the preview area):
+- Left: Steez SVG logo + ":: STEEZ ::" wordmark
+- Right: Preview mode tabs (Vignettes | Kitchen Sink) + color scheme tabs (Light | Dark | Both)
 
-**Right panel:**
-- Header with logo, Reset button, Export button, theme toggle (Sun/Moon icon with tooltip "Toggle UI theme")
-- Accordion groups for each token category (7 groups)
-- Colors expanded by default, all others collapsed
+**Right panel** (67px header + scrollable accordion):
+- Header: changed-count badge, Reset button, Export button, theme toggle (Sun/Moon with animated cross-fade)
+- 7 accordion groups (all collapsed by default, single-open behavior)
 
-### Preview Area
+### Responsive Behavior
 
-Two iframes side by side — one forcing `color-scheme: light`, the other forcing `color-scheme: dark` (via `data-theme="dark"` on `<html>`). Both load rek-room's source CSS from the Vite dev server (`http://localhost:5173/app/css/style.css`) to preserve `light-dark()` function calls that the compiled dist resolves away.
+- **Desktop (≥1024px):** Flex row — preview fills remaining space, panel is resizable 280–600px
+- **Mobile (<1024px):** Flex column — preview on top, panel below (max 50vh, scrollable). In "Both" mode, a tab switcher replaces the side-by-side layout (Light tab / Dark tab)
 
-User token overrides are injected via `postMessage`. Iframes provide full CSS isolation between the editor's Tailwind styles and rek-room's styles.
+### Preview System
 
-**Synchronized scrolling:** Both iframes share a single scroll position. Scroll events in one iframe are mirrored to the other via `postMessage` so the same content is always visible side by side.
+Two iframes side by side — one light, one dark (via `?scheme=dark` query parameter). Both load bundled source CSS from `/rek-room-source.css` (built at build time by inlining rek-room's `@import` tree). This preserves `light-dark()` function calls that the compiled dist resolves to static light-mode values.
 
-**Single mode:** When "Light" or "Dark" is selected, only one iframe is shown at full width.
+User token overrides are injected via `postMessage` as a `:root {}` CSS block into a `<style id="overrides">` element. Iframes provide full CSS isolation between the editor's Tailwind styles and rek-room's styles.
+
+**Synchronized scrolling:** In "Both" mode, iframes share a scroll container. Scroll events are mirrored via `postMessage` so the same content is always visible side by side.
+
+**Single mode:** When "Light" or "Dark" is selected, one iframe at full width.
+
+**Message protocol (postMessage):**
+
+| Direction | Type | Payload |
+|-----------|------|---------|
+| Editor → Preview | `apply-overrides` | `{ css: string }` |
+| Editor → Preview | `set-preview-mode` | `{ mode: 'vignettes' \| 'kitchen-sink' }` |
+| Editor → Preview | `scroll-to-vignette` | `{ vignette: string }` |
+| Editor → Preview | `set-scroll-mode` | `{ mode: 'internal' \| 'external' }` |
+| Editor → Preview | `load-font` | `{ url: string }` |
+| Preview → Editor | `ready` | — |
+| Preview → Editor | `scroll` | `{ scrollTop: number }` |
+| Preview → Editor | `content-height` | `{ height: number }` |
 
 ### Vignettes
 
-Focused, isolated previews of each HTML primitive that rek-room styles, rendered inside the preview iframes. Each vignette is a labeled section:
+Curated previews of each HTML primitive rek-room styles, rendered inside the preview iframes:
 
 - **Typography** — h1–h6, paragraphs, blockquotes, code blocks, links
 - **Buttons** — primary, secondary, destructive in default/hover/disabled states
@@ -55,27 +77,25 @@ Focused, isolated previews of each HTML primitive that rek-room styles, rendered
 - **Details/Summary** — accordion element
 - **Dialog** — native dialog element
 - **Progress/Meter** — progress bars and meters
-- **Popover** — popover API element
 - **Scrollbars** — scrollable container
 
-Each vignette has an inline uppercase label. No additional navigation chrome — the panel-to-preview link provides navigation.
+Each vignette has an inline uppercase label. No navigation chrome — expanding a panel category auto-scrolls the preview to the relevant vignette.
 
-**Context-linking:** Expanding a token category in the panel auto-scrolls the preview to the most relevant vignette. Users can freely scroll to any vignette at any time.
+**Category-to-vignette mapping:**
 
-Category-to-vignette mapping:
-| Category | Scrolls to |
-|----------|-----------|
-| Colors | Typography (shows text colors, link colors, then buttons/forms below) |
-| Typography | Typography |
-| Spacing | Forms (spacing between elements is most visible here) |
-| Borders & Radius | Forms (inputs show border/radius most clearly) |
-| Elevation | Dialog (elevated surfaces) |
-| Animation | Dialog (entry/exit animations) |
-| Controls | Buttons |
+| Category | Vignettes mode | Kitchen Sink mode |
+|----------|---------------|-------------------|
+| Colors | typography | ks-colors |
+| Typography | typography | ks-headings |
+| Spacing | forms | ks-form-elements |
+| Borders | forms | ks-form-elements |
+| Elevation | dialog | ks-dialog |
+| Animation | dialog | ks-dialog |
+| Controls | buttons | ks-form-elements |
 
 ### Kitchen Sink
 
-A single full page rendering all rek-room HTML elements together. Used for gut-checking that all token changes work in concert.
+A comprehensive page rendering all rek-room HTML elements together — colors, headings, text blocks, details, dialogs, popovers, text elements, buttons, every form input type, tables, output, meters, progress bars, lists, and media. Used for gut-checking that all token changes work in concert.
 
 ## Token Data Model
 
@@ -85,8 +105,8 @@ type TokenType = 'color' | 'dimension' | 'ratio' | 'font' | 'weight' | 'duration
 type TokenDefinition = {
   key: string;              // CSS custom property name, e.g. "--color-primary"
   label: string;            // Human-readable, e.g. "Primary"
-  type: TokenType;          // Determines which Shadcn control renders
-  category: TokenCategory;  // Panel group
+  type: TokenType;          // Determines which control renders
+  category: TokenCategory;  // Panel accordion group
   defaultValue: string;     // Stock rek-room value
   lightDark?: boolean;      // If true, renders paired light/dark inputs
   derivedFrom?: string;     // Source token key (for cascade display)
@@ -94,6 +114,9 @@ type TokenDefinition = {
   max?: number;             // For sliders
   step?: number;            // For sliders
   unit?: string;            // e.g. "px", "s", "rem"
+  gradient?: boolean;       // Enable gradient builder toggle
+  hidden?: boolean;         // Don't show in UI
+  subcategory?: string;     // Visual grouping (Palette, Brand, Semantic)
 };
 
 type TokenCategory =
@@ -108,84 +131,112 @@ type TokenCategory =
 
 ### Source vs. Derived Tokens
 
-Only source tokens render as editable controls. Derived tokens (e.g., `--color-action` derives from `--color-primary`) are displayed in a read-only "Derives →" sub-section below their source token, showing the current computed value.
+Only source tokens render as editable controls. Derived tokens (e.g., `--color-action` derives from `--color-primary`) are displayed in a collapsible sub-section below their source token with left border indentation.
 
-Each derived token has an "override" link that promotes it to an independent editable control, breaking the link to its source.
+Each derived token shows its alias value (the expression it derives from). Clicking it promotes the token to an independent editable control, breaking the link to its source.
 
 ### Light/Dark Handling
 
-Tokens with `lightDark: true` (semantic tokens like `--color-surface`, `--color-text-primary`) render paired inputs with "L" and "D" labels.
+Tokens with `lightDark: true` (semantic tokens like `--color-surface`, `--color-text-primary`) render paired color swatches labeled "L" and "D".
 
 Mode selector behavior:
-- **Both** — paired inputs, split preview
-- **Light Only** — single input per semantic token, single preview iframe
-- **Dark Only** — same, but for dark values
+- **Both** — both swatches visible, split preview
+- **Light** — light swatch only, single preview iframe
+- **Dark** — dark swatch only, single preview iframe
 
-Auto-generated dark values: When a user sets a light value, a sensible dark counterpart is auto-generated. Every value is fully overridable — no locked values.
+Overrides are stored as `--key--light` and `--key--dark` suffixed keys. The CSS generator merges them back into `light-dark(light, dark)` for export and preview injection.
 
 ## Control Types
 
-| TokenType | Shadcn Control | Details |
-|-----------|---------------|---------|
-| `color` | Shadcn Popover + `react-colorful` picker + hex input | `react-colorful` (lightweight, accessible, zero-dep) inside a Shadcn Popover for trigger/dismiss. Figma-style gradient toggle icon with Tooltip ("Switch to gradient" / "Switch to solid"). Gradient mode opens a custom gradient builder (direction + color stops) on top. |
-| `dimension` | Slider + number input | For spacing, border-width, radius, font-size. Min/max/step per token. |
-| `ratio` | Slider + number input | For `--type-ratio`. Updates all heading sizes in preview as you drag. |
-| `font` | Shadcn Combobox (Popover + Command via `cmdk`) | Searchable, filterable font list. Curated Google Fonts loaded dynamically into preview iframes. "Custom..." option for pasting font-family strings. Export includes `@import` or comment noting required fonts. |
-| `weight` | Select dropdown | 100–900 in named increments (Thin, Light, Regular, Medium, Semi-Bold, Bold, Extra-Bold, Black). |
-| `duration` | Slider + number input | In seconds. Small animation preview (a dot that moves using current easing + duration). |
-| `easing` | Select + curve preview | Dropdown of rek-room's named easings with a small bezier curve visualization (custom SVG). |
-| `shadow` | Preview swatch + popover builder | Compact shadow preview (a square with the shadow applied). Click opens a popover with individual sliders for x-offset, y-offset, blur, spread, and a color picker for shadow color. |
-| `border-style` | Select dropdown | Options: solid, dashed, dotted, double, groove, ridge, inset, outset, none. Each option shows a small inline preview line in that style. |
+| TokenType | Control | Details |
+|-----------|---------|---------|
+| `color` | Popover + `react-colorful` picker + hex input | Swatch trigger opens popover with color picker. Tokens with `gradient: true` show a gradient toggle icon. |
+| `color` (lightDark) | `ColorPairControl` — dual swatch with L/D labels | Text color tokens (`--color-text-*`) additionally show WCAG contrast dots comparing against `--color-surface`. |
+| `dimension` | Slider + number input | For spacing, border-width, radius, font-size. Min/max/step per token. Some show raw `clamp()` expressions as read-only when unoverridden. |
+| `ratio` | Combobox (Popover + Command) | Searchable list of named ratios (Minor Second 1.067, Major Second 1.125, Minor Third 1.2, etc.) |
+| `font` | Combobox (Popover + Command via `cmdk`) | Searchable list of 18 curated Google Fonts grouped by category (sans-serif, serif, monospace) plus system stacks. Fonts loaded dynamically into preview iframes. |
+| `weight` | Combobox (Popover + Command) | Named weights: Thin (100) through Black (900). |
+| `duration` | Slider + number input | Duration in seconds with min/max/step. |
+| `easing` | Combobox (Popover + Command) | Grouped easings: Standard (linear, ease, ease-in, ease-out, ease-in-out) and named variants (sine, quad, cubic, quart, quint, expo, circ, back) in In/Out/InOut groups. |
+| `shadow` | Multi-layer shadow builder | Parses `light-dark(shadow, shadow)` values. Tabs for light/dark. Per-layer sliders for x, y, blur, spread with color picker. Recomposes full shadow string. |
+| `border-style` | Select dropdown | Standard CSS border-style values with inline visual preview lines. |
 
-### Contrast Ratio Feedback
+### WCAG Contrast Feedback
 
-Semantic text color controls (`--color-text-primary`, `--color-text-secondary`, `--color-text-tertiary`, `--color-text-body`) display a WCAG contrast ratio indicator — a small color-coded dot next to each control:
+Semantic text color tokens (`--color-text-primary`, `--color-text-secondary`, `--color-text-tertiary`, `--color-text-body`) display color-coded dots:
 
 - Green: AAA (7:1+)
 - Yellow: AA (4.5:1+)
 - Red: fail (below 4.5:1)
 
-The exact ratio and WCAG level are shown in a Shadcn Tooltip on hover (e.g., "12.6:1 — AAA"). In "Both" mode, two dots are shown (one for light surface, one for dark). Calculated using the relative luminance formula — no library needed.
+Exact ratio and WCAG level shown in tooltip on hover (e.g., "12.6:1 — AAA"). In "Both" mode, two dots appear (one per scheme). Contrast is calculated against the current `--color-surface` value using the relative luminance formula.
+
+The resolver follows `var()` references up to 3 levels deep and approximates `color-mix()` for the neutral scale. Tokens using `oklch()` expressions show as unresolvable (fail) since they can't be converted to hex without a CSS engine.
 
 ### Gradient Support
 
-Applicable to color tokens used for surfaces and backgrounds. The gradient toggle uses a Figma-style icon (half solid / half gradient swatch) with a Shadcn Tooltip on hover.
-
-When active, the flat color picker is replaced with a gradient builder: direction control + color stop editor. The resulting `linear-gradient()` value works within `light-dark()` — each mode can independently be flat or gradient.
+Tokens with `gradient: true` show a toggle icon. When active, the flat color picker is replaced with a gradient builder:
+- Direction: 8 presets (to right, to left, to bottom, to top, diagonals, 45°, 135°)
+- Color stops: add/remove/reorder with individual color pickers and position inputs
+- Output: `linear-gradient(direction, color position, ...)` value
 
 ### Type Scale: Ratio vs. Individual
 
-Default: ratio-driven mode. A single `--type-ratio` slider computes all heading sizes automatically.
+Default: ratio-driven mode. The `--type-ratio` combobox selects a named ratio that computes all heading sizes.
 
-An "Individual heading sizes" toggle unlocks independent size inputs for h1–h6, display, body, body-sm, body-lg. Once unlocked, the ratio slider no longer affects these values.
+A toggle unlocks independent size inputs for h1–h6 headings. These appear as additional dimension controls below the ratio control.
 
-Re-locking recomputes all sizes from the current ratio. This triggers a Shadcn AlertDialog confirmation since it overwrites individual values.
+### Color Subcategories
+
+The Colors accordion groups tokens into labeled subsections:
+- **Palette** — Black, White, Neutrals 0–10, Green, Red, Yellow + status colors
+- **Brand** — Primary, Secondary, Tertiary (+ light/dark/contrast variants as derived tokens)
+- **Semantic** — Surface, Surface Raised, Text colors, Border Color, Viewport Background (all light-dark pairs)
 
 ## State Management
 
-A React context holds the overrides as a sparse `Record<string, string>` — only changed tokens, never defaults. This map is the single source of truth for:
+A React context (`TokenProvider`) holds all editor state via `useReducer`. The context value is memoized with `useMemo` to prevent unnecessary re-renders across 13+ consuming components.
 
-- Preview injection (converted to `:root {}` block, sent to iframes via `postMessage`)
-- Export (serialized to CSS)
-- Persistence (auto-saved to `localStorage` on every change, hydrated on load)
+```typescript
+type State = {
+  history: HistoryState;           // past/present/future snapshots
+  previewMode: PreviewMode;        // 'vignettes' | 'kitchen-sink'
+  colorSchemeMode: ColorSchemeMode; // 'light' | 'dark' | 'both'
+  expandedCategory: string | null; // current open accordion
+  typeScaleUnlocked: boolean;      // individual heading sizes
+};
+
+// Context exposes:
+overrides: OverridesMap;            // Record<string, string> — only changed tokens
+previewMode, colorSchemeMode, expandedCategory, typeScaleUnlocked;
+changedCount: number;               // derived from Object.keys(overrides).length
+dispatch: React.Dispatch<Action>;
+```
+
+**Actions:** `SET_TOKEN`, `RESET_TOKEN`, `RESET_ALL`, `UNDO`, `REDO`, `SET_PREVIEW_MODE`, `SET_COLOR_SCHEME_MODE`, `SET_EXPANDED_CATEGORY`, `SET_TYPE_SCALE_UNLOCKED`, `HYDRATE`.
 
 ### Undo/Redo
 
-An array of state snapshots (the overrides map is small enough to copy cheaply). Keyboard shortcuts `Cmd+Z` / `Cmd+Shift+Z`. Max history depth of 50 snapshots to cap memory. No visible UI buttons — keyboard-only, as both designers and developers expect these shortcuts.
+Snapshot-based history (array of overrides maps). Keyboard shortcuts `Cmd+Z` / `Cmd+Shift+Z`. Max 50 snapshots. No visible UI buttons.
 
 ### Change Indicators
 
-Any token modified from its default shows a small purple dot next to the label and a reset button (↺) that reverts that individual value.
+Modified tokens show a purple dot next to the label and a reset button (↺) that reverts that individual value. The header badge shows the total changed count.
 
 ### Reset All
 
-The "Reset" button in the panel header triggers a Shadcn AlertDialog: "This will reset all X changed tokens to their defaults. This can't be undone." with Cancel and Reset buttons.
+The Reset button triggers an AlertDialog: "This will reset all X changed tokens to their defaults. This can't be undone." with Cancel and Reset buttons.
 
 ## Export
 
-**CSS overrides snippet** — a `:root {}` block containing only changed values, grouped by category with comments:
+Downloads `rek-room-overrides.css` containing:
+- `@import` statements for any Google Fonts used
+- A `:root {}` block with only changed values, grouped by category with comments
+- Light/dark pairs merged back to `light-dark(light, dark)` syntax
 
 ```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
 /* rek-room overrides */
 :root {
   /* Colors */
@@ -198,77 +249,49 @@ The "Reset" button in the panel header triggers a Shadcn AlertDialog: "This will
 }
 ```
 
-The user imports stock rek-room normally and includes this snippet alongside it. They stay on the rek-room upgrade path.
-
-If Google Fonts were selected, the export includes the necessary `@import` statement or a comment with the `<link>` tag to add.
-
 ## Performance
 
-Preview updates are throttled to one `postMessage` per `requestAnimationFrame` (~60fps). All changed properties are batched into a single message rather than one per property. Inside each iframe, overrides are applied by updating a single `<style>` element's `textContent` rather than individual `setProperty` calls.
+- Context value memoized with `useMemo` (prevents re-renders when unrelated state changes)
+- TOKEN_REGISTRY lookups pre-computed at module level as `Map` (no per-render filtering)
+- Source token keys per category pre-computed once at import time
+- CSS transitions use specific properties (no `transition-all`)
+- Dynamic numbers use `tabular-nums` to prevent layout shift
 
 ## Token Registry
 
-The token registry (the array of `TokenDefinition` objects) is auto-generated at build time by a script that parses rek-room's source CSS (`tokens/core.css`). The script extracts custom property declarations and their default values.
+Auto-generated at build time by `scripts/generate-registry.ts` which parses rek-room's source CSS. Metadata (labels, categories, ranges, `derivedFrom` relationships) maintained separately in `src/lib/tokens/metadata.ts`.
 
-Metadata that can't be inferred from CSS (labels, categories, `derivedFrom` relationships, slider min/max/step, `lightDark` flag) lives in a separate hand-maintained config file that maps to the extracted keys.
+A second build script (`scripts/bundle-source-css.ts`) inlines rek-room's 20-file `@import` tree into a single `public/rek-room-source.css` for the preview iframes.
 
-Upgrading rek-room is: `npm update` → run the registry script → check if any new tokens need metadata in the config.
+Upgrading rek-room: `npm update` → `npm run prebuild` → check if new tokens need metadata.
 
 ## Persistence
 
-State auto-saves to `localStorage` on every change. On load, the overrides map is hydrated from `localStorage`. No backend, no accounts, no URL encoding.
+- **Storage key:** `steez-overrides`
+- Auto-saves to `localStorage` on every change
+- Hydrated on mount via `HYDRATE` action
+- No backend, no accounts, no URL encoding
+- Sharing: export the CSS file
 
-The export (CSS overrides snippet) serves as the sharing mechanism — users share the CSS file if they want to transfer their config.
+## Accessibility
 
-## Responsive Behavior
-
-On smaller screens, the panel stacks above the preview. The light/dark split switches to a tabbed view (light tab / dark tab) instead of side by side.
-
-## Token Categories & Their Contents
-
-### Colors
-- **Palette:** `--color-primary`, `--color-secondary`, `--color-tertiary` (+ light/dark/contrast variants)
-- **Neutrals:** `--color-neutral-0` through `--color-neutral-10`, `--color-black`, `--color-white`
-- **Semantic (L/D):** `--color-surface`, `--color-surface-raised`, `--color-text-primary`, `--color-text-secondary`, `--color-text-tertiary`, `--color-text-body`, `--color-border`, `--color-viewport-background`
-- **Role:** `--color-action`, `--color-highlight` (+ light/dark/contrast variants) — derived from primary/secondary
-- **Raw palette:** `--color-yellow`, `--color-red`, `--color-green` — base values behind status colors, not directly editable (edit status colors instead)
-- **Status:** `--color-success`, `--color-warning`, `--color-error` (+ light/dark/contrast variants)
-
-### Typography
-- **Font stacks:** `--font-primary-stack`, `--font-secondary-stack`, `--font-tertiary-stack`
-- **Font family:** `--font-family`, `--font-family-heading`
-- **Weights:** `--font-weight-thin` through `--font-weight-black`, `--font-weight-heading`
-- **Scale:** `--type-ratio`, `--font-size-base`
-- **Sizes (unlockable):** `--font-size-h1` through `--font-size-h6`, `--font-size-display`, `--font-size-body`, `--font-size-body-sm`, `--font-size-body-lg`
-- **Line heights:** `--line-height-reset`, `--line-height-text`, `--line-height-heading`
-
-### Spacing
-- **Base + scale:** `--spacing-base`, `--spacing-xs`, `--spacing-sm`, `--spacing-md`, `--spacing-lg`, `--spacing-xl`
-
-### Borders & Radius
-- `--border-width`, `--border-style`, `--border-color`, `--border-radius`
-- `--focus-outline-width`, `--focus-outline-offset`
-
-### Elevation
-- `--elevation-1` through `--elevation-5` (box shadows, theme-aware)
-
-### Animation
-- **Durations:** `--animation-duration`, `--animation-duration-slow`, `--animation-duration-fast`
-- **Easings:** `--linear`, `--ease`, `--ease-in`, `--ease-out`, `--ease-in-out`, plus named variants (sine, quad, cubic, quart, quint, expo, circ, back)
-- `--animation-timing`
-
-### Controls
-- **Block sizes:** `--control-block-size`, `--control-block-size-sm`, `--control-block-size-lg`
-- **Font:** `--control-font-size`, `--control-font-weight`
-- **Padding:** `--control-padding-inline`, `--control-padding-inline-sm`, `--control-padding-inline-lg`
-- **Scrollbar:** `--scrollbar-width`
+- Resize handle: keyboard-accessible (Arrow keys ±10px, Shift+Arrow ±50px) with ARIA role and label
+- Change indicators: sr-only "Modified" text for screen readers
+- Contrast dots: sr-only labels with exact ratio
+- All popover triggers have `aria-label`
+- Focus-visible ring styling on interactive elements
+- SVG logo has `role="img"` and `aria-labelledby`
+- Icon-only buttons have `aria-hidden` on icons and `aria-label` on containers
 
 ## Out of Scope (Future)
 
-- Compiled stylesheet export (requires bundling Lightning CSS in-browser or server-side)
-- Full library export (modified source files)
+- Responsive preview controls (viewport width slider)
+- Animation preview for duration/easing tokens
+- Token search (`Cmd+K` to jump to any token)
+- Diff view on export (before/after values)
+- Preset themes (curated starting configurations)
 - User accounts / saved configurations
-- Share URL / shareable links (localStorage is the persistence mechanism; export CSS to share)
-- Rek-room version selector (v1 locks to the version in `package.json`)
-- `@custom-media` breakpoint editing (resolved at build time, not runtime)
-- Component-scoped variable editing (internal to components, not design tokens)
+- Share URLs (export CSS to share)
+- Rek-room version selector
+- `@custom-media` breakpoint editing
+- Component-scoped variable editing

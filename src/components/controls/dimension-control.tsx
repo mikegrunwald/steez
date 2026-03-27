@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { CssVarAutocomplete } from '@/components/controls/css-var-autocomplete';
 import { ChangeIndicator } from '@/components/change-indicator';
 import { AliasValue } from '@/components/alias-value';
 import { hasVarReference } from '@/lib/tokens/value-parser';
@@ -47,16 +48,12 @@ export function DimensionControl({ token }: DimensionControlProps) {
     <div className="flex items-center gap-2 flex-1 min-w-0">
       {isExpression ? (
         editingExpression ? (
-          <Input
+          <CssVarAutocomplete
             value={expressionInput}
-            onChange={(e) => setExpressionInput(e.target.value)}
-            onBlur={() => commitExpression(expressionInput)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitExpression(expressionInput);
-              if (e.key === 'Escape') setEditingExpression(false);
-            }}
-            className="h-7 text-xs font-mono flex-1"
-            autoFocus
+            onChange={setExpressionInput}
+            onCommit={commitExpression}
+            className="h-7 text-xs"
+            placeholder={token.defaultValue}
           />
         ) : (
           <button

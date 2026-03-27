@@ -10,6 +10,7 @@ export type FontEntry = {
 
 // Curated list — popular, high-quality fonts
 export const GOOGLE_FONTS: FontEntry[] = [
+  { name: 'Geist', category: 'sans-serif', weights: [100, 200, 300, 400, 500, 600, 700, 800, 900] },
   { name: 'Inter', category: 'sans-serif', weights: [100, 200, 300, 400, 500, 600, 700, 800, 900] },
   { name: 'Roboto', category: 'sans-serif', weights: [100, 300, 400, 500, 700, 900] },
   { name: 'Open Sans', category: 'sans-serif', weights: [300, 400, 500, 600, 700, 800] },

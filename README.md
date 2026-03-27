@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# STEEZ :: The Rek-Room Combobulator
+
+A visual design token editor for [rek-room](https://github.com/mikegrunwald/rek-room), the zero-dependency CSS framework. Edit colors, typography, spacing, borders, elevation, animation, and control tokens with live light/dark preview — then export a clean CSS overrides file.
+
+## Tech Stack
+
+* **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS 4**
+* **shadcn/ui** (Base UI primitives) with Graphite theme
+* **react-colorful** — lightweight color picker (2KB)
+* **cmdk** — searchable comboboxes (fonts, easings, weights, ratios)
+* **next-themes** — editor dark mode
+* **React Compiler** enabled
+* **~7, 000 lines** of TypeScript/TSX
 
 ## Getting Started
 
-First, run the development server:
+Rek-room's source CSS is bundled at build time to preserve `light-dark()` function calls that compiled CSS resolves away. No separate dev server needed.
 
 ```bash
+# Clone both repos side by side (rek-room is a local dependency)
+git clone https://github.com/mikegrunwald/rek-room.git
+git clone <this-repo> steez
+
+# Install dependencies
+cd rek-room && npm install && cd ..
+cd steez && npm install
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/                    # Next.js pages and layout
+├── components/
+│   ├── preview/            # Iframe container, sync scrolling, postMessage
+│   │   ├── preview-area.tsx    # Top bar + dual iframe layout
+│   │   └── preview-iframe.tsx  # Single iframe + message handling
+│   ├── panel/              # Accordion, token groups, derived tokens
+│   │   ├── control-panel.tsx   # Panel shell, header, resize handle
+│   │   ├── token-group.tsx     # Category renderer with subcategories
+│   │   ├── derived-tokens.tsx  # Collapsible derived token display
+│   │   └── type-scale-toggle.tsx
+│   ├── controls/           # One per token type
+│   │   ├── color-control.tsx, color-pair-control.tsx
+│   │   ├── dimension-control.tsx, ratio-control.tsx
+│   │   ├── font-control.tsx, weight-control.tsx
+│   │   ├── duration-control.tsx, easing-control.tsx
+│   │   ├── shadow-control.tsx, border-style-control.tsx
+│   │   └── gradient-builder.tsx
+│   └── ui/                 # shadcn/ui primitives
+├── lib/
+│   ├── tokens/             # Registry (auto-generated), metadata, types
+│   ├── state/              # React Context + useMemo, undo/redo, localStorage
+│   ├── preview/            # postMessage protocol, CSS generation
+│   ├── export/             # CSS export with font imports
+│   ├── contrast.ts         # WCAG luminance + ratio calculation
+│   └── google-fonts.ts     # Curated font list + URL builder
+├── scripts/
+│   ├── generate-registry.ts    # Parse rek-room CSS → token definitions
+│   └── bundle-source-css.ts    # Inline @imports → single CSS file
+└── public/
+    ├── preview.html            # Static HTML for preview iframes
+    ├── rek-room-source.css     # Bundled source CSS (preserves light-dark())
+    └── steez.svg               # Logo
+```

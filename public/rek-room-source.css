@@ -1,0 +1,2316 @@
+/*
+ * ── rek-room ──
+ *
+ * Zero-dependency CSS starting point for styling HTML primitives
+ * and simple components to match a brand aesthetic.
+ *
+ * Architecture:
+ *   @layer reset       → Minimal reset + OpenType normalization
+ *   @layer tokens      → Design tokens (colors, typography, spacing, motion)
+ *   @layer base        → HTML primitive styling (headings, links, lists, tables)
+ *   @layer components  → Interactive elements (buttons, forms, select, toggle, dialog)
+ *   @layer utilities   → Helpers (sr-only, print styles)
+ *
+ * Overriding:
+ *   Any CSS written without @layer automatically wins over all system styles.
+ *   No !important needed. Just write normal CSS:
+ *     :root { --color-primary: #ff6600; }
+ *     button { background-color: tomato; }
+ *
+ * Breakpoint tokens (resolved at build time by Lightning CSS):
+ *   @media (--sm)  → 640px+    @media (--lg)  → 1024px+
+ *   @media (--md)  → 768px+    @media (--xl)  → 1280px+
+ *                               @media (--2xl) → 1536px+
+ */
+
+@layer reset, tokens, base, components, utilities;
+
+/* ── Reset ── */
+@layer reset {
+/*
+ * ── Reset ──
+ *
+ * Minimal modern reset inspired by dbushell/patchwork.
+ * Uses :where() for zero specificity — easy to override.
+ * Includes inlined normalize-opentype.css for OpenType features.
+ *
+ * Key features:
+ *   - interpolate-size: allow-keywords (animate to/from auto heights)
+ *   - hanging-punctuation for refined typography
+ *   - text-wrap: balance on headings, pretty on paragraphs
+ *   - field-sizing: content for textareas without rows
+ *   - prefers-reduced-motion kills all animation/transitions
+ *   - scrollbar-gutter: stable prevents layout shift
+ */
+
+
+/* ── Box Model ── */
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* ── Document ── */
+
+:where(html) {
+  color-scheme: light dark;
+  font-optical-sizing: auto;
+  hanging-punctuation: first allow-end last;
+  interpolate-size: allow-keywords;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  :where(html) {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:where(body) {
+  min-block-size: 100svb;
+  min-inline-size: 300px;
+  text-decoration-skip-ink: auto;
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures no-discretionary-ligatures no-historical-ligatures contextual;
+  font-kerning: normal;
+}
+
+
+/* ── Media ── */
+
+:where(canvas, img, picture, svg, video) {
+  block-size: auto;
+  border: none;
+  display: block;
+  max-inline-size: 100%;
+}
+
+
+/* ── Forms ── */
+
+:where(button, input, progress, select, textarea) {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  hanging-punctuation: none;
+  line-height: inherit;
+  text-align: start;
+  touch-action: manipulation;
+}
+
+:where(button, [type="button"], [type="reset"], [type="submit"]) {
+  cursor: pointer;
+  user-select: none;
+}
+
+:where(textarea) {
+  resize: vertical;
+}
+
+/* Auto-size textareas without explicit rows */
+:where(textarea:not([rows])) {
+  field-sizing: content;
+}
+
+:where(fieldset, iframe) {
+  border: none;
+}
+
+
+/* ── Text ── */
+
+:where(p, li, h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: break-word;
+}
+
+/* Balance short heading lines */
+:where(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+/* Prevent orphans in paragraph text */
+:where(p) {
+  text-wrap: pretty;
+}
+
+:where(abbr[title]) {
+  border: none;
+  text-decoration: none;
+}
+
+:where(cite) {
+  font-style: inherit;
+}
+
+:where(li, ol, ul) {
+  list-style: none;
+}
+
+
+/* ── Popover / Dialog ── */
+
+:where(dialog, [popover]) {
+  background: transparent;
+  border: none;
+  color: inherit;
+  margin: auto;
+  max-block-size: none;
+  max-inline-size: none;
+  position: fixed;
+}
+
+:where([popover]) {
+  inset: auto;
+}
+
+:where(dialog:not([open], [popover]), [popover]:not(:popover-open)) {
+  display: none;
+}
+
+:where([hidden]:not([hidden="until-found"])) {
+  display: none !important;
+}
+
+
+/* ── Disabled ── */
+
+:where(:disabled) {
+  cursor: not-allowed;
+}
+
+
+/* ── Accessibility ── */
+
+/* Increase border/outline weight for high contrast preference */
+@media (prefers-contrast: more) {
+  :root {
+    --border-width: 2px;
+    --focus-outline-width: 3px;
+  }
+}
+
+/* Windows High Contrast Mode — use system colors */
+@media (forced-colors: active) {
+  button {
+    border: 1px solid ButtonText;
+  }
+
+  a {
+    color: LinkText;
+  }
+}
+
+
+/* ── OpenType Normalization ──
+ *
+ * Inlined from normalize-opentype.css v0.2.4
+ * Adds kerning, ligatures, and numeral features.
+ * These only activate if the loaded font supports them.
+ */
+
+html, body, table {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"1, "lnum"0;
+  font-kerning: normal;
+}
+
+/* Discretionary ligatures on large headings */
+h1, h2, h3 {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"1, "lnum"0, "dlig"1;
+}
+
+/* Small capitals for abbreviations */
+abbr {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"1, "lnum"0, "smcp"1, "c2sc"1;
+}
+
+/* Tabular numerals and slashed zero in code */
+code, kbd, pre, samp {
+  font-feature-settings: "kern"0, "liga"0, "calt"1, "dlig"0, "pnum"0, "tnum"1, "onum"0, "lnum"1, "zero"1;
+}
+
+/* Proper superscript/subscript numerals */
+sup {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"1, "lnum"0, "sups"1;
+}
+
+sub {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"1, "lnum"0, "subs"1;
+}
+
+/* Lining numerals in numeric inputs */
+input[type="color"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="number"],
+input[type="range"],
+input[type="tel"],
+input[type="time"] {
+  font-feature-settings: "kern"0, "liga"1, "calt"1, "pnum"1, "tnum"0, "onum"0, "lnum"1;
+}
+
+/* Tabular numerals in table bodies and captions */
+tbody, caption {
+  font-feature-settings: "kern"1, "liga"1, "calt"1, "pnum"0, "tnum"1, "onum"0, "lnum"1, "zero"1;
+}
+}
+
+/* ── Tokens ── */
+@layer tokens {
+/*
+ * ── Design Tokens ──
+ *
+ * All design values are defined as CSS custom properties on :root.
+ * These tokens are the single source of truth for the entire system.
+ *
+ * Architecture:
+ *   Palette tokens   → Raw color values (brand constants)
+ *   Semantic tokens  → Theme-aware via light-dark() (adapt to color-scheme)
+ *   Scale tokens     → Fluid via clamp() (adapt to viewport)
+ *
+ * Scaling:
+ *   All size/spacing tokens use rem units. To scale the entire system,
+ *   simply change the root font-size:
+ *     html { font-size: 14px; }    ← smaller
+ *     html { font-size: 18px; }    ← larger
+ *
+ * Overriding:
+ *   Because the system uses @layer, any CSS written without @layer
+ *   automatically wins over all system styles. No !important needed.
+ *
+ *   To override a token:
+ *     :root { --color-primary: #ff6600; }
+ *
+ *   To override a component:
+ *     button { background-color: tomato; }
+ */
+
+
+/* ── @property Registrations ──
+ *
+ * Registering custom properties with @property allows the browser to
+ * interpolate them during transitions/animations. Without this,
+ * custom property changes snap instantly instead of animating.
+ *
+ * Only register properties that benefit from smooth transitions —
+ * primarily semantic color tokens used for theming.
+ */
+
+@property --color-surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff;
+}
+
+@property --color-surface-raised {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f5f5f5;
+}
+
+@property --color-text-primary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #333;
+}
+
+@property --color-text-secondary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #666;
+}
+
+@property --color-text-body {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #333;
+}
+
+@property --color-border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ccc;
+}
+
+@property --color-viewport-background {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff;
+}
+
+
+:root {
+  /* color-scheme is set in reset.css (with data-theme toggle support) */
+
+
+  /* ══════════════════════════════════════════════════════════
+   * PALETTE — Raw color values (brand constants)
+   * These don't change between light/dark themes.
+   * ══════════════════════════════════════════════════════════ */
+
+  --color-black: #121212;
+  --color-white: #fff;
+
+  --color-yellow: #EBCB8B;
+  --color-red: #BF616A;
+  --color-green: #A3BE8C;
+
+  /* ── Neutral Scale ──
+   * Generated via color-mix() in oklch for perceptually uniform steps.
+   * oklch produces more consistent perceived lightness than hsl.
+   */
+  --color-neutral-0: var(--color-white);
+  --color-neutral-1: color-mix(in oklch, var(--color-neutral-10) 10%, var(--color-white));
+  --color-neutral-2: color-mix(in oklch, var(--color-neutral-10) 20%, var(--color-white));
+  --color-neutral-3: color-mix(in oklch, var(--color-neutral-10) 30%, var(--color-white));
+  --color-neutral-4: color-mix(in oklch, var(--color-neutral-10) 40%, var(--color-white));
+  --color-neutral-5: color-mix(in oklch, var(--color-neutral-10) 50%, var(--color-white));
+  --color-neutral-6: color-mix(in oklch, var(--color-neutral-10) 60%, var(--color-white));
+  --color-neutral-7: color-mix(in oklch, var(--color-neutral-10) 70%, var(--color-white));
+  --color-neutral-8: color-mix(in oklch, var(--color-neutral-10) 80%, var(--color-white));
+  --color-neutral-9: color-mix(in oklch, var(--color-neutral-10) 90%, var(--color-white));
+  --color-neutral-10: var(--color-black);
+
+  /* ── Brand Colors ──
+   * Each brand color has a base, light/dark variants (relative color syntax),
+   * and contrast colors for text on each variant's background.
+   *
+   * Relative color syntax: oklch(from <base> calc(l ± offset) c h)
+   *   - Increase l to lighten, decrease to darken
+   *   - All derived from one base — change the base, everything updates
+   */
+  --color-primary: #81A1C1;
+  --color-primary-light: oklch(from var(--color-primary) calc(l + 0.15) c h);
+  --color-primary-dark: oklch(from var(--color-primary) calc(l - 0.15) c h);
+  --color-primary-light-contrast: var(--color-white);
+  --color-primary-dark-contrast: var(--color-white);
+
+  --color-secondary: #B48EAD;
+  --color-secondary-light: oklch(from var(--color-secondary) calc(l + 0.15) c h);
+  --color-secondary-dark: oklch(from var(--color-secondary) calc(l - 0.15) c h);
+  --color-secondary-light-contrast: var(--color-white);
+  --color-secondary-dark-contrast: var(--color-white);
+
+  --color-tertiary: #f1be5f;
+  --color-tertiary-light: oklch(from var(--color-tertiary) calc(l + 0.15) c h);
+  --color-tertiary-dark: oklch(from var(--color-tertiary) calc(l - 0.15) c h);
+  --color-tertiary-light-contrast: var(--color-white);
+  --color-tertiary-dark-contrast: var(--color-white);
+
+  /* ── Role Colors ──
+   * Aliases that map brand colors to functional roles.
+   * Swap these to re-theme the entire system.
+   */
+  --color-action: var(--color-primary);
+  --color-action-light: oklch(from var(--color-action) calc(l + 0.15) c h);
+  --color-action-dark: oklch(from var(--color-action) calc(l - 0.15) c h);
+  --color-action-light-contrast: var(--color-white);
+  --color-action-dark-contrast: var(--color-white);
+
+  --color-highlight: var(--color-secondary);
+  --color-highlight-light: oklch(from var(--color-highlight) calc(l + 0.15) c h);
+  --color-highlight-dark: oklch(from var(--color-highlight) calc(l - 0.15) c h);
+  --color-highlight-light-contrast: var(--color-white);
+  --color-highlight-dark-contrast: var(--color-white);
+
+  /* ── Status Colors ── */
+  --color-success: var(--color-green);
+  --color-success-light: oklch(from var(--color-success) calc(l + 0.15) c h);
+  --color-success-dark: oklch(from var(--color-success) calc(l - 0.15) c h);
+  --color-success-light-contrast: var(--color-white);
+  --color-success-dark-contrast: var(--color-white);
+
+  --color-warning: var(--color-yellow);
+  --color-warning-light: oklch(from var(--color-warning) calc(l + 0.15) c h);
+  --color-warning-dark: oklch(from var(--color-warning) calc(l - 0.15) c h);
+  --color-warning-light-contrast: var(--color-white);
+  --color-warning-dark-contrast: var(--color-white);
+
+  --color-error: var(--color-red);
+  --color-error-light: oklch(from var(--color-error) calc(l + 0.15) c h);
+  --color-error-dark: oklch(from var(--color-error) calc(l - 0.15) c h);
+  --color-error-light-contrast: var(--color-white);
+  --color-error-dark-contrast: var(--color-white);
+
+
+  /* ══════════════════════════════════════════════════════════
+   * SEMANTIC TOKENS — Theme-aware via light-dark()
+   *
+   * light-dark() returns the first value in light mode,
+   * the second value in dark mode — driven by color-scheme above.
+   * ══════════════════════════════════════════════════════════ */
+
+  --color-surface: light-dark(var(--color-white), var(--color-neutral-9));
+  --color-surface-raised: light-dark(var(--color-neutral-0), var(--color-neutral-8));
+  --color-text-primary: light-dark(var(--color-neutral-8), var(--color-neutral-1));
+  --color-text-secondary: light-dark(var(--color-neutral-6), var(--color-neutral-3));
+  --color-text-tertiary: light-dark(var(--color-secondary), var(--color-secondary-light));
+  --color-text-body: light-dark(var(--color-neutral-8), var(--color-neutral-2));
+  --color-border: light-dark(var(--color-neutral-3), var(--color-neutral-7));
+  --color-viewport-background: light-dark(var(--color-white), var(--color-neutral-10));
+
+
+  /* ══════════════════════════════════════════════════════════
+   * TYPOGRAPHY
+   * ══════════════════════════════════════════════════════════ */
+
+  /* ── Font Stacks ──
+   * Modern system font stacks. Override in tokens/fonts.css
+   * if using custom @font-face declarations.
+   *
+   * SERIF DEFAULT: ui-serif, georgia, cambria, "Times New Roman", times, serif;
+   * SANS-SERIF DEFAULT: system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif;
+   * MONOSPACE DEFAULT: ui-monospace, "Cascadia Code", "Source Code Pro", menlo, consolas, "DejaVu Sans Mono", monospace;
+   *
+   * https://css-tricks.com/almanac/properties/f/font/
+   */
+  --font-primary-stack: "Geist", system-ui, -apple-system, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif;
+  --font-secondary-stack: var(--font-primary-stack);
+  --font-tertiary-stack: ui-monospace, "Cascadia Code", "Source Code Pro", menlo, consolas, "DejaVu Sans Mono", monospace;
+
+  --font-family: var(--font-primary-stack);
+  --font-family-heading: var(--font-secondary-stack);
+
+  /* ── Font Weights ── */
+  --font-weight-thin: 100;
+  --font-weight-extra-light: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extra-bold: 800;
+  --font-weight-black: 900;
+
+  /* ── Type Scale ──
+   *
+   * A single --type-ratio drives the entire heading scale via CSS pow().
+   * Change this one value to switch between musical/mathematical ratios:
+   *
+   *   1.067 – Minor Second       (subtle, tight)
+   *   1.125 – Major Second       (gentle, readable)
+   *   1.200 – Minor Third        (moderate, versatile)
+   *   1.250 – Major Third        (default — balanced)
+   *   1.333 – Perfect Fourth     (prominent headings)
+   *   1.414 – Augmented Fourth   (dramatic contrast)
+   *   1.500 – Perfect Fifth      (bold, expressive)
+   *   1.618 – Golden Ratio       (classic, high contrast)
+   */
+
+  --type-ratio: 1.333;
+
+  /* Fluid base — all heading sizes inherit fluidity from this.
+   * clamp(min, preferred, max) scales smoothly between viewports.
+   * Uses rem so html font-size scaling still works. */
+  --font-size-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+
+  /* Computed from ratio × base using pow() */
+  --font-size-h6: calc(var(--font-size-base) / var(--type-ratio));
+  --font-size-h5: var(--font-size-base);
+  --font-size-h4: calc(var(--font-size-base) * var(--type-ratio));
+  --font-size-h3: calc(var(--font-size-base) * pow(var(--type-ratio), 2));
+  --font-size-h2: calc(var(--font-size-base) * pow(var(--type-ratio), 3));
+  --font-size-h1: calc(var(--font-size-base) * pow(var(--type-ratio), 4));
+  --font-size-display: calc(var(--font-size-base) * pow(var(--type-ratio), 5));
+
+  /* Heading font weight */
+  --font-weight-heading: var(--font-weight-semi-bold);
+
+  /* Body text sizes */
+  --font-size-body: var(--font-size-base);
+  --font-size-body-sm: calc(var(--font-size-base) * 0.75);
+  --font-size-body-lg: calc(var(--font-size-base) * 1.25);
+
+  /* ── Line Heights ── */
+  --line-height-reset: 1;
+  --line-height-text: 1.5;
+  --line-height-heading: 1.25;
+
+
+  /* ══════════════════════════════════════════════════════════
+   * SPACING
+   *
+   * Fluid base with multiplied steps. All rem-based so
+   * html { font-size } scaling still works.
+   * ══════════════════════════════════════════════════════════ */
+
+  --spacing-base: clamp(1.5rem, 1.25rem + 1.25vw, 2.5rem);
+
+  --spacing-xs: calc(var(--spacing-base) * 0.375);
+  --spacing-sm: calc(var(--spacing-base) * 0.5);
+  --spacing-md: var(--spacing-base);
+  --spacing-lg: calc(var(--spacing-base) * 1.5);
+  --spacing-xl: calc(var(--spacing-base) * 2);
+
+
+  /* ══════════════════════════════════════════════════════════
+   * ANIMATION / EASING
+   *
+   * Comprehensive easing library. Use with transition or animation:
+   *   transition: color var(--animation-duration) var(--ease-out-cubic);
+   * ══════════════════════════════════════════════════════════ */
+
+  --linear: cubic-bezier(0.250, 0.250, 0.750, 0.750);
+  --ease: cubic-bezier(0.250, 0.100, 0.250, 1.000);
+  --ease-in: cubic-bezier(0.420, 0.000, 1.000, 1.000);
+  --ease-out: cubic-bezier(0.000, 0.000, 0.580, 1.000);
+  --ease-in-out: cubic-bezier(0.420, 0.000, 0.580, 1.000);
+
+  --ease-in-quad: cubic-bezier(0.550, 0.085, 0.680, 0.530);
+  --ease-in-cubic: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+  --ease-in-quart: cubic-bezier(0.895, 0.030, 0.685, 0.220);
+  --ease-in-quint: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+  --ease-in-sine: cubic-bezier(0.470, 0.000, 0.745, 0.715);
+  --ease-in-expo: cubic-bezier(0.950, 0.050, 0.795, 0.035);
+  --ease-in-circ: cubic-bezier(0.600, 0.040, 0.980, 0.335);
+  --ease-in-back: cubic-bezier(0.600, -0.280, 0.735, 0.045);
+
+  --ease-out-quad: cubic-bezier(0.250, 0.460, 0.450, 0.940);
+  --ease-out-cubic: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  --ease-out-quart: cubic-bezier(0.165, 0.840, 0.440, 1.000);
+  --ease-out-quint: cubic-bezier(0.230, 1.000, 0.320, 1.000);
+  --ease-out-sine: cubic-bezier(0.390, 0.575, 0.565, 1.000);
+  --ease-out-expo: cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  --ease-out-circ: cubic-bezier(0.075, 0.820, 0.165, 1.000);
+  --ease-out-back: cubic-bezier(0.175, 0.885, 0.320, 1.275);
+
+  --ease-in-out-quad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
+  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1.000);
+  --ease-in-out-quart: cubic-bezier(0.770, 0.000, 0.175, 1.000);
+  --ease-in-out-quint: cubic-bezier(0.860, 0.000, 0.070, 1.000);
+  --ease-in-out-sine: cubic-bezier(0.445, 0.050, 0.550, 0.950);
+  --ease-in-out-expo: cubic-bezier(1.000, 0.000, 0.000, 1.000);
+  --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.150, 0.860);
+  --ease-in-out-back: cubic-bezier(0.680, -0.550, 0.265, 1.550);
+
+  --animation-duration: 0.5s;
+  --animation-duration-slow: calc(var(--animation-duration) * 2);
+  --animation-duration-fast: calc(var(--animation-duration) / 2);
+
+  --animation-timing: var(--ease-out-cubic);
+
+
+  /* ══════════════════════════════════════════════════════════
+   * BORDERS & RADIUS
+   * ══════════════════════════════════════════════════════════ */
+
+  --border-width: 1px;
+  --border-style: solid;
+  --border-color: var(--color-border);
+  --border: var(--border-width) var(--border-style) var(--border-color);
+
+  --border-radius: 0.5rem;
+
+
+  /* ══════════════════════════════════════════════════════════
+   * FOCUS
+   * ══════════════════════════════════════════════════════════ */
+
+  --focus-outline-width: 2px;
+  --focus-outline-offset: 2px;
+  --focus-outline: var(--focus-outline-width) solid var(--color-action);
+
+
+  /* ══════════════════════════════════════════════════════════
+   * SHADOWS
+   *
+   * Theme-aware via light-dark() — darker shadows in dark mode
+   * for visibility against dark backgrounds.
+   * ══════════════════════════════════════════════════════════ */
+
+  --elevation-1: 0 1px 2px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.4)),
+    0 1px 3px 1px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.25));
+  --elevation-2: 0 1px 2px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.4)),
+    0 2px 6px 2px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.25));
+  --elevation-3: 0 3px 9px 3px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3)),
+    0 1px 3px light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.4));
+  --elevation-4: 0 2px 14px 4px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.3)),
+    0 2px 5px light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.4));
+  --elevation-5: 0 8px 12px 6px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.3)),
+    0 4px 4px light-dark(rgb(0 0 0 / 0.15), rgb(0 0 0 / 0.4));
+
+
+  /* ══════════════════════════════════════════════════════════
+   * SCROLLBARS
+   * ══════════════════════════════════════════════════════════ */
+
+  --scrollbar-width: 5px;
+
+
+  /* ══════════════════════════════════════════════════════════
+   * CONTROLS (buttons, inputs, selects)
+   *
+   * Shared sizing ensures buttons and inputs always match
+   * when placed side by side (e.g. search bar + button).
+   * ══════════════════════════════════════════════════════════ */
+
+  --control-block-size-sm: calc(var(--control-block-size) * 0.75);
+  --control-block-size: 3rem;
+  --control-block-size-lg: calc(var(--control-block-size) * 1.1875);
+
+  --control-font-size: calc(var(--font-size-body) * 0.875);
+  --control-font-weight: var(--font-weight-normal);
+
+  --control-padding-inline-sm: var(--spacing-xs);
+  --control-padding-inline: calc(var(--spacing-base) * 0.625);
+  --control-padding-inline-lg: calc(var(--spacing-base) * 0.875);
+  /* Backwards compat aliases */
+  ;
+  --button-font-weight: var(--control-font-weight);
+  --button-font-size: var(--control-font-size);
+}
+}
+@layer tokens {
+/*
+ * ── Custom Fonts ──
+ *
+ * Define @font-face declarations here for custom typefaces.
+ * The font stacks in tokens/core.css reference these families.
+ *
+ * Usage:
+ *   1. Add your font files to a /fonts directory
+ *   2. Uncomment and edit the @font-face blocks below
+ *   3. Update --font-primary-stack, --font-secondary-stack,
+ *      or --font-tertiary-stack in tokens/core.css
+ *
+ * System Font Stacks (defaults in core.css):
+ *   --font-primary-stack:   ui-serif      → OS default serif
+ *   --font-secondary-stack: system-ui     → OS default sans-serif
+ *   --font-tertiary-stack:  ui-monospace  → OS default monospace
+ */
+
+
+/* ── @font-face Templates ──
+ *
+ * Uncomment and customize for your project's typefaces.
+ * Use font-display: swap for text visibility during load.
+ * Include size-adjust for metric compatibility if needed.
+ *
+ * After adding fonts, update core.css:
+ *   --font-secondary-stack: "Brand Sans", system-ui, sans-serif;
+ */
+
+/*
+@font-face {
+  font-family: "Brand Sans";
+  src: url("/fonts/brand-sans-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brand Sans";
+  src: url("/fonts/brand-sans-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brand Sans";
+  src: url("/fonts/brand-sans-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brand Serif";
+  src: url("/fonts/brand-serif-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Brand Mono";
+  src: url("/fonts/brand-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+}
+@layer tokens {
+/*
+ * ── Breakpoint Tokens ──
+ *
+ * Named breakpoints using @custom-media.
+ * Lightning CSS resolves these at build time into standard media queries.
+ *
+ * Usage in any CSS file:
+ *   @media (--sm) { ... }
+ *   @media (--lg) { ... }
+ *
+ * Values use rem so they scale with root font-size.
+ */
+
+@custom-media --sm (width >= 40rem);   /* 640px  — small tablets */
+@custom-media --md (width >= 48rem);   /* 768px  — tablets */
+@custom-media --lg (width >= 64rem);   /* 1024px — laptops */
+@custom-media --xl (width >= 80rem);   /* 1280px — desktops */
+@custom-media --2xl (width >= 96rem);  /* 1536px — large screens */
+
+}
+
+/* ── Base ── */
+@layer base {
+/*
+ * ── Typography ──
+ *
+ * Base text styles for the document. Headings are styled both by
+ * element (h1–h6) and by class (.h1–.h6) so you can use semantic
+ * elements with visual overrides:
+ *   <h2 class="h4">Visually smaller heading</h2>
+ *
+ * Font sizes come from the pow()-based type scale in tokens/core.css.
+ * Change --type-ratio to adjust the entire scale at once.
+ *
+ * Features:
+ *   - text-box trimming on headings (removes leading/trailing whitespace)
+ *   - lh units for vertical rhythm spacing
+ *   - text-underline-offset on links for refined underlines
+ *   - ::selection adapts to light/dark via light-dark()
+ */
+
+
+/* ── Document Defaults ── */
+
+html {
+  accent-color: var(--color-action);
+  caret-color: var(--color-action);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-text);
+}
+
+
+/* ── Selection ── */
+
+::selection {
+  background-color: var(--color-action);
+  color: var(--color-action-light-contrast);
+}
+
+
+/* ── Headings ──
+ * Shared base styles for all heading levels.
+ * text-box trims whitespace above cap height and below alphabetic baseline,
+ * giving headings tighter, more predictable spacing.
+ */
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-heading);
+  line-height: var(--line-height-heading);
+  margin-block-end: 0.5lh;
+  text-box: trim-both cap alphabetic;
+}
+
+/* Size assignments — element and class selectors */
+h1, .h1 {
+  font-size: var(--font-size-h1);
+}
+
+h2, .h2 {
+  font-size: var(--font-size-h2);
+}
+
+h3, .h3 {
+  font-size: var(--font-size-h3);
+}
+
+h4, .h4 {
+  font-size: var(--font-size-h4);
+}
+
+h5, .h5 {
+  font-size: var(--font-size-h5);
+}
+
+h6, .h6 {
+  font-size: var(--font-size-h6);
+}
+
+/* Display size for hero/splash headings */
+.display {
+  font-size: var(--font-size-display);
+}
+
+
+/* ── Body Text ── */
+
+p {
+  margin-block-end: 1lh;
+}
+
+.p {
+  margin-block-end: 1lh;
+}
+
+
+/* ── Links ──
+ * Uses :focus-visible only (no plain :focus) for keyboard-only outlines.
+ * text-underline-offset adds space between text and underline.
+ */
+
+[href] {
+  color: var(--color-action);
+  text-decoration-skip-ink: auto;
+  text-underline-offset: 0.15em;
+  transition: color var(--animation-duration) var(--animation-timing);
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-action-light);
+    }
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+}
+
+
+/* ── Horizontal Rule ── */
+
+hr {
+  border-block-end: var(--border);
+  border-block-start: 0;
+  border-inline: 0;
+  margin-block: var(--spacing-base);
+}
+
+
+/* ── Pre / Code ── */
+
+pre {
+  background-color: light-dark(var(--color-neutral-1), var(--color-neutral-8));
+  border-radius: var(--border-radius);
+  font-size: 0.875em;
+  margin-block-end: var(--spacing-sm);
+  max-inline-size: 100%;
+  padding: var(--spacing-sm) var(--spacing-sm);
+  overflow-x: auto;
+}
+
+code, kbd, samp {
+  font-family: var(--font-tertiary-stack);
+}
+
+/* Inline code */
+:not(pre)>code {
+  background-color: light-dark(var(--color-neutral-1), var(--color-neutral-8));
+  border-radius: calc(var(--border-radius) / 2);
+  padding-block: 0.125em;
+  padding-inline: 0.125em;
+}
+
+
+/* ── Blockquote ── */
+
+blockquote,
+.blockquote {
+  border-inline-start: 0.3rem solid var(--border-color);
+  font-style: italic;
+  margin-block: var(--spacing-base);
+  padding-block: var(--spacing-sm);
+  padding-inline-start: var(--spacing-base);
+
+  /* Citation */
+  & footer,
+  & .cite {
+    display: block;
+    font-size: 85%;
+
+    &::before {
+      content: "\2014\00A0";
+    }
+  }
+}
+
+
+/* ── Small ── */
+
+small {
+  font-size: var(--font-size-body-sm);
+}
+
+
+/* ── Mark ── */
+
+mark {
+  background-color: light-dark(oklch(from var(--color-warning) calc(l + 0.15) c h),
+      oklch(from var(--color-warning) calc(l - 0.1) c h));
+  color: var(--color-text-primary);
+  padding-inline: 0.125em;
+}
+
+
+.dlig {
+  font-variant-ligatures: discretionary-ligatures;
+}
+
+.hlig {
+  font-variant-ligatures: historical-ligatures;
+}
+
+.dlig.hlig {
+  font-variant-ligatures: discretionary-ligatures historical-ligatures;
+}
+
+/* Apply both historic and discretionary */
+
+.pnum {
+  font-variant-numeric: proportional-nums;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.lnum {
+  font-variant-numeric: lining-nums;
+}
+
+.onum {
+  font-variant-numeric: oldstyle-nums;
+}
+
+.zero {
+  font-variant-numeric: slashed-zero;
+}
+
+.pnum.zero {
+  font-variant-numeric: proportional-nums slashed-zero;
+}
+
+/* Apply slashed zeroes to proportional numerals */
+.tnum.zero {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+.lnum.zero {
+  font-variant-numeric: lining-nums slashed-zero;
+}
+
+.onum.zero {
+  font-variant-numeric: oldstyle-nums slashed-zero;
+}
+
+.tnum.lnum.zero {
+  font-variant-numeric: tabular-nums lining-nums slashed-zero;
+}
+
+.frac {
+  font-variant-numeric: diagonal-fractions;
+}
+
+.afrc {
+  font-variant-numeric: stacked-fractions;
+}
+
+.ordn {
+  font-variant-numeric: ordinal;
+}
+
+.smcp {
+  font-variant-caps: small-caps;
+}
+
+.c2sc {
+  font-variant-caps: unicase;
+}
+
+.hist {
+  font-variant-alternates: historical-forms;
+}
+}
+@layer base {
+/*
+ * ── Layout Foundations ──
+ *
+ * Minimal html/body styling. This layer does NOT provide layout utilities —
+ * rek-room styles everything but layout. You bring the layout system
+ * (grid, flexbox, etc.) in your own CSS.
+ *
+ * Uses logical properties for RTL support.
+ */
+
+html {
+  background-color: var(--color-viewport-background);
+}
+
+body {
+  text-rendering: optimizespeed;
+}
+
+}
+@layer base {
+/*
+ * ── Media ──
+ *
+ * Styles for images, pictures, figures, and other embedded content.
+ * The reset already handles max-width and display:block.
+ * This file adds semantic styling.
+ */
+
+figure {
+  margin-block: var(--spacing-base);
+}
+
+figcaption {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-sm);
+  margin-block-start: var(--spacing-xs);
+}
+
+img,
+picture,
+svg,
+video {
+  block-size: auto;
+  border: none;
+  border-radius: var(--border-radius);
+  display: block;
+  max-inline-size: 100%;
+  width: 100%;
+  height: auto;
+}
+}
+@layer base {
+/*
+ * ── Lists ──
+ *
+ * Lists are reset to no bullets/numbers by default (in reset.css).
+ * Add the .bullets class to restore standard list styling:
+ *   <ul class="bullets">
+ *   <ol class="bullets">
+ *
+ * Uses logical properties for RTL support.
+ */
+
+
+/* ── Formatted Lists ── */
+
+ul.bullets,
+ol.bullets {
+  list-style-type: revert;
+  padding-inline-start: var(--spacing-sm);
+
+  :where(li, ul, ol) {
+    list-style-type: revert;
+  }
+
+  :where(ul, ol) {
+    padding-inline-start: var(--spacing-xs);
+  }
+}
+
+/* ── Definition Lists ── */
+
+dt {
+  font-weight: var(--font-weight-semi-bold);
+}
+}
+@layer base {
+/*
+ * ── Tables ──
+ *
+ * Clean, readable table styles with token-based spacing.
+ * Uses logical properties for RTL support.
+ */
+
+table {
+  border-collapse: collapse;
+  margin-block: var(--spacing-base);
+  table-layout: fixed;
+  text-align: start;
+  inline-size: 100%;
+}
+
+thead {
+  line-height: var(--line-height-heading);
+  vertical-align: bottom;
+}
+
+tbody {
+  vertical-align: top;
+}
+
+tr {
+  border-block-end: var(--border);
+}
+
+th {
+  font-weight: var(--font-weight-semi-bold);
+}
+
+th,
+td {
+  padding-block: var(--spacing-sm);
+  padding-inline-end: var(--spacing-sm);
+}
+
+}
+
+/* ── Components ── */
+@layer components {
+/*
+ * ── Buttons ──
+ *
+ * Styles for <button>, <a role="button">, and submit/reset inputs.
+ * Uses component-scoped custom properties (--_ prefix) so variants
+ * only need to override property values, not redeclare entire rule blocks.
+ *
+ * Variants:  .secondary, .success, .error, .warning, .light, .dark
+ * Modifiers: .outline, .sm, .lg, .link/.text
+ *
+ * Override example:
+ *   button { --_bg: var(--color-tertiary); }
+ *
+ * _ prefix = component-scoped property, not part of public token API.
+ */
+
+button,
+a[role="button"],
+[type="button"],
+[type="reset"],
+[type="submit"] {
+
+  /* ── Component-scoped properties ──
+   * Variants override these instead of redeclaring every style rule.
+   * Hover defaults to the dark variant for a "press" effect. */
+  --_bg: var(--color-action);
+  --_border: var(--color-action);
+  --_color: var(--color-action-light-contrast);
+  --_bg-hover: var(--color-action-dark);
+  --_border-hover: var(--color-action-dark);
+  --_color-hover: var(--color-action-dark-contrast);
+
+  background-color: var(--_bg);
+  block-size: var(--control-block-size);
+  border: var(--border-width) var(--border-style) var(--_border);
+  border-radius: var(--border-radius);
+  color: var(--_color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-size: var(--control-font-size);
+  font-weight: var(--control-font-weight);
+  line-height: 1;
+  padding-inline: var(--control-padding-inline);
+  text-align: center;
+  text-decoration: none;
+  transition: all var(--animation-duration) var(--animation-timing);
+  vertical-align: middle;
+  white-space: nowrap;
+
+  /* Hover only on devices that support it — prevents sticky hover on touch */
+  @media (hover: hover) {
+    &:hover {
+      background-color: var(--_bg-hover);
+      border-color: var(--_border-hover);
+      color: var(--_color-hover);
+    }
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+
+  /* ── Size Modifiers ── */
+
+  &.lg,
+  &.large {
+    font-size: var(--font-size-body-lg);
+    block-size: var(--control-block-size-lg);
+    padding-inline: var(--control-padding-inline-lg);
+  }
+
+  &.sm,
+  &.small {
+    font-size: var(--font-size-body-sm);
+    block-size: var(--control-block-size-sm);
+    padding-inline: var(--control-padding-inline-sm);
+  }
+
+
+  /* ── Color Variants ──
+   * Each variant only sets custom properties instead of
+   * redeclaring the entire rule block. */
+
+  &.secondary {
+    --_bg: var(--color-secondary);
+    --_border: var(--color-secondary);
+    --_color: var(--color-secondary-light-contrast);
+    --_bg-hover: var(--color-secondary-dark);
+    --_border-hover: var(--color-secondary-dark);
+    --_color-hover: var(--color-secondary-dark-contrast);
+  }
+
+  &.success {
+    --_bg: var(--color-success);
+    --_border: var(--color-success);
+    --_color: var(--color-success-light-contrast);
+    --_bg-hover: var(--color-success-dark);
+    --_border-hover: var(--color-success-dark);
+    --_color-hover: var(--color-success-dark-contrast);
+  }
+
+  &.error {
+    --_bg: var(--color-error);
+    --_border: var(--color-error);
+    --_color: var(--color-error-light-contrast);
+    --_bg-hover: var(--color-error-dark);
+    --_border-hover: var(--color-error-dark);
+    --_color-hover: var(--color-error-dark-contrast);
+  }
+
+  &.warning {
+    --_bg: var(--color-warning);
+    --_border: var(--color-warning);
+    --_color: var(--color-warning-light-contrast);
+    --_bg-hover: var(--color-warning-dark);
+    --_border-hover: var(--color-warning-dark);
+    --_color-hover: var(--color-warning-dark-contrast);
+  }
+
+  &.light {
+    --_bg: var(--color-neutral-1);
+    --_border: var(--color-neutral-1);
+    --_color: var(--color-neutral-7);
+    --_bg-hover: var(--color-neutral-2);
+    --_border-hover: var(--color-neutral-2);
+    --_color-hover: var(--color-text-primary);
+  }
+
+  &.dark {
+    --_bg: var(--color-neutral-9);
+    --_border: var(--color-neutral-9);
+    --_color: var(--color-neutral-1);
+    --_bg-hover: var(--color-neutral-5);
+    --_border-hover: var(--color-neutral-5);
+    --_color-hover: var(--color-neutral-1);
+  }
+
+
+  /* ── Outline Modifier ──
+   * Transparent background with the variant's border color as text.
+   * On hover, fills with the dark variant. */
+
+  &.outline {
+    --_bg: transparent;
+    --_color: var(--_border);
+
+    /* Outline hover fills with the border color, text switches to contrast */
+    --_bg-hover: var(--_border);
+    --_color-hover: var(--color-action-dark-contrast);
+  }
+
+  /* Outline + variant combos need the correct contrast for their fill color */
+  &.outline.secondary {
+    --_color-hover: var(--color-secondary-light-contrast);
+  }
+
+  &.outline.success {
+    --_color-hover: var(--color-success-light-contrast);
+  }
+
+  &.outline.error {
+    --_color-hover: var(--color-error-light-contrast);
+  }
+
+  &.outline.warning {
+    --_color-hover: var(--color-warning-light-contrast);
+  }
+
+  &.outline.light {
+    --_color: var(--color-neutral-2);
+    --_border: var(--color-neutral-2);
+    --_bg-hover: var(--color-neutral-1);
+    --_border-hover: var(--color-neutral-5);
+    --_color-hover: var(--color-neutral-5);
+  }
+
+  &.outline.dark {
+    --_color: var(--color-text-primary);
+    --_border: var(--color-text-primary);
+    --_bg-hover: var(--color-text-primary);
+    --_border-hover: var(--color-text-primary);
+    --_color-hover: var(--color-neutral-1);
+  }
+
+
+  /* ── Link / Text Variant ──
+   * Looks like a text link, not a button. */
+
+  &.link,
+  &.text {
+    --_bg: transparent;
+    --_border: transparent;
+    --_color: var(--color-action);
+    --_bg-hover: transparent;
+    --_border-hover: transparent;
+    --_color-hover: var(--color-action-dark);
+  }
+}
+}
+@layer components {
+/*
+ * ── Forms ──
+ *
+ * Styles for form elements: inputs, textareas, labels, fieldsets.
+ * Select has its own file (select.css) for the base-select enhancement.
+ *
+ * Features:
+ *   - :user-invalid / :user-valid for JS-free validation feedback
+ *     (only fires after user interaction, not on page load)
+ *   - :has(:required) auto-adds required indicators to fieldset legends
+ *   - form:has(:user-invalid) dims the submit button
+ *   - All logical properties for RTL support
+ *
+ * Override example:
+ *   input { border-color: var(--color-tertiary); }
+ */
+
+
+/* ── Labels ── */
+
+label,
+.toggle-label {
+  display: flex;
+  font-weight: var(--font-weight-semi-bold);
+  margin-block-end: var(--spacing-xs);
+
+
+  &:has([type="checkbox"],
+    [type="radio"]) {
+    line-height: 1;
+  }
+}
+
+
+/* ── Fieldset / Legend ── */
+
+legend {
+  font-weight: var(--font-weight-semi-bold);
+  margin-block-end: var(--spacing-sm);
+}
+
+/* Auto-required indicator — when any child is :required,
+ * the legend gets an asterisk. No JS needed. */
+fieldset:has(:required) legend::after {
+  content: " *";
+  color: var(--color-error);
+}
+
+
+/* ── Text Inputs & Textarea ── */
+
+[type="color"],
+[type="date"],
+[type="datetime"],
+[type="datetime-local"],
+[type="email"],
+[type="month"],
+[type="number"],
+[type="password"],
+[type="search"],
+[type="tel"],
+[type="text"],
+[type="time"],
+[type="url"],
+[type="week"],
+input:not([type]),
+textarea {
+  background-color: transparent;
+  border: var(--border);
+  border-radius: var(--border-radius);
+  display: block;
+  font-family: var(--font-family);
+  font-size: var(--control-font-size);
+  inline-size: 100%;
+  margin-block-end: var(--spacing-sm);
+  padding-inline: var(--control-padding-inline);
+  transition: border-color var(--animation-duration) var(--animation-timing);
+
+  &:not(textarea, [type="color"]) {
+    block-size: var(--control-block-size);
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  &:disabled {
+    @media (hover: hover) {
+      &:hover {
+        border: var(--border);
+      }
+    }
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+  }
+
+  /* ── Validation Feedback ──
+   * :user-invalid/:user-valid only trigger after the user has
+   * interacted with the field — no flash of red on page load. */
+
+  &:user-invalid {
+    border-color: var(--color-error);
+  }
+
+  &:user-valid {
+    border-color: var(--color-success);
+  }
+}
+
+textarea {
+  padding-block: calc(var(--control-padding-inline-sm) * 0.53);
+}
+
+
+/* ── Search Input ── */
+
+[type="search"] {
+  -webkit-appearance: textfield;
+}
+
+
+/* ── Checkbox & Radio ── */
+
+[type="checkbox"],
+[type="radio"] {
+  appearance: auto;
+  display: inline-block;
+  width: 1.1rem;
+  aspect-ratio: 1;
+  margin-inline-end: var(--spacing-xs);
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+}
+
+
+/* ── File Input ── */
+
+[type="file"] {
+  margin-block-end: var(--spacing-sm);
+  inline-size: 100%;
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+}
+
+
+/* ── Color Input ── */
+
+[type="color"] {
+  border: none;
+  border-radius: var(--border-radius);
+  inline-size: 2rem;
+  block-size: 2rem;
+  padding: 0;
+  overflow: hidden;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+  }
+}
+
+
+/* ── Range, Meter, Progress ── */
+
+[type="range"] {
+  appearance: auto;
+  inline-size: 100%;
+}
+
+
+/* ── Form Group ── */
+
+.form-group {
+  margin-block-end: var(--spacing-base);
+}
+
+
+/* ── Submit Feedback ──
+ * When any field in the form has a validation error,
+ * dim the submit button to signal the form isn't ready. */
+
+form:has(:user-invalid) [type="submit"] {
+  opacity: 0.6;
+}
+}
+@layer components {
+/*
+ * ── Select ──
+ *
+ * Two-tier approach for <select> styling:
+ *
+ *   1. Base styles: work everywhere with a custom SVG arrow
+ *   2. @supports (appearance: base-select): full customization with
+ *      native dropdown, checkmarks, and entry/exit animations
+ *
+ * No wrapper elements needed — works directly on <select>.
+ *
+ * Override example:
+ *   select { --_select-bg: var(--color-surface-raised); }
+ */
+
+
+/* ── Base Select ──
+ * Custom arrow via background SVG. Works in all modern browsers. */
+
+select {
+  --_select-bg: transparent;
+  --_select-border: var(--border-color);
+  --_select-arrow: var(--color-text-secondary);
+
+  background-color: var(--_select-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 0.75rem;
+  border: var(--border-width) var(--border-style) var(--_select-border);
+  border-radius: var(--border-radius);
+  display: block;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  inline-size: 100%;
+  margin-block-end: var(--spacing-sm);
+  block-size: var(--control-block-size);
+  line-height: 1;
+  padding-block: calc(var(--spacing-base) / 3);
+  padding-inline: var(--control-padding-inline);
+  transition: border-color var(--animation-duration) var(--animation-timing);
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+}
+
+
+/* ── Modern Select ──
+ * appearance: base-select enables full customization of the dropdown
+ * popup, including option styling, checkmarks, and animations.
+ * Falls back gracefully to the base styles above. */
+
+@supports (appearance: base-select) {
+  select {
+    appearance: base-select;
+    background-image: none;
+    padding-inline-end: calc(var(--spacing-base) / 3);
+    position: relative;
+
+    /* Custom dropdown arrow */
+    &::picker-icon {
+      color: var(--color-text-secondary);
+      transition: rotate var(--animation-duration-fast) var(--animation-timing);
+      position: absolute;
+      inset-inline-end: calc(var(--spacing-base) / 3);
+      inset-block-start: 50%;
+      transform-origin: center;
+      translate: 0 -50%;
+    }
+
+    /* Rotate arrow when open */
+    &:open::picker-icon {
+      rotate: 180deg;
+    }
+
+    /* Dropdown popup */
+    &::picker(select) {
+      background-color: light-dark(var(--color-white), var(--color-neutral-9));
+      border: var(--border);
+      border-radius: var(--border-radius);
+      box-shadow: var(--elevation-3);
+      padding-block: var(--spacing-xs);
+
+      /* Entry animation */
+      opacity: 1;
+      scale: 1;
+      transition:
+        opacity var(--animation-duration-fast) var(--animation-timing),
+        scale var(--animation-duration-fast) var(--animation-timing),
+        display var(--animation-duration-fast) var(--animation-timing) allow-discrete;
+
+      @starting-style {
+        opacity: 0;
+        scale: 0.95;
+      }
+    }
+
+    /* Option styling */
+    & option {
+      padding-block: var(--spacing-xs);
+      padding-inline: var(--spacing-sm);
+      border-radius: calc(var(--border-radius) / 2);
+      transition: background-color var(--animation-duration-fast) var(--animation-timing);
+
+      &:checked {
+        background-color: light-dark(oklch(from var(--color-action) calc(l + 0.2) calc(c * 0.3) h),
+            oklch(from var(--color-action) calc(l - 0.2) calc(c * 0.3) h));
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          background-color: light-dark(var(--color-neutral-1), var(--color-neutral-8));
+        }
+      }
+    }
+
+    /* Checkmark on selected option */
+    & option::checkmark {
+      color: var(--color-action);
+    }
+  }
+}
+}
+@layer components {
+/*
+ * ── Toggle Switch ──
+ *
+ * A pure-CSS toggle built from <input type="checkbox"> + <label>.
+ * Uses :has(:checked) instead of sibling combinator hacks.
+ *
+ * HTML structure:
+ *   <div class="toggle">
+ *     <input type="checkbox" id="my-toggle">
+ *     <label for="my-toggle">Toggle label</label>
+ *   </div>
+ *
+ * Override example:
+ *   .toggle { --_toggle-active: var(--color-success); }
+ */
+
+:root {
+  --toggle-width: 44px;
+  --toggle-height: 24px;
+  --toggle-switch-size: 18px;
+  --toggle-spacing: 2px;
+}
+
+.toggle {
+  --_toggle-bg: var(--color-neutral-5);
+  --_toggle-active: var(--color-action);
+  --_toggle-knob: var(--color-white);
+
+  position: relative;
+  block-size: var(--toggle-height);
+
+  /* Hide the checkbox visually but keep it accessible */
+  &>input {
+    block-size: 0;
+    inline-size: 0;
+    margin: 0;
+    position: absolute;
+    visibility: visible;
+  }
+
+  /* Track */
+  &>input+label {
+    background: var(--_toggle-bg);
+    block-size: var(--toggle-height);
+    border: var(--border);
+    border-radius: var(--toggle-height);
+    cursor: pointer;
+    display: block;
+    inline-size: var(--toggle-width);
+    margin: 0;
+    position: relative;
+    text-indent: -9999px;
+
+    /* Knob */
+    &::after {
+      background-color: var(--_toggle-knob);
+      block-size: var(--toggle-switch-size);
+      border-radius: var(--toggle-switch-size);
+      content: "";
+      inline-size: var(--toggle-switch-size);
+      inset-block-start: var(--toggle-spacing);
+      inset-inline-start: var(--toggle-spacing);
+      position: absolute;
+      transition: all 0.3s var(--ease-out-cubic);
+    }
+  }
+
+  /* Checked state — uses :has() for cleaner selector */
+  &:has(:checked)>label {
+    background: var(--_toggle-active);
+
+    &::after {
+      background-color: var(--color-white);
+      inset-inline-start: calc(100% - var(--toggle-spacing));
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Active press — widen the knob slightly */
+  &>input+label:active::after {
+    inline-size: 16px;
+  }
+
+  /* Focus — outline the track when keyboard-navigating */
+  &>input:focus-visible+label {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+}
+}
+@layer components {
+/*
+ * ── Scrollbars ──
+ *
+ * Standards-based scrollbar styling via scrollbar-width and scrollbar-color,
+ * with WebKit pseudo-element enhancement for finer control.
+ *
+ * scrollbar-width/color are supported in Firefox 64+, Chrome 121+, Safari 18+.
+ * WebKit pseudo-elements provide the fallback with more granular control.
+ */
+
+
+/* ── Standards-Based ──
+ * scrollbar-color: <thumb> <track> */
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-action) light-dark(var(--color-neutral-2), var(--color-neutral-8));
+}
+
+
+/* ── WebKit Enhancement ──
+ * Finer control over dimensions and border-radius. */
+
+::-webkit-scrollbar {
+  inline-size: var(--scrollbar-width);
+  block-size: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: light-dark(var(--color-neutral-2), var(--color-neutral-8));
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-action);
+  border-radius: var(--scrollbar-width);
+}
+
+}
+@layer components {
+/*
+ * ── Dialog ──
+ *
+ * Native <dialog> styling with backdrop, entry/exit animations,
+ * and surface/elevation tokens.
+ *
+ * HTML usage:
+ *   <dialog id="my-dialog">
+ *     <h2>Dialog Title</h2>
+ *     <p>Content here.</p>
+ *     <button onclick="this.closest('dialog').close()">Close</button>
+ *   </dialog>
+ *
+ * Open with JS:
+ *   document.getElementById('my-dialog').showModal()
+ *
+ * Features:
+ *   - @starting-style for smooth open animation
+ *   - Transition on close (via allow-discrete)
+ *   - Backdrop with blur and dim
+ *   - Uses surface/elevation tokens for theme awareness
+ */
+
+dialog {
+  background-color: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--elevation-4);
+  color: var(--color-text-body);
+  max-inline-size: min(90vw, 40rem);
+  padding: var(--spacing-lg);
+  overscroll-behavior: contain;
+
+  /* Smooth open/close transitions */
+  opacity: 1;
+  scale: 1;
+  transition:
+    opacity var(--animation-duration) var(--animation-timing),
+    scale var(--animation-duration) var(--animation-timing),
+    overlay var(--animation-duration) var(--animation-timing) allow-discrete,
+    display var(--animation-duration) var(--animation-timing) allow-discrete;
+
+  /* Entry animation — start from this state when opening */
+  @starting-style {
+    opacity: 0;
+    scale: 0.95;
+  }
+
+  /* Closed state — animate to this when closing */
+  &:not([open]) {
+    opacity: 0;
+    scale: 0.95;
+  }
+
+  /* Backdrop — the overlay behind the dialog */
+  &::backdrop {
+    background-color: rgb(0 0 0 / 0.5);
+    backdrop-filter: blur(4px);
+
+    opacity: 1;
+    transition:
+      opacity var(--animation-duration) var(--animation-timing),
+      overlay var(--animation-duration) var(--animation-timing) allow-discrete,
+      display var(--animation-duration) var(--animation-timing) allow-discrete;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+
+  &:not([open])::backdrop {
+    opacity: 0;
+  }
+
+  /* Typography within the dialog */
+  & h2, & h3, & h4 {
+    margin-block-end: var(--spacing-sm);
+  }
+
+  & p {
+    margin-block-end: var(--spacing-md);
+  }
+}
+}
+@layer components {
+/*
+ * ── Details / Summary ──
+ *
+ * Styled <details>/<summary> with smooth open/close animation.
+ * The animation works because reset.css sets
+ * interpolate-size: allow-keywords on :root, allowing the browser
+ * to transition height to/from auto.
+ *
+ * HTML usage:
+ *   <details>
+ *     <summary>Click to expand</summary>
+ *     <p>Hidden content here.</p>
+ *   </details>
+ *
+ * Accordion pattern — stack multiple <details> elements:
+ *   <details name="faq">
+ *     <summary>Question 1</summary>
+ *     <p>Answer 1</p>
+ *   </details>
+ *   <details name="faq">
+ *     <summary>Question 2</summary>
+ *     <p>Answer 2</p>
+ *   </details>
+ */
+
+details {
+  border: var(--border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  transition: border-color var(--animation-duration) var(--animation-timing);
+  margin-block-end: var(--spacing-xs);
+
+  /* Remove top border on adjacent details for clean stacking */
+  &+details {
+    border-block-start: none;
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+    margin-block-end: 0;
+  }
+
+  /* Round only the top of the first in a stack */
+  &:has(+ details) {
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    margin-block-end: 0;
+  }
+
+  &[open] {
+    padding-block-end: var(--spacing-sm);
+  }
+
+  *:last-child {
+    margin-block-end: 0;
+  }
+}
+
+summary {
+  cursor: pointer;
+  font-weight: var(--font-weight-semi-bold);
+  list-style: none;
+  /* padding-block: var(--spacing-xs); */
+  position: relative;
+  user-select: none;
+
+  /* Custom disclosure marker */
+  &::after {
+    content: "";
+    border-block-start: 0.35em solid var(--color-text-secondary);
+    border-inline: 0.25em solid transparent;
+    display: inline-block;
+    inset-inline-end: 0;
+    position: absolute;
+    inset-block-start: 50%;
+    translate: 0 -50%;
+    transition: rotate var(--animation-duration) var(--animation-timing);
+    transform-origin: center;
+  }
+
+  /* Remove default marker */
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::marker {
+    content: "";
+  }
+
+  /* Rotate arrow when open */
+  details[open]>& {
+    margin-block-end: var(--spacing-sm);
+
+    &::after {
+      rotate: 180deg;
+    }
+  }
+
+  &:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      color: var(--color-action);
+    }
+  }
+}
+}
+@layer components {
+/*
+ * ── Progress & Meter ──
+ *
+ * Styled <progress> and <meter> elements using brand tokens.
+ * Both use browser pseudo-elements for cross-browser styling.
+ *
+ * HTML usage:
+ *   <progress value="70" max="100">70%</progress>
+ *   <meter value="0.7" min="0" max="1" low="0.3" high="0.7" optimum="0.8">70%</meter>
+ */
+
+
+/* ── Progress ── */
+
+progress {
+  block-size: 0.5rem;
+  border-radius: var(--border-radius);
+  inline-size: 100%;
+  overflow: hidden;
+
+  /* WebKit (Chrome, Safari, Edge) */
+  &::-webkit-progress-bar {
+    background-color: light-dark(var(--color-neutral-2), var(--color-neutral-8));
+    border-radius: var(--border-radius);
+  }
+
+  &::-webkit-progress-value {
+    background-color: var(--color-action);
+    border-radius: var(--border-radius);
+    transition: inline-size var(--animation-duration) var(--animation-timing);
+  }
+
+  /* Firefox */
+  &::-moz-progress-bar {
+    background-color: var(--color-action);
+    border-radius: var(--border-radius);
+  }
+}
+
+/* Indeterminate progress — no value attribute */
+progress:not([value]) {
+  &::-webkit-progress-bar {
+    background-color: light-dark(var(--color-neutral-2), var(--color-neutral-8));
+  }
+}
+
+
+/* ── Meter ──
+ * Meter uses low/high/optimum attributes for colored ranges. */
+
+meter {
+  block-size: 0.5rem;
+  border-radius: var(--border-radius);
+  inline-size: 100%;
+  overflow: hidden;
+
+  /* WebKit */
+  &::-webkit-meter-bar {
+    background-color: light-dark(var(--color-neutral-2), var(--color-neutral-8));
+    border: none;
+    border-radius: var(--border-radius);
+  }
+
+  &::-webkit-meter-optimum-value {
+    background-color: var(--color-success);
+    border-radius: var(--border-radius);
+  }
+
+  &::-webkit-meter-suboptimum-value {
+    background-color: var(--color-warning);
+    border-radius: var(--border-radius);
+  }
+
+  &::-webkit-meter-even-less-good-value {
+    background-color: var(--color-error);
+    border-radius: var(--border-radius);
+  }
+
+  /* Firefox */
+  &::-moz-meter-bar {
+    border-radius: var(--border-radius);
+  }
+}
+
+}
+@layer components {
+/*
+ * ── Popover ──
+ *
+ * Styles for elements using the Popover API ([popover] attribute).
+ * Lighter-weight alternative to <dialog> for tooltips, dropdowns,
+ * and non-modal overlays.
+ *
+ * HTML usage:
+ *   <button popovertarget="my-popover">Toggle</button>
+ *   <div id="my-popover" popover>Popover content</div>
+ *
+ * Popover types:
+ *   popover="auto"    → light-dismiss (click outside or Escape closes it)
+ *   popover="manual"  → must be explicitly closed
+ *
+ * Features:
+ *   - @starting-style for entry animation
+ *   - ::backdrop styling for auto popovers
+ *   - Uses surface/elevation tokens for theme awareness
+ */
+
+[popover] {
+  background-color: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--elevation-3);
+  color: var(--color-text-body);
+  max-inline-size: min(90vw, 30rem);
+  padding: var(--spacing-md);
+
+  /* Smooth open/close transitions */
+  opacity: 1;
+  scale: 1;
+  transition:
+    opacity var(--animation-duration-fast) var(--animation-timing),
+    scale var(--animation-duration-fast) var(--animation-timing),
+    overlay var(--animation-duration-fast) var(--animation-timing) allow-discrete,
+    display var(--animation-duration-fast) var(--animation-timing) allow-discrete;
+
+  /* Entry animation */
+  @starting-style {
+    opacity: 0;
+    scale: 0.96;
+  }
+
+  /* Exit state */
+  &:not(:popover-open) {
+    opacity: 0;
+    scale: 0.96;
+  }
+
+  /* Backdrop for auto-dismiss popovers */
+  &::backdrop {
+    background-color: transparent;
+    transition:
+      display var(--animation-duration-fast) allow-discrete,
+      overlay var(--animation-duration-fast) allow-discrete;
+  }
+}
+
+}
+
+/* ── Utilities ── */
+@layer utilities {
+/*
+ * ── Utilities ──
+ *
+ * Helper classes and cross-cutting styles.
+ *   - .sr-only / .visibility-hidden for screen reader content
+ *   - Print styles for clean printed output
+ *   - content-visibility for rendering performance
+ */
+
+
+/* ── Screen Reader Only ──
+ * Visually hidden but accessible to assistive technology.
+ * Uses clip-path (modern) instead of deprecated clip. */
+
+.sr-only,
+.visibility-hidden {
+  block-size: 1px;
+  border: 0;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+
+/* ── Content Visibility ──
+ * Skips rendering of off-screen sections for performance.
+ * contain-intrinsic-size provides a placeholder height. */
+
+section,
+[data-content-visibility] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+
+/* ── Print Styles ──
+ * Clean output for printed pages. */
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  /* Show link URLs after the link text */
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+
+  /* Don't show URLs for internal/anchor links */
+  a[href^="#"]::after,
+  a[href^="javascript:"]::after {
+    content: "";
+  }
+
+  /* Show abbreviation expansions */
+  abbr[title]::after {
+    content: " (" attr(title) ")";
+  }
+
+  pre {
+    white-space: pre-wrap !important;
+  }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}
+
+}
+
+/* ── Theme Toggle (unlayered — always wins) ── */
+/*
+ * ── Theme Toggle ──
+ *
+ * Override the system color-scheme via a data attribute on <html>.
+ * This file is intentionally NOT in any @layer so it always wins.
+ *
+ * Usage:
+ *   <html data-theme="dark">   → force dark mode
+ *   <html data-theme="light">  → force light mode
+ *   <html>                     → follow system preference (default)
+ *
+ * JavaScript example:
+ *   document.documentElement.setAttribute('data-theme', 'dark');
+ *   document.documentElement.removeAttribute('data-theme');
+ */
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+

@@ -12,7 +12,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from '@/components/ui/command';
-import { Input } from '@/components/ui/input';
+import { CssVarAutocomplete } from '@/components/controls/css-var-autocomplete';
 import { ChangeIndicator } from '@/components/change-indicator';
 import { AliasValue } from '@/components/alias-value';
 import { hasVarReference } from '@/lib/tokens/value-parser';
@@ -104,23 +104,15 @@ export function EasingControl({ token }: EasingControlProps) {
   if (customMode) {
     return (
       <div className="flex items-center gap-2">
-        <Input
+        <CssVarAutocomplete
           value={customInput}
-          onChange={(e) => setCustomInput(e.target.value)}
-          onBlur={() => {
-            if (customInput) commit(customInput);
+          onChange={setCustomInput}
+          onCommit={(val) => {
+            if (val) commit(val);
             setCustomMode(false);
           }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              if (customInput) commit(customInput);
-              setCustomMode(false);
-            }
-            if (e.key === 'Escape') setCustomMode(false);
-          }}
-          className="h-7 text-xs font-mono flex-1"
+          className="h-7 text-xs"
           placeholder="cubic-bezier(0.25, 0.1, 0.25, 1)"
-          autoFocus
         />
         <button
           onClick={() => setCustomMode(false)}

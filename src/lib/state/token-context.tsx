@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   type ReactNode,
 } from 'react';
 import type { ColorSchemeMode, OverridesMap, PreviewMode } from '@/lib/tokens/types';
@@ -49,7 +50,8 @@ function reducer(state: State, action: Action): State {
     case 'REDO':
       return { ...state, history: redo(state.history) };
     case 'SET_PREVIEW_MODE':
-      return { ...state, previewMode: action.mode };
+      // Locked to kitchen-sink for now — vignettes tabs are commented out
+      return state;
     case 'SET_COLOR_SCHEME_MODE':
       return { ...state, colorSchemeMode: action.mode };
     case 'SET_EXPANDED_CATEGORY':
@@ -76,22 +78,25 @@ const TokenContext = createContext<{
 export function TokenProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, {
     history: createHistory({}),
-    previewMode: 'vignettes' as PreviewMode,
+    previewMode: 'kitchen-sink' as PreviewMode,
     colorSchemeMode: 'both' as ColorSchemeMode,
     expandedCategory: null,
     typeScaleUnlocked: false,
   });
 
   // Hydrate from localStorage on mount
+  const hydratedRef = useRef(false);
   useEffect(() => {
     const stored = loadOverrides();
     if (Object.keys(stored).length > 0) {
       dispatch({ type: 'HYDRATE', overrides: stored });
     }
+    hydratedRef.current = true;
   }, []);
 
-  // Persist on every change
+  // Persist on every change — skip until hydration completes
   useEffect(() => {
+    if (!hydratedRef.current) return;
     saveOverrides(state.history.present);
   }, [state.history.present]);
 

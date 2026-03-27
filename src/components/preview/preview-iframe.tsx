@@ -4,7 +4,8 @@ import { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useTokens } from '@/lib/state/token-context';
 import { generateOverrideCSS } from '@/lib/preview/css-generator';
 import { postToIframe, isPreviewMessage } from '@/lib/preview/message-protocol';
-import { CATEGORY_VIGNETTE_MAP, CATEGORY_KITCHEN_SINK_MAP } from '@/lib/tokens/types';
+import type { EditorToPreviewMessage } from '@/lib/preview/message-protocol';
+import { CATEGORY_KITCHEN_SINK_MAP } from '@/lib/tokens/types';
 import { GOOGLE_FONTS, googleFontUrl } from '@/lib/google-fonts';
 
 export type PreviewIframeHandle = {
@@ -25,17 +26,25 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
   function PreviewIframe({ colorScheme, onScroll, onContentHeight, className, style }, ref) {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const readyRef = useRef(false);
-    const { overrides, previewMode, expandedCategory } = useTokens();
+    const queueRef = useRef<EditorToPreviewMessage[]>([]);
+    const { overrides, expandedCategory } = useTokens();
 
     // Keep refs to latest values so the message listener doesn't need to re-register
     const overridesRef = useRef(overrides);
     overridesRef.current = overrides;
-    const previewModeRef = useRef(previewMode);
-    previewModeRef.current = previewMode;
     const onScrollRef = useRef(onScroll);
     onScrollRef.current = onScroll;
     const onContentHeightRef = useRef(onContentHeight);
     onContentHeightRef.current = onContentHeight;
+
+    /** Send a message to the iframe, queuing it if the iframe isn't ready yet */
+    function sendToIframe(message: EditorToPreviewMessage) {
+      if (readyRef.current && iframeRef.current) {
+        postToIframe(iframeRef.current, message);
+      } else {
+        queueRef.current.push(message);
+      }
+    }
 
     useImperativeHandle(ref, () => ({
       scrollTo: (scrollTop: number) => {
@@ -45,14 +54,10 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
         );
       },
       postMessage: (message: unknown) => {
-        if (iframeRef.current) {
-          postToIframe(iframeRef.current, message as Parameters<typeof postToIframe>[1]);
-        }
+        sendToIframe(message as EditorToPreviewMessage);
       },
       setScrollMode: (mode: 'internal' | 'external') => {
-        if (iframeRef.current) {
-          postToIframe(iframeRef.current, { type: 'set-scroll-mode', mode });
-        }
+        sendToIframe({ type: 'set-scroll-mode', mode });
       },
     }));
 
@@ -62,7 +67,6 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
         if (!iframeRef.current) return;
         const css = generateOverrideCSS(overridesRef.current);
         postToIframe(iframeRef.current, { type: 'apply-overrides', css });
-        postToIframe(iframeRef.current, { type: 'set-preview-mode', mode: previewModeRef.current });
         // Load any Google Fonts from overrides
         const fontKeys = ['--font-family', '--font-family-heading', '--font-mono',
           '--font-primary-stack', '--font-secondary-stack', '--font-tertiary-stack'];
@@ -84,6 +88,7 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
         switch (event.data.type) {
           case 'ready':
             readyRef.current = true;
+            queueRef.current = []; // Clear stale queued messages
             sendInitialState();
             break;
           case 'scroll':
@@ -99,25 +104,18 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
       return () => {
         window.removeEventListener('message', handleMessage);
         readyRef.current = false;
+        queueRef.current = [];
       };
     }, []); // Stable — never re-registers
 
     // Send override updates to iframe
     useEffect(() => {
-      if (!readyRef.current || !iframeRef.current) return;
       const css = generateOverrideCSS(overrides);
-      postToIframe(iframeRef.current, { type: 'apply-overrides', css });
+      sendToIframe({ type: 'apply-overrides', css });
     }, [overrides]);
-
-    // Send preview mode changes
-    useEffect(() => {
-      if (!readyRef.current || !iframeRef.current) return;
-      postToIframe(iframeRef.current, { type: 'set-preview-mode', mode: previewMode });
-    }, [previewMode]);
 
     // Load Google Fonts when font overrides change
     useEffect(() => {
-      if (!readyRef.current || !iframeRef.current) return;
       const fontKeys = ['--font-family', '--font-family-heading', '--font-mono',
         '--font-primary-stack', '--font-secondary-stack', '--font-tertiary-stack'];
       for (const key of fontKeys) {
@@ -126,20 +124,19 @@ export const PreviewIframe = forwardRef<PreviewIframeHandle, PreviewIframeProps>
         const fontName = rawName.replace(/^["']|["']$/g, '');
         if (GOOGLE_FONTS.some((f) => f.name === fontName)) {
           const url = googleFontUrl(fontName);
-          if (url) postToIframe(iframeRef.current, { type: 'load-font', url });
+          if (url) sendToIframe({ type: 'load-font', url });
         }
       }
     }, [overrides]);
 
-    // Scroll to section when category changes (mode-aware)
+    // Scroll to section when category changes
     useEffect(() => {
-      if (!readyRef.current || !iframeRef.current || !expandedCategory) return;
-      const map = previewMode === 'kitchen-sink' ? CATEGORY_KITCHEN_SINK_MAP : CATEGORY_VIGNETTE_MAP;
-      const sectionId = (map as Record<string, string>)[expandedCategory];
+      if (!expandedCategory) return;
+      const sectionId = (CATEGORY_KITCHEN_SINK_MAP as Record<string, string>)[expandedCategory];
       if (sectionId) {
-        postToIframe(iframeRef.current, { type: 'scroll-to-vignette', vignette: sectionId });
+        sendToIframe({ type: 'scroll-to-vignette', vignette: sectionId });
       }
-    }, [expandedCategory, previewMode]);
+    }, [expandedCategory]);
 
     return (
       <iframe

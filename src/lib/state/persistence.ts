@@ -1,6 +1,6 @@
 import type { OverridesMap } from '@/lib/tokens/types';
 
-const STORAGE_KEY = 'combobulator-overrides';
+const STORAGE_KEY = 'steez-overrides';
 
 export function loadOverrides(): OverridesMap {
   if (typeof window === 'undefined') return {};

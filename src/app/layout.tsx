@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Combobulator — rek-room Editor",
+  title: "Steez — rek-room Editor",
   description: "Edit rek-room CSS custom properties",
 };
 

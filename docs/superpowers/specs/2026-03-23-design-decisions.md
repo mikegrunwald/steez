@@ -1,6 +1,8 @@
-# Combobulator — Design Decisions & Tradeoffs
+# Steez — Design Decisions & Tradeoffs
 
 A record of every design decision made during brainstorming, the alternatives considered, and why we chose what we did.
+
+> **Last updated:** 2026-03-26 — entries marked with ✦ were updated to reflect the shipped application.
 
 ---
 
@@ -120,11 +122,11 @@ A record of every design decision made during brainstorming, the alternatives co
 
 ---
 
-## 11. Token Scope: All Categories, Collapsed UI
+## 11. Token Scope: All Categories, Collapsed UI ✦
 
-**Decision:** All 7 token categories available from day one, but UI defaults to one expanded panel (Colors) with the rest collapsed.
+**Decision:** All 7 token categories available from day one. All accordion sections collapsed by default, single-open behavior.
 
-**Clarification:** User initially said "start focused" which was misinterpreted as limiting to a subset of categories. They clarified they meant the UI should feel focused (one panel expanded at a time), not that categories should be excluded.
+**Evolution:** Originally defaulted to Colors expanded. Changed to all-collapsed to treat all categories equally and give users a full map of what's available before they commit attention. Reduces initial layout shift and keeps the preview area as the visual anchor on load.
 
 ---
 
@@ -269,15 +271,17 @@ A record of every design decision made during brainstorming, the alternatives co
 
 ---
 
-## 27. Dark Iframe: data-theme + Source CSS
+## 27. Dark Iframe: Bundled Source CSS ✦
 
-**Decision:** Set `data-theme="dark"` on the dark iframe's `<html>` and load CSS from rek-room's Vite dev server instead of the compiled dist.
+**Decision:** Bundle rek-room's source CSS at build time by inlining its `@import` tree into a single file (`public/rek-room-source.css`). Dark iframe uses `?scheme=dark` query parameter.
 
-**Problem:** The compiled `dist/steez.css` resolves `light-dark()` calls in custom property values to their light-mode values at build time. This means `--color-surface: light-dark(var(--color-white), var(--color-neutral-9))` becomes `--color-surface: #fff` — dark mode tokens are lost.
+**Problem:** The compiled `dist/steez.css` resolves `light-dark()` calls in custom property values to their light-mode values at build time. `--color-surface: light-dark(var(--color-white), var(--color-neutral-9))` becomes `--color-surface: #fff` — dark mode tokens are lost.
 
-**Fix:** Load the source CSS via Vite (`http://localhost:5173/app/css/style.css`) which preserves `light-dark()`. The dark iframe sets `data-theme="dark"` which triggers rek-room's `html[data-theme="dark"] { color-scheme: dark; }` rule, making `light-dark()` resolve to dark values.
+**Original fix:** Loaded source CSS from rek-room's Vite dev server at runtime. Required two servers running simultaneously.
 
-**Tradeoff:** Requires the rek-room Vite dev server to be running alongside combobulator. Acceptable for a dev tool.
+**Final fix:** A build script (`scripts/bundle-source-css.ts`) inlines rek-room's 20 `@import` files into a single 58KB CSS file preserving all `light-dark()` calls. The app is now fully self-contained and deployable to Vercel with no runtime dependency.
+
+**Tradeoff:** Source CSS must be rebundled when rek-room changes (`npm run prebuild`). Acceptable — same workflow as updating the token registry.
 
 ---
 
@@ -308,6 +312,44 @@ A record of every design decision made during brainstorming, the alternatives co
 **Decision:** Both the Vignettes/Kitchen Sink toggle and the Light/Dark/Both toggle use the same `TabsList`/`TabsTrigger` components.
 
 **Why:** Originally the mode selector used `ToggleGroup`/`ToggleGroupItem` which had a visually different style. Unifying to the same tab component makes the top bar look cohesive. The top bar background also matches the panel (`bg-background`) instead of the previous `bg-muted/50`.
+
+---
+
+## 31. Context Value Memoization ✦
+
+**Decision:** Wrap TokenContext provider value in `useMemo` with explicit dependencies.
+
+**Why:** The context had 13+ consumers. Without memoization, every state change (even to unrelated fields like `expandedCategory`) re-rendered every control. A single `useMemo` prevents this without the complexity of splitting into multiple contexts.
+
+---
+
+## 32. Module-Level Token Lookups ✦
+
+**Decision:** Pre-compute `TOKENS_BY_CATEGORY` and `SOURCE_KEYS_BY_CATEGORY` as module-level `Map` objects instead of calling `.filter()` on TOKEN_REGISTRY per render.
+
+**Why:** TOKEN_REGISTRY is static — it never changes at runtime. Computing lookups once at import time is correct and eliminates 7+ filter calls per render cycle.
+
+---
+
+## 33. Specific CSS Transition Properties ✦
+
+**Decision:** Replace all `transition-all` with specific property lists (`transition-[opacity,transform]`, `transition-[border-color,box-shadow]`, etc.).
+
+**Why:** `transition-all` transitions layout properties that shouldn't animate (padding, margin during theme switches). Specifying exact properties prevents accidental animations and lets the browser optimize compositing.
+
+---
+
+## 34. CSS Cross-Fade for Theme Icon ✦
+
+**Decision:** Both Sun and Moon icons always mounted in the DOM; cross-faded with CSS transitions instead of conditional rendering or a motion library.
+
+**Why:** Avoids adding framer-motion as a dependency for a single animation. CSS transitions handle interruption naturally if the user clicks rapidly. Uses `opacity`, `scale(0.25→1)`, and `blur(4px→0)` with `cubic-bezier(0.2, 0, 0, 1)`.
+
+---
+
+## 35. Project Rename: Combobulator → Steez ✦
+
+**Decision:** Renamed from "The Rek-Room Combobulator" to "Steez" — matching the rek-room compiled CSS output filename (`steez.css`) and the SVG logo.
 
 ---
 

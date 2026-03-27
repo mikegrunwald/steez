@@ -12,7 +12,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from '@/components/ui/command';
-import { Input } from '@/components/ui/input';
+import { CssVarAutocomplete } from '@/components/controls/css-var-autocomplete';
 import { ChangeIndicator } from '@/components/change-indicator';
 import { AliasValue } from '@/components/alias-value';
 import { hasVarReference } from '@/lib/tokens/value-parser';
@@ -66,17 +66,12 @@ export function FontControl({ token }: FontControlProps) {
   if (customMode) {
     return (
       <div className="flex items-center gap-2">
-        <Input
+        <CssVarAutocomplete
           value={customInput}
-          onChange={(e) => setCustomInput(e.target.value)}
-          onBlur={() => commit(customInput)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') commit(customInput);
-            if (e.key === 'Escape') setCustomMode(false);
-          }}
-          className="h-7 text-xs flex-1"
+          onChange={setCustomInput}
+          onCommit={commit}
+          className="h-7 text-xs"
           placeholder="font-family value…"
-          autoFocus
         />
         <button
           onClick={() => setCustomMode(false)}

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview</title>
-  <link rel="stylesheet" href="http://localhost:5173/app/css/style.css">
+  <link rel="stylesheet" href="/rek-room-source.css">
   <style id="overrides"></style>
   <style>
     body {
@@ -29,7 +30,8 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--color-text-secondary);
-      margin-block-end: 1.5rem;
+      margin-block-start: calc(var(--spacing-xl) * 1.5);
+      margin-block-end: var(--spacing-xl, 3rem);
       padding-block-end: 0.5rem;
       border-block-end: 1px solid var(--border-color, currentColor);
       opacity: 0.6;
@@ -73,7 +75,7 @@
       background-color: var(--color-surface, white);
       border: 1px solid var(--border-color, currentColor);
       border-radius: var(--border-radius, 0.5rem);
-      box-shadow: var(--elevation-4, 0 8px 30px rgba(0,0,0,0.12));
+      box-shadow: var(--elevation-4, 0 8px 30px rgba(0, 0, 0, 0.12));
       max-width: 32rem;
       padding: 1.5rem;
       margin: 0 auto;
@@ -90,10 +92,11 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- ── Vignettes container ── -->
-  <div id="vignettes">
+  <div id="vignettes" style="display: none">
 
     <!-- Typography -->
     <section id="typography" class="vignette">
@@ -115,7 +118,9 @@
         <footer>— Dieter Rams</footer>
       </blockquote>
 
-      <p>Inline elements: <code>const greeting = "hello"</code>, <a href="#">a styled link</a>, <small>small text for fine print</small>, <mark>highlighted text</mark>, <abbr title="Cascading Style Sheets">CSS</abbr>, <em>emphasized text</em>, and <strong>strong text</strong>.</p>
+      <p>Inline elements: <code>const greeting = "hello"</code>, <a href="#">a styled link</a>, <small>small text for fine print</small>, <mark>highlighted text</mark>, <abbr title="Cascading Style Sheets">CSS</abbr>, <em>emphasized text</em>, and
+        <strong>strong text</strong>.
+      </p>
 
       <pre><code>// Preformatted code block
 function greet(name) {
@@ -426,7 +431,7 @@ function greet(name) {
 
 
   <!-- ── Kitchen Sink ── -->
-  <div id="kitchen-sink" style="display: none">
+  <div id="kitchen-sink">
 
     <!-- Styleguide-only presentation styles (from rek-room index.html) -->
     <style>
@@ -575,12 +580,11 @@ function greet(name) {
       }
     </style>
 
-    <hr />
 
 
     <!-- ── Colors ── -->
 
-    <h2 id="ks-colors" class="section-header">Colors</h2>
+    <h2 id="ks-colors" class="vignette-label">Colors</h2>
 
     <h3>Brand Colors</h3>
     <div class="chip-container brand">
@@ -651,12 +655,12 @@ function greet(name) {
       </div>
     </div>
 
-    <hr />
+
 
 
     <!-- ── Headings ── -->
 
-    <h2 id="ks-headings" class="section-header">Headings</h2>
+    <h2 id="ks-headings" class="vignette-label">Headings</h2>
 
     <h2 class="display">Display</h2>
     <h1>Heading 1</h1>
@@ -664,21 +668,20 @@ function greet(name) {
     <h3>Heading 3</h3>
     <h4>Heading 4</h4>
     <h5>Heading 5</h5>
-    <h6  style="margin-bottom: var(--spacing-md);">Heading 6</h6>
+    <h6 style="margin-bottom: var(--spacing-md);">Heading 6</h6>
 
-    <hr>
 
-    <h2 class="section-header">Class-Based Overrides</h2>
+    <h2 class="vignette-label">Class-Based Overrides</h2>
     <p>Use <code>.h1</code>&ndash;<code>.h6</code> classes to visually override heading size:</p>
     <h2 class="h4">h2 element with .h4 class</h2>
     <span class="h2">span element with .h2 class</span>
 
-    <hr />
+
 
 
     <!-- ── Headings with Text ── -->
 
-    <h2 id="ks-headings-with-text" class="section-header">Headings with Text</h2>
+    <h2 id="ks-headings-with-text" class="vignette-label">Headings with Text</h2>
 
     <h1>Heading 1</h1>
     <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
@@ -693,12 +696,12 @@ function greet(name) {
     <h6>Heading 6</h6>
     <p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
 
-    <hr />
+
 
 
     <!-- ── Block Elements ── -->
 
-    <h2 id="ks-text-block" class="section-header">Block Elements</h2>
+    <h2 id="ks-text-block" class="vignette-label">Block Elements</h2>
 
     <h3 id="ks-paragraph">Paragraphs and Images</h3>
 
@@ -728,12 +731,12 @@ function greet(name) {
       <figcaption>The figcaption element example</figcaption>
     </figure>
 
-    <hr />
+
 
 
     <!-- ── Details / Summary ── -->
 
-    <h2 id="ks-details" class="section-header">Details / Summary</h2>
+    <h2 id="ks-details" class="vignette-label">Details / Summary</h2>
 
     <p>Individual details element:</p>
     <details>
@@ -755,12 +758,12 @@ function greet(name) {
       <p>Override any CSS custom property. Because the system uses <code>@layer</code>, your overrides automatically win.</p>
     </details>
 
-    <hr />
+
 
 
     <!-- ── Dialog ── -->
 
-    <h2 id="ks-dialog" class="section-header">Dialog</h2>
+    <h2 id="ks-dialog" class="vignette-label">Dialog</h2>
 
     <p>Native <code>&lt;dialog&gt;</code> with backdrop blur and entry/exit animations:</p>
     <button type="button" onclick="document.getElementById('ks-demo-dialog').showModal()">Open Dialog</button>
@@ -771,12 +774,12 @@ function greet(name) {
       <button type="button" onclick="this.closest('dialog').close()">Close</button>
     </dialog>
 
-    <hr />
+
 
 
     <!-- ── Popover ── -->
 
-    <h2 id="ks-popover" class="section-header">Popover</h2>
+    <h2 id="ks-popover" class="vignette-label">Popover</h2>
 
     <p>Native Popover API with <code>@starting-style</code> entry/exit animations:</p>
 
@@ -792,12 +795,12 @@ function greet(name) {
       <button type="button" popovertarget="ks-demo-popover-manual" popovertargetaction="hide" class="sm">Dismiss</button>
     </div>
 
-    <hr />
+
 
 
     <!-- ── Text Elements ── -->
 
-    <h2 id="ks-text-elements" class="section-header">Text Elements</h2>
+    <h2 id="ks-text-elements" class="vignette-label">Text Elements</h2>
 
     <p>The <a href="#">a element</a> and <a href="https://example.com" target="_blank">external a element</a> examples</p>
     <p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
@@ -825,12 +828,12 @@ function greet(name) {
     <p>The <u>u element</u> example</p>
     <p>The <var>var element</var> example</p>
 
-    <hr />
+
 
 
     <!-- ── Monospace / Preformatted ── -->
 
-    <h2 id="ks-monospace" class="section-header">Monospace / Preformatted</h2>
+    <h2 id="ks-monospace" class="vignette-label">Monospace / Preformatted</h2>
 
     <p>Code block wrapped in <code>pre</code> and <code>code</code> tags:</p>
     <pre><code>// Loop through Divs using Javascript.
@@ -844,12 +847,12 @@ for (i = 0; i &lt; divs.length; ++i) {
     <pre>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
 Nullam dignissim convallis est. Quisque aliquam.</pre>
 
-    <hr />
+
 
 
     <!-- ── List Types ── -->
 
-    <h2 id="ks-list-types" class="section-header">List Types</h2>
+    <h2 id="ks-list-types" class="vignette-label">List Types</h2>
 
     <h3>Ordered List (reset)</h3>
     <ol style="margin-bottom: var(--spacing-md);">
@@ -935,12 +938,12 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
       <dd>Definition Description 2</dd>
     </dl>
 
-    <hr />
+
 
 
     <!-- ── Tables ── -->
 
-    <h2 id="ks-tables" class="section-header">Tables</h2>
+    <h2 id="ks-tables" class="vignette-label">Tables</h2>
 
     <table>
       <caption>This is a table caption</caption>
@@ -980,12 +983,12 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
       </tfoot>
     </table>
 
-    <hr />
+
 
 
     <!-- ── Progress & Meter ── -->
 
-    <h2 id="ks-progress-meter" class="section-header">Progress &amp; Meter</h2>
+    <h2 id="ks-progress-meter" class="vignette-label">Progress &amp; Meter</h2>
 
     <div class="form-group">
       <label for="ks-progress-demo">Progress (65%):</label>
@@ -1012,15 +1015,15 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
       <meter id="ks-meter-low" min="0" max="100" low="30" high="70" optimum="80" value="15">15%</meter>
     </div>
 
-    <hr />
+
 
 
     <!-- ── Media ── -->
 
-    <h2 id="ks-media" class="section-header">Media</h2>
+    <h2 id="ks-media" class="vignette-label">Media</h2>
 
     <h3>The Audio Element:</h3>
-    <audio controls  style="margin-bottom: var(--spacing-md);">
+    <audio controls style="margin-bottom: var(--spacing-md);">
       <source src="https://www.w3schools.com/tags/horse.ogg" type="audio/ogg" />
       <source src="https://www.w3schools.com/tags/horse.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
@@ -1033,12 +1036,12 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
       Your browser does not support the video tag.
     </video>
 
-    <hr />
+
 
 
     <!-- ── Form Elements ── -->
 
-    <h2 id="ks-form-elements" class="section-header">Form Elements</h2>
+    <h2 id="ks-form-elements" class="vignette-label">Form Elements</h2>
 
     <fieldset>
       <legend>Legend</legend>
@@ -1250,9 +1253,9 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
         </div>
 
         <!-- Buttons -->
-        <hr />
 
-        <h2 id="ks-buttons" class="section-header">Buttons</h2>
+
+        <h2 id="ks-buttons" class="vignette-label">Buttons</h2>
 
         <div class="form-group">
           <h4>HTML Elements</h4>
@@ -1321,18 +1324,7 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
         case 'apply-overrides':
           document.getElementById('overrides').textContent = data.css;
           break;
-        case 'set-preview-mode': {
-          const vignettes = document.getElementById('vignettes');
-          const kitchenSink = document.getElementById('kitchen-sink');
-          if (data.mode === 'kitchen-sink') {
-            vignettes.style.display = 'none';
-            kitchenSink.style.display = 'block';
-          } else {
-            vignettes.style.display = 'block';
-            kitchenSink.style.display = 'none';
-          }
-          break;
-        }
+        // set-preview-mode removed — kitchen-sink is always shown
         case 'scroll-to-vignette': {
           const el = document.getElementById(data.vignette);
           if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -1402,4 +1394,5 @@ Nullam dignissim convallis est. Quisque aliquam.</pre>
   </script>
 
 </body>
+
 </html>

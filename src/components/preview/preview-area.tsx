@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  type CSSProperties,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTokens } from "@/lib/state/token-context";
 import type { ColorSchemeMode, PreviewMode } from "@/lib/tokens/types";
@@ -21,7 +27,7 @@ function useIsLg() {
 }
 
 export function PreviewArea() {
-  const { colorSchemeMode, previewMode, dispatch } = useTokens();
+  const { colorSchemeMode, dispatch } = useTokens();
   const lightRef = useRef<PreviewIframeHandle>(null);
   const darkRef = useRef<PreviewIframeHandle>(null);
   const isLg = useIsLg();
@@ -35,25 +41,27 @@ export function PreviewArea() {
 
   const handleLightHeight = useCallback((height: number) => {
     heightsRef.current.light = height;
-    setContentHeight(Math.max(heightsRef.current.light, heightsRef.current.dark));
+    setContentHeight(
+      Math.max(heightsRef.current.light, heightsRef.current.dark),
+    );
   }, []);
 
   const handleDarkHeight = useCallback((height: number) => {
     heightsRef.current.dark = height;
-    setContentHeight(Math.max(heightsRef.current.light, heightsRef.current.dark));
+    setContentHeight(
+      Math.max(heightsRef.current.light, heightsRef.current.dark),
+    );
   }, []);
 
   const showBothSideBySide = colorSchemeMode === "both" && isLg;
   const showMobileTabs = colorSchemeMode === "both" && !isLg;
 
   // Tell iframes to disable internal scrolling when in shared container mode
+  // Messages are queued if iframes aren't ready yet — no timeout needed
   useEffect(() => {
     if (showBothSideBySide) {
-      const timer = setTimeout(() => {
-        lightRef.current?.setScrollMode("external");
-        darkRef.current?.setScrollMode("external");
-      }, 200);
-      return () => clearTimeout(timer);
+      lightRef.current?.setScrollMode("external");
+      darkRef.current?.setScrollMode("external");
     } else {
       lightRef.current?.setScrollMode("internal");
       darkRef.current?.setScrollMode("internal");
@@ -101,6 +109,7 @@ export function PreviewArea() {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          {/* Preview mode tabs — kept for future use
           <Tabs
             value={previewMode}
             onValueChange={(v) =>
@@ -112,6 +121,7 @@ export function PreviewArea() {
               <TabsTrigger value="kitchen-sink">Kitchen Sink</TabsTrigger>
             </TabsList>
           </Tabs>
+          */}
           <Tabs
             value={colorSchemeMode}
             onValueChange={(v) =>
@@ -129,7 +139,6 @@ export function PreviewArea() {
           </Tabs>
         </div>
       </div>
-
       {/* Mobile tab switcher — only when "both" on small screens */}
       {showMobileTabs && (
         <div className="flex border-b bg-muted/30">
@@ -147,14 +156,17 @@ export function PreviewArea() {
           </button>
         </div>
       )}
-
       {/* Iframe container */}
       {showBothSideBySide ? (
         /* Shared scrolling container — iframes stretch to full content height, container scrolls them together */
-        <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
+        (<div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
           <div
             className="flex"
-            style={{ height: contentHeight > 0 ? contentHeight : "100%" } as CSSProperties}
+            style={
+              {
+                height: contentHeight > 0 ? contentHeight : "100%",
+              } as CSSProperties
+            }
           >
             <PreviewIframe
               ref={lightRef}
@@ -172,22 +184,38 @@ export function PreviewArea() {
               style={{ height: contentHeight > 0 ? contentHeight : "100%" }}
             />
           </div>
-        </div>
+        </div>)
       ) : (
         <div className="flex flex-1 min-h-0">
           {showMobileTabs ? (
             mobileSchemeTab === "light" ? (
-              <PreviewIframe ref={lightRef} colorScheme="light" className="flex-1" />
+              <PreviewIframe
+                ref={lightRef}
+                colorScheme="light"
+                className="flex-1"
+              />
             ) : (
-              <PreviewIframe ref={darkRef} colorScheme="dark" className="flex-1" />
+              <PreviewIframe
+                ref={darkRef}
+                colorScheme="dark"
+                className="flex-1"
+              />
             )
           ) : (
             <>
               {(colorSchemeMode === "light" || colorSchemeMode === "both") && (
-                <PreviewIframe ref={lightRef} colorScheme="light" className="flex-1" />
+                <PreviewIframe
+                  ref={lightRef}
+                  colorScheme="light"
+                  className="flex-1"
+                />
               )}
               {(colorSchemeMode === "dark" || colorSchemeMode === "both") && (
-                <PreviewIframe ref={darkRef} colorScheme="dark" className="flex-1" />
+                <PreviewIframe
+                  ref={darkRef}
+                  colorScheme="dark"
+                  className="flex-1"
+                />
               )}
             </>
           )}

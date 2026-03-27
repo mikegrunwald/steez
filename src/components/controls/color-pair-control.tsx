@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { HexColorPicker } from 'react-colorful';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Input } from '@/components/ui/input';
+import { CssVarAutocomplete } from '@/components/controls/css-var-autocomplete';
 import { ChangeIndicator } from '@/components/change-indicator';
+import { ContrastDot } from '@/components/contrast-dot';
 import { AliasValue } from '@/components/alias-value';
 import { hasVarReference } from '@/lib/tokens/value-parser';
 import { useTokens } from '@/lib/state/token-context';
@@ -17,21 +18,54 @@ interface ColorPairControlProps {
 
 const REGISTRY_MAP = new Map(TOKEN_REGISTRY.map((t) => [t.key, t]));
 
-/** Resolve a token key to a hex color, following one level of var() references */
-function resolveColorHex(key: string): string | undefined {
+const TEXT_TOKEN_KEYS = new Set([
+  '--color-text-body',
+  '--color-text-primary',
+  '--color-text-secondary',
+  '--color-text-tertiary',
+]);
+
+/** Resolve a token key to a hex color, following var() references up to 3 levels deep */
+function resolveColorHex(key: string, depth = 0): string | undefined {
+  if (depth > 3) return undefined;
   const token = REGISTRY_MAP.get(key);
   if (!token) return undefined;
   const val = token.defaultValue;
-  if (val && /^#[0-9a-fA-F]{3,8}$/.test(val)) return val;
-  // Follow one var() ref
-  const varMatch = val?.match(/^var\(([^)]+)\)$/);
-  if (varMatch) {
-    const inner = REGISTRY_MAP.get(varMatch[1]);
-    if (inner?.defaultValue && /^#[0-9a-fA-F]{3,8}$/.test(inner.defaultValue)) {
-      return inner.defaultValue;
-    }
+  if (!val) return undefined;
+  // Direct hex
+  if (/^#[0-9a-fA-F]{3,8}$/.test(val)) return expandHex(val);
+  // Follow var() ref
+  const varMatch = val.match(/^var\(([^)]+)\)$/);
+  if (varMatch) return resolveColorHex(varMatch[1], depth + 1);
+  // Approximate color-mix(in oklch, <color> N%, <color>)
+  const mixMatch = val.match(/color-mix\(in oklch,\s*var\(([^)]+)\)\s+([\d.]+)%,\s*var\(([^)]+)\)\s*\)/);
+  if (mixMatch) {
+    const c1 = resolveColorHex(mixMatch[1], depth + 1);
+    const pct = parseFloat(mixMatch[2]) / 100;
+    const c2 = resolveColorHex(mixMatch[3], depth + 1);
+    if (c1 && c2) return mixHexColors(c1, c2, pct);
   }
   return undefined;
+}
+
+/** Expand 3-char hex to 6-char */
+function expandHex(hex: string): string {
+  const clean = hex.replace('#', '');
+  if (clean.length === 3) return '#' + clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
+  return '#' + clean.slice(0, 6);
+}
+
+/** Simple linear mix of two hex colors (approximates color-mix in sRGB, close enough for contrast) */
+function mixHexColors(hex1: string, hex2: string, ratio: number): string {
+  const parse = (h: string) => {
+    const c = h.replace('#', '');
+    return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)];
+  };
+  const [r1, g1, b1] = parse(hex1);
+  const [r2, g2, b2] = parse(hex2);
+  const mix = (a: number, b: number) => Math.round(a * ratio + b * (1 - ratio));
+  const r = mix(r1, r2), g = mix(g1, g2), b = mix(b1, b2);
+  return '#' + [r, g, b].map(c => c.toString(16).padStart(2, '0')).join('');
 }
 
 export function parseLightDarkDefault(defaultValue: string): { light: string; dark: string } {
@@ -56,18 +90,32 @@ interface SwatchProps {
   onCommit: (color: string) => void;
 }
 
+const isHex = (v: string) => /^#[0-9a-fA-F]{3,8}$/.test(v);
+const isHex6 = (v: string) => /^#[0-9a-fA-F]{6}$/.test(v);
+
 function ColorSwatch({ label, value, onCommit }: SwatchProps) {
   const [inputValue, setInputValue] = useState(value);
+
+  // Sync inputValue when external value changes (hydration, undo/redo, reset)
+  const prevValueRef = useRef(value);
+  if (prevValueRef.current !== value) {
+    prevValueRef.current = value;
+    setInputValue(value);
+  }
 
   const handleColorChange = (color: string) => {
     setInputValue(color);
     onCommit(color);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
+  const handleAutocompleteChange = (val: string) => {
     setInputValue(val);
-    if (/^#[0-9a-fA-F]{6}$/.test(val)) onCommit(val);
+    if (isHex6(val)) onCommit(val);
+  };
+
+  const handleCommit = (val: string) => {
+    const trimmed = val.trim();
+    if (trimmed && trimmed !== value) onCommit(trimmed);
   };
 
   return (
@@ -84,12 +132,15 @@ function ColorSwatch({ label, value, onCommit }: SwatchProps) {
           }
         />
         <PopoverContent className="w-auto p-3 flex flex-col gap-2">
-          <HexColorPicker color={value} onChange={handleColorChange} />
-          <Input
+          {isHex(value) && (
+            <HexColorPicker color={value} onChange={handleColorChange} />
+          )}
+          <CssVarAutocomplete
             value={inputValue}
-            onChange={handleInputChange}
-            className="h-7 text-xs font-mono"
-            maxLength={7}
+            onChange={handleAutocompleteChange}
+            onCommit={handleCommit}
+            className="h-7 text-xs"
+            placeholder="#hex or var(--name)"
           />
         </PopoverContent>
       </Popover>
@@ -103,6 +154,14 @@ export function ColorPairControl({ token }: ColorPairControlProps) {
   const fallback = parseLightDarkDefault(token.defaultValue);
   const lightValue = overrides[token.key + '--light'] ?? fallback.light;
   const darkValue = overrides[token.key + '--dark'] ?? fallback.dark;
+
+  // Resolve surface colors for WCAG contrast comparison
+  const isTextToken = TEXT_TOKEN_KEYS.has(token.key);
+  const surfaceFallback = parseLightDarkDefault(
+    REGISTRY_MAP.get('--color-surface')?.defaultValue ?? 'light-dark(#ffffff, #000000)'
+  );
+  const surfaceLight = overrides['--color-surface--light'] ?? surfaceFallback.light;
+  const surfaceDark = overrides['--color-surface--dark'] ?? surfaceFallback.dark;
 
   const setLight = (color: string) =>
     dispatch({ type: 'SET_TOKEN', key: token.key + '--light', value: color });
@@ -124,6 +183,12 @@ export function ColorPairControl({ token }: ColorPairControlProps) {
         >
           <AliasValue value={token.defaultValue} className="flex-1 truncate" />
         </button>
+        {isTextToken && colorSchemeMode !== 'dark' && (
+          <ContrastDot textColor={fallback.light} surfaceColor={surfaceLight} />
+        )}
+        {isTextToken && colorSchemeMode !== 'light' && (
+          <ContrastDot textColor={fallback.dark} surfaceColor={surfaceDark} />
+        )}
         <ChangeIndicator tokenKey={token.key} />
       </div>
     );
@@ -148,6 +213,12 @@ export function ColorPairControl({ token }: ColorPairControlProps) {
           defaultValue={fallback.dark}
           onCommit={setDark}
         />
+      )}
+      {isTextToken && colorSchemeMode !== 'dark' && (
+        <ContrastDot textColor={lightValue} surfaceColor={surfaceLight} />
+      )}
+      {isTextToken && colorSchemeMode !== 'light' && (
+        <ContrastDot textColor={darkValue} surfaceColor={surfaceDark} />
       )}
       <ChangeIndicator tokenKey={token.key} />
     </div>
