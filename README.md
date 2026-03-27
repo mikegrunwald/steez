@@ -1,5 +1,7 @@
 # STEEZ :: The Rek-Room Combobulator
 
+**[Live Demo](https://combobulator.vercel.app)**
+
 A visual design token editor for [rek-room](https://github.com/mikegrunwald/rek-room), the zero-dependency CSS framework. Edit colors, typography, spacing, borders, elevation, animation, and control tokens with live light/dark preview — then export a clean CSS overrides file.
 
 ## Tech Stack
