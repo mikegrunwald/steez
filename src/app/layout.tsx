@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { TokenProvider } from "@/lib/state/token-context";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TokenProvider>{children}</TokenProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
